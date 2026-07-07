@@ -1,0 +1,23 @@
+<div class="shell full-bleed">
+  <div class="layout">
+    <section class="panel">
+      <div class="panel-body">
+          <div class="toolbar-container">
+            <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()" placeholder="Search all fields..." class="input-control input-search" />
+            <div class="btn-group">
+              <button type="button" (click)="openAddModal()" class="btn-primary btn-sm">{{ editIndex !== null ? 'Update' : 'Add' }}</button>
+              <button type="button" (click)="resetForm()" class="btn-reset btn-sm">Reset</button>
+            </div>
+          </div>
+          <app-admission-grid
+            [data]="filteredGridData()"
+            [title]="gridTitle"
+            [hideHeader]="true"
+            (modify)="onModify($event)"
+            (delete)="onDelete($event)">
+          </app-admission-grid>
+      </div>
+    </section>
+  </div>
+  <app-student-detail *ngIf="showModal" (close)="closeModal()" (save)="onSaveStudent($event)"></app-student-detail>
+</div>

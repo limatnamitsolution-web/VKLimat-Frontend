@@ -1,0 +1,79 @@
+/* All layout and font styles are now inherited from global styles.scss */
+
+/* Full-bleed layout for masters config pages: make panel/grid span full viewport width */
+.full-bleed {
+	max-width: 100% !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+.full-bleed .layout {
+	grid-template-columns: 1fr; /* single column for full-width grid */
+	gap: 0;
+}
+
+.full-bleed .panel {
+	margin: 0;
+	border-radius: 0;
+	box-shadow: none; /* keep look flat edge-to-edge; remove if you want shadow */
+	border-left: none;
+	border-right: none;
+	/* make panel fill available vertical space so inner scrolling stays inside */
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.full-bleed .panel-header {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.full-bleed .panel-body {
+	padding-left: 20px;
+	padding-right: 20px;
+	/* panel-body is the scroll container now */
+	overflow: hidden;
+	-webkit-overflow-scrolling: touch;
+	flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+app-data-grid {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure the table's sticky thead sticks to the panel-body top (no overlap) */
+
+/* Don't force full-bleed to a viewport height — rely on app layout (.content-container) like student dashboard */
+.full-bleed .table-responsive {
+	overflow: auto;
+}
+
+/* Ensure no scroll chaining to the page — keep vertical scroll inside the panel-body only */
+.full-bleed,
+.full-bleed .layout,
+.full-bleed .panel {
+	min-height: 0;
+}
+
+.full-bleed .panel-body {
+	overflow-y: auto;
+	overflow-x: hidden;
+	-webkit-overflow-scrolling: touch;
+	overscroll-behavior: contain; /* prevent scroll chaining to browser */
+}
+
+.full-bleed .table-responsive {
+	max-height: none; /* let panel-body handle vertical limits */
+}
+
+/* Provide a safe max-height so the panel-body never forces the page to scroll.
+	 Uses a CSS variable for the app header height; fallback to 64px if not set. */
+.full-bleed .panel-body {
+	max-height: calc(100vh - var(--app-header-height, 64px) - 48px);
+}

@@ -1,0 +1,104 @@
+
+.snav-group {
+  margin-bottom: 2px;
+  padding: 0;
+}
+
+.sidebar-heading {
+  display: flex;
+  align-items: center;
+  padding: 4px 10px;
+  min-height: 22px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: #222;
+
+  .sidebar-heading-icon {
+    font-size: 13px;
+    width: 16px;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+}
+
+.left-panel {
+  width: 260px;
+  min-width: 260px;
+  transition: all 0.3s ease;
+
+  &.collapsed {
+    width: 70px;
+    min-width: 70px;
+  }
+}
+
+// Parent menu items - more compact
+
+// Parent menu items - further reduced height
+.snav-item {
+  padding: 3px 10px;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  
+  span {
+    font-size: 13px;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .snav-icon {
+    font-size: 11px;   // Reduced icon size for parent
+    width: 16px;
+    margin-right: 5px;
+    flex-shrink: 0;
+  }
+
+  .snav-caret {
+    font-size: 10px;
+    margin-left: auto;
+  }
+}
+
+// Child menu items - even more compact
+
+.snav-sub {
+  .snav-sub-item {
+    padding: 4px 10px 4px 34px;
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+      cursor: pointer;
+    
+    span {
+      font-size: 11px;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .snav-sub-icon {
+      font-size: 9px;   // Reduced icon size for child
+      width: 13px;
+      margin-right: 5px;
+      flex-shrink: 0;
+    }
+
+      .hover-symbol {
+        display: none;
+        font-size: 12px;
+        margin-left: auto;
+        color: #888;
+        transition: color 0.2s;
+      }
+      &:hover .hover-symbol {
+        display: inline-block;
+        color: #007bff;
+      }
+  }
+}
+

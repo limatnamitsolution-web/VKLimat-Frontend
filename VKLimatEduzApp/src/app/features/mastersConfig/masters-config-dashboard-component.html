@@ -1,0 +1,26 @@
+<div class="shell full-bleed">
+  <div class="layout">
+    <section class="panel">
+      <div class="panel-body">
+        <form [formGroup]="form" (ngSubmit)="addGridItem()" class="form-row">
+          <input type="text" formControlName="configValue" placeholder="Name" class="input-control" required />
+          <input type="text" formControlName="configKey" placeholder="Code" class="input-control" required />
+          <input type="text" formControlName="description" placeholder="Description" class="input-control input-wide" required />
+          <button type="submit" class="btn-primary btn-sm">{{ editIndex !== null ? 'Update' : 'Add' }}</button>
+            <button type="button" (click)="resetForm()" class="btn-reset btn-sm">Reset</button>
+        </form>
+          <!-- Single Search Input -->
+          <div class="toolbar-container">
+            <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()" placeholder="Search all fields..." class="input-control input-search" />
+          </div>
+          <app-data-grid
+            [data]="filteredGridData()"
+            [title]="gridTitle"
+            [hideHeader]="true"
+            (modify)="onModify($event)"
+            (delete)="onDelete($event)">
+          </app-data-grid>
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<div class="grid-container">
+  <div class="grid-header" *ngIf="!hideHeader">
+    <h3 class="grid-title">{{ title }}</h3>
+    <div class="header-actions">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input 
+          type="text" 
+          placeholder="Search..." 
+          [(ngModel)]="searchText"
+          (input)="onSearch()">
+      </div>
+
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th class="col-no" (click)="sortData('index')">
+            No
+            <i class="sort-icon" [class.asc]="sortColumn === 'index' && sortDirection === 'asc'" 
+               [class.desc]="sortColumn === 'index' && sortDirection === 'desc'">
+              ↕
+            </i>
+          </th>
+          <!-- ID column removed from design -->
+          <th class="col-name" (click)="sortData('configValue')">
+            Name
+            <i class="sort-icon" [class.asc]="sortColumn === 'configValue' && sortDirection === 'asc'" 
+               [class.desc]="sortColumn === 'configValue' && sortDirection === 'desc'">
+              ↕
+            </i>
+          </th>
+          <th class="col-code" (click)="sortData('configKey')">
+            Code
+            <i class="sort-icon" [class.asc]="sortColumn === 'configKey' && sortDirection === 'asc'" 
+               [class.desc]="sortColumn === 'configKey' && sortDirection === 'desc'">
+              ↕
+            </i>
+          </th>
+          <th class="col-description" (click)="sortData('description')">
+            Description
+            <i class="sort-icon" [class.asc]="sortColumn === 'description' && sortDirection === 'asc'" 
+               [class.desc]="sortColumn === 'description' && sortDirection === 'desc'">
+              ↕
+            </i>
+          </th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of paginatedData; let i = index" 
+            [class.even]="i % 2 === 0"
+            [class.odd]="i % 2 === 1"
+            [class.selected]="selectedItem?.id === item.id">
+          <td class="col-no">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+          <!-- ID cell removed from design -->
+          <td class="col-name">
+            <div class="name-cell">
+              <i class="fas fa-user-circle"></i>
+              {{ item.configValue }}
+            </div>
+          </td>
+          <td class="col-code">
+            <span class="code-badge">{{ item.configKey }}</span>
+          </td>
+          <td class="col-description" [title]="item.description">
+            <div class="description-text">
+              {{ item.description }}
+            </div>
+          </td>
+          <td class="col-actions">
+            <div class="action-buttons">
+              <button class="btn-action btn-modify" 
+                      (click)="onModify(item)"
+                      title="Modify">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-action btn-delete" 
+                      (click)="onDelete(item)"
+                      title="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div *ngIf="filteredData.length === 0" class="empty-state">
+      <i class="fas fa-inbox"></i>
+      <p>No data found</p>
+      <p class="empty-subtitle" *ngIf="searchText">Try adjusting your search criteria</p>      
+    </div>
+  </div>
+
+    <div class="grid-footer" *ngIf="filteredData.length > 0">
+    <div class="pagination-info">
+  Showing {{ (currentPage - 1) * pageSize + 1 }} to 
+  {{ Math.min(currentPage * pageSize, filteredData.length) }} of 
+  {{ filteredData.length }} entries
+    </div>
+    <div class="pagination-controls">
+      <button class="btn-pagination" 
+              (click)="previousPage()" 
+              [disabled]="currentPage === 1">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button class="btn-pagination" 
+              (click)="nextPage()" 
+                [disabled]="currentPage === totalPages || totalPages === 0">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+    <div class="page-size-selector">
+      <label>Show:</label>
+      <select [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+        <option *ngFor="let opt of pageSizeOptions" [value]="opt.value">{{ opt.label }}</option>
+      </select>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Login</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" type="text" formControlName="username" placeholder="Enter username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" formControlName="password" placeholder="Enter password">
+      </div>
+
+      <div class="form-group">
+        <label for="fy">Financial Year</label>
+        <select id="fy" formControlName="fyId">
+          <option [ngValue]="null" disabled>Select Financial Year</option>
+          <option *ngFor="let fy of financialYears" [ngValue]="fy.fyId">{{ fy.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="academic">Academic</label>
+        <select id="academic" formControlName="academicId">
+          <option [ngValue]="null" disabled>Select Academic</option>
+          <option *ngFor="let ay of academics" [ngValue]="ay.academicId">{{ ay.name }}</option>
+        </select>
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid">Login</button>
+    </form>
+  </div>
+</div>

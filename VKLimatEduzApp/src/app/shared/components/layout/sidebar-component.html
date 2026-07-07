@@ -1,0 +1,60 @@
+<aside class="left-panel" tabindex="0" [class.collapsed]="isCollapsed">
+  <div class="sidenav">
+    <div class="sidenav-header">
+      <span class="sidenav-title" style="display: flex; align-items: center; justify-content: center; width: 100%;">
+        <span *ngIf="!isCollapsed" style="text-align: center; width: auto;">{{ selectedLabel || 'Student' }}</span>
+      </span>
+      <button class="sidenav-toggle" (click)="toggleSidebar()" title="Toggle Collapse">
+        <i class="fas fa-angles-left" [class.rotated]="isCollapsed"></i>
+      </button>
+    </div>
+
+    <nav class="sidenav-menu">
+      @if (menuItems && menuItems.length) {
+  @for (item of menuItems; track item) {
+          @if (item.children && item.children.length) {
+            <div class="snav-group">
+              <div class="snav-item snav-toggle"
+                   [class.active]="activeMenu === item.key"
+                   (click)="toggleSubMenu(item.key); setActiveMenu(item.key)">
+                <div class="snav-icon">
+                  <i [class]="item.icon"></i>
+                </div>
+                <span>{{ item.label }}</span>
+                <i class="fas fa-chevron-down snav-caret" [class.rotated]="expandedMenus[item.key]"></i>
+                <div class="tooltip">{{ item.label }}</div>
+              </div>
+              <div class="snav-sub" [class.expanded]="expandedMenus[item.key]">
+                @for (child of item.children; track child) {
+                  <a
+                    class="snav-sub-item"
+                    [class.active]="isSubMenuActive(item.key, child.key)"
+                    (click)="setActiveSubMenu(item.key, child.key); navigateToDashboard(child.key)">
+                    <div class="snav-sub-icon">
+                      <i [class]="child.icon"></i>
+                    </div>
+                    <span>{{ child.label }}</span>
+                      <i class="fas fa-arrow-right hover-symbol"></i>
+                  </a>
+                }
+              </div>
+            </div>
+          } @else {
+            <a class="snav-item"
+               [class.active]="activeMenu === item.key"
+               (click)="navigateToDashboard(item.key)">
+              <div class="snav-icon">
+                <i [class]="item.icon"></i>
+              </div>
+              <span>{{ item.label }}</span>
+              <div class="tooltip">{{ item.label }}</div>
+            </a>
+          }
+  }
+      } @else {
+        <!-- fallback: if JSON fails to load, keep nothing or optionally show a simple message -->
+        <!-- You can keep the original hard-coded markup here if you want a fallback UI. -->
+      }
+    </nav>
+  </div>
+</aside>

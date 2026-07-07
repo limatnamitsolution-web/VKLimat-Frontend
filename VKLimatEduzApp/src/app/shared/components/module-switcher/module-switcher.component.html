@@ -1,0 +1,44 @@
+<div class="module-switcher-overlay" [class.active]="isModuleSwitcherOpen" (click)="closeModuleSwitcher()">
+  <div class="module-switcher-popup" (click)="$event.stopPropagation()">
+    <div class="module-switcher-header">
+      <div class="module-switcher-title">Switch Module</div>
+      <button class="close-btn" (click)="closeModuleSwitcher()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="module-list">
+      <div class="module-item active">
+        <div class="module-icon"><i class="fas fa-users"></i></div>
+        <span class="module-name">Student</span>
+      </div>
+      <div class="module-item">
+        <div class="module-icon"><i class="fas fa-money-bill-wave"></i></div>
+        <span class="module-name">Fee</span>
+      </div>
+      <div class="module-item">
+        <div class="module-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+        <span class="module-name">Payroll</span>
+      </div>
+      <div class="module-item">
+        <div class="module-icon"><i class="fas fa-chart-line"></i></div>
+        <span class="module-name">Result</span>
+      </div>
+      <div class="module-item">
+        <div class="module-icon"><i class="fas fa-calendar-alt"></i></div>
+        <span class="module-name">Timetable</span>
+      </div>
+      <div class="module-item">
+        <div class="module-icon"><i class="fas fa-book"></i></div>
+        <span class="module-name">Library</span>
+      </div>
+      <div class="module-item">
+        <div class="module-icon"><i class="fas fa-bus"></i></div>
+        <span class="module-name">Transport</span>
+      </div>
+      <div class="module-item">
+        <div class="module-icon"><i class="fas fa-bed"></i></div>
+        <span class="module-name">Hostel</span>
+      </div>
+    </div>
+  </div>
+</div>

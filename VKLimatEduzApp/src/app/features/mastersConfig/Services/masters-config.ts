@@ -17,6 +17,13 @@ export class MastersConfig {
  private encryptionService = inject(EncryptionService);
   constructor(private http: HttpClient) {}
 
+  private unwrapResponse<T>(response: any): T | null {
+    if (response && typeof response === 'object' && 'data' in response) {
+      return response.data as T;
+    }
+    return (response ?? null) as T | null;
+  }
+
   fetchMasterConfig(configuration: string) {
     const url = `${this.apiUrl}GetAll`;
     const state = this.appState.userState();
@@ -27,8 +34,9 @@ export class MastersConfig {
       configuration_en: configuration,
       academicId_en: this.encryptionService.encrypt(safeAcademicId)
     }).subscribe({
-      next: data => {
-        this.masterConfigList.set(data);
+      next: response => {
+        const list = this.unwrapResponse<any[]>(response);
+        this.masterConfigList.set(Array.isArray(list) ? list : []);
       },
       error: err => {
         console.error('API error for masterConfigList:', err);
@@ -40,8 +48,9 @@ export class MastersConfig {
   fetchMasterConfigGet(id: number) {
     const url = `${this.apiUrl}Get/${id}`;
     this.http.get(url).subscribe({
-      next: data => {
-        this.masterConfig.set(data);
+      next: response => {
+        const item = this.unwrapResponse<any>(response);
+        this.masterConfig.set(item);
       },
       error: err => {
         this.masterConfig.set([]); // fallback to empty array or sensible default

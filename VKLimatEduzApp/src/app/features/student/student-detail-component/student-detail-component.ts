@@ -2,6 +2,11 @@ import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { StudentService } from '../services/student.service';
+import {
+  StudentAdmissionRequestDto,
+  StudentDocumentRequestDto,
+  TransportDto
+} from '../../../models/student-admission.model';
 
 @Component({
   selector: 'app-student-detail',
@@ -21,7 +26,7 @@ export class StudentDetailComponent {
     { id: 'Academic', label: 'Academic', index: 1 },
     { id: 'Parents', label: "Parent's", index: 2 },
     { id: 'Transport', label: 'Transport', index: 3 },
-    { id: 'DocumentUpload', label: 'Document Upload', index: 4 },
+    { id: 'Documents', label: 'Document Upload', index: 4 },
     { id: 'Other', label: 'Other', index: 5 },
     { id: 'Record', label: 'Record', index: 6 },
     { id: 'CategoryCertificate', label: 'Category Certificate', index: 7 }
@@ -205,136 +210,138 @@ export class StudentDetailComponent {
     { doc_id: 110, doc_Code: 'migrationCert', doc_label: 'Migration Certificate', doc_File: '' }
   ];
 
-  selectedFiles: { [key: string]: File } = {};
+  private readonly defaultTransportMonthIds = [4, 5, 12, 1, 2, 3];
+
+  private readonly studentService = inject(StudentService);
 
   constructor(private fb: FormBuilder) {
     this.studentForm = this.fb.group({
-      tabs: this.fb.array([
-        this.createStudentGroup(),
-        this.createAcademicGroup(), // Academic
-        this.createParentGroup(),
-        this.createTransportGroup(), // Transport
-        this.createDocumentUploadGroup(), // Document Upload
-        this.fb.group({}), // Other
-        this.fb.group({}), // Record
-        this.fb.group({})  // Category Certificate
-      ])
+      Student: this.createStudentGroup(),
+      Academic: this.createAcademicGroup(),
+      Parents: this.createParentGroup(),
+      Transport: this.createTransportGroup(),
+      Documents: this.createDocumentUploadGroup(),
+      Other: this.fb.group({}),
+      Record: this.fb.group({}),
+      CategoryCertificate: this.fb.group({})
     });
   }
 
-  get tabsArray(): FormArray {
-    return this.studentForm.get('tabs') as FormArray;
+  get docsArray(): FormArray {
+    return this.studentForm.get('Documents') as FormArray;
   }
 
-  getDocsArray(): FormArray {
-    return this.tabsArray.at(4) as FormArray;
+  get transportMonthsArray(): FormArray {
+    return this.studentForm.get(['Transport', 'months']) as FormArray;
   }
 
   createStudentGroup(): FormGroup {
     return this.fb.group({
-      adm_branch_Id: [''],
-      adm_no: ['', Validators.required],
+      adm_branch_Id: [1],
+      adm_no: ['1022', Validators.required],
       adm_date: [''],
       adm_doj: [''],
-      sess_stud_first_name: ['', Validators.required],
-      sess_stud_last_name: [''],
-      adm_ssr_no: [''],
+      sess_stud_first_name: ['Rahul', Validators.required],
+      sess_stud_last_name: ['Ganga'],
+      adm_ssr_no: ['ssrrno:1022'],
       adm_dob: [''],
       adm_gender_id: [''],
       adm_blood_grp_id: [''],
       sess_religion_id: [''],
       sess_caste_id: [''],
-      adm_stud_mobile_no: [''],
-      sess_student_aadhar_no: [''],
-      adm_stud_email_ddress: [''],
+      adm_stud_mobile_no: ['9978976545'],
+      sess_student_aadhar_no: ['jljlj7998989'],
+      adm_stud_email_ddress: ['RahulGangadd@outlook.com'],
 
       // Address Info
       sess_country_id: [''],
       sess_state_id: [''],
       sess_city_id: [''],
-      sess_address: [''],
-      sess_pin_code: [''],
+      sess_address: ['address12'],
+      sess_pin_code: ['10077'],
 
       // Permanent Address Info
       sess_permanent_country_id: [''],
       sess_permanent_state_id: [''],
       sess_permanent_city_id: [''],
-      sess_permanent_address: [''],
-      sess_permanent_pin_code: ['']
+      sess_permanent_address: ['address12'],
+      sess_permanent_pin_code: ['10077']
     });
   }
 
   createParentGroup(): FormGroup {
     return this.fb.group({
       // Father Details
-      sess_father_name: [''],
-      sess_father_mobile_no: [''],
-      sess_father_qualification_id: [''],
-      sess_father_occupation_id: [''],
-      sess_father_designation_id: [''],
-      sess_father_annual_income: [''],
-      sess_father_office_address: [''],
+      sess_father_name: ['ff'],
+      sess_father_mobile_no: ['9989899899'],
+      sess_father_qualification_id: [2],
+      sess_father_occupation_id: [2],
+      sess_father_designation_id: ['sds'],
+      sess_father_annual_income: ['100000'],
+      sess_father_office_address: ['oo'],
       sess_is_fse: [false],
       
       // Mother Details
-      sess_mother_name: [''],
-      sess_mother_mobile_no: [''],
-      sess_mother_qualification_id: [''],
-      sess_mother_occupation_id: [''],
-      sess_mother_designation_id: [''],
-      sess_mother_annual_income: [''],
-      sess_mother_office_address: [''],
-      sess_is_mse: [false],
+      sess_mother_name: ['mmm'],
+      sess_mother_mobile_no: ['9989899899'],
+      sess_mother_qualification_id: [3],
+      sess_mother_occupation_id: [1],
+      sess_mother_designation_id: ['sds'],
+      sess_mother_annual_income: ['12121'],
+      sess_mother_office_address: ['dvdv'],
+      sess_is_mse: [true],
 
       // Guardian Details
-      sess_g1_name: [''],
-      sess_g1_mobile_no: [''],
-      sess_g1_address: [''],
-      sess_g2_name: [''],
-      sess_g2_mobile_no: [''],
-      sess_g2_address: [''],
+      sess_g1_name: ['g'],
+      sess_g1_mobile_no: ['9989899899'],
+      sess_g1_address: ['AAA'],
+      sess_g2_name: ['Test'],
+      sess_g2_mobile_no: ['9978976545'],
+      sess_g2_address: ['address12'],
       
-      otherDetails: ['']
+      otherDetails: ['SDFFD']
     });
   }
 
   createAcademicGroup(): FormGroup {
     return this.fb.group({
       // Admission Details
-      adm_cat_id: [''],
-      adm_grp_id: [''],
-      adm_stream_id: [''],
-      adm_class_id: [''],
-      adm_section_id: [''],
-      adm_rollno: [''],
-      adm_concession_id: [''],
-      adm_fee_group_id: [''],
+      adm_cat_id: [1],
+      adm_grp_id: [1],
+      adm_stream_id: [1],
+      adm_class_id: [5],
+      adm_section_id: [2],
+      adm_rollno: ['aa122'],
+      adm_concession_id: [1],
+      adm_fee_group_id: [1],
 
       // Session Details
-      sess_cat_id: [''],
-      sess_grp_id: [''],
-      sess_stream_id: [''],
-      sess_class_id: [''],
-      sess_section_id: [''],
-      sess_roll_no: [''],
-      sess_concession_id: [''],
-      sess_fee_group_id: ['']
+      sess_cat_id: [2],
+      sess_grp_id: [1],
+      sess_stream_id: [1],
+      sess_class_id: [1],
+      sess_section_id: [1],
+      sess_roll_no: ['dsew33'],
+      sess_concession_id: [2],
+      sess_fee_group_id: [1]
     });
   }
 
   createTransportGroup(): FormGroup {
     return this.fb.group({
-      transportMode: [''],
-      pickArea: [''],
-      pickDrop: [''],
-      pickStand: [''],
-      pickRoute: [''],
-      pickDriver: [''],
-      dropArea: [''],
-      dropStand: [''],
-      dropRoute: [''],
-      dropDriver: [''],
-      months: this.fb.array(this.transportMonthsList.map(() => false))
+      transportMode: [1],
+      pickArea: [1],
+      pickDrop: [1],
+      pickStand: [1],
+      pickRoute: [1],
+      pickDriver: [1],
+      dropArea: [2],
+      dropStand: [2],
+      dropRoute: [2],
+      dropDriver: [2],
+      months: this.fb.array(
+        this.transportMonthsList.map((month) => this.defaultTransportMonthIds.includes(month.monthId))
+      )
     });
   }
 
@@ -344,7 +351,7 @@ export class StudentDetailComponent {
         doc_id: [doc.doc_id],
         doc_Code: [doc.doc_Code],
         doc_label: [doc.doc_label],
-        doc_File: ['']
+        doc_File: [null]
       });
     });
     return this.fb.array(controls);
@@ -354,11 +361,11 @@ export class StudentDetailComponent {
     this.activeTab = tabId;
   }
 
-  onFileSelected(event: any, index: number) {
-    const file = event.target.files[0];
+  onFileSelected(event: Event, index: number): void {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0] ?? null;
     if (file) {
-      // Update the form control value with the ACTUAL File object, not the string path
-      const docArray = this.getDocsArray();
+      const docArray = this.docsArray;
       const docGroup = docArray.at(index) as FormGroup;
       docGroup.patchValue({
         doc_File: file
@@ -366,84 +373,82 @@ export class StudentDetailComponent {
     }
   }
 
-  private toFormData(formValue: any): FormData {
+  private toFormData(model: unknown): FormData {
     const formData = new FormData();
-
-    for (const key of Object.keys(formValue)) {
-      const value = formValue[key];
-
-      // Skip null/undefined
-      if (value === null || value === undefined) continue;
-
-      if (key === 'Docs' && Array.isArray(value)) {
-        // Handle Document Array
-        value.forEach((doc: any, index: number) => {
-          formData.append(`Docs[${index}].doc_id`, doc.doc_id);
-          formData.append(`Docs[${index}].doc_Code`, doc.doc_Code);
-          formData.append(`Docs[${index}].doc_label`, doc.doc_label);
-          // Append the file only if it exists and is a File object
-          if (doc.doc_File instanceof File) {
-            formData.append(`Docs[${index}].doc_File`, doc.doc_File, doc.doc_File.name);
-          }
-        });
-      } else if (key === 'months' && Array.isArray(value)) {
-        // Handle Months Array
-        value.forEach((monthId: any, index: number) => {
-          formData.append(`months[${index}]`, monthId.toString());
-        });
-      } else {
-        // Handle simple fields
-        if (value instanceof Date) {
-          formData.append(key, value.toISOString());
-        } else if (typeof value === 'string' && value.trim() === '') {
-          // Skip empty strings to avoid binding issues with non-string types (e.g. int?, DateTime?)
-          continue;
-        } else {
-          formData.append(key, value.toString());
-        }
-      }
-    }
+    this.appendToFormData(formData, model);
     return formData;
   }
 
-  studentService=inject(StudentService);
-  onSubmit() {
-    console.log('Form Valid:', this.studentForm.valid);
-    console.log('Form Value:', this.studentForm.value);
-    console.log('Form Raw Value:', this.studentForm.getRawValue());
+  private appendToFormData(formData: FormData, value: unknown, parentKey?: string): void {
+    if (value === null || value === undefined) {
+      return;
+    }
 
+    if (value instanceof File) {
+      if (parentKey) {
+        formData.append(parentKey, value, value.name);
+      }
+      return;
+    }
+
+    if (value instanceof Date) {
+      if (parentKey) {
+        formData.append(parentKey, value.toISOString());
+      }
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((item, index) => {
+        const arrayKey = parentKey ? `${parentKey}[${index}]` : `[${index}]`;
+        this.appendToFormData(formData, item, arrayKey);
+      });
+      return;
+    }
+
+    if (typeof value === 'object') {
+      Object.entries(value as Record<string, unknown>).forEach(([key, childValue]) => {
+        const objectKey = parentKey ? `${parentKey}.${key}` : key;
+        this.appendToFormData(formData, childValue, objectKey);
+      });
+      return;
+    }
+
+    if (parentKey) {
+      formData.append(parentKey, String(value));
+    }
+  }
+
+  onSubmit(): void {
     if (this.studentForm.valid) {
-      // Combine all tab values into one object if needed, or send as is
-      const formValue = this.studentForm.value;
+      const formValue = this.studentForm.getRawValue();
+      const selectedMonthIds = (formValue.Transport.months as boolean[])
+        .map((isSelected: boolean, index: number) =>
+          isSelected ? this.transportMonthsList[index].monthId : null
+        )
+        .filter((id: number | null): id is number => id !== null);
 
-      // Transform months boolean array to monthId array
-      const transportData = formValue.tabs[3];
-      const selectedMonthIds = transportData.months
-        .map((isSelected: boolean, index: number) => isSelected ? this.transportMonthsList[index].monthId : null)
-        .filter((id: number | null) => id !== null);
-
-      const combinedValue = {
-        ...formValue.tabs[0],
-        ...formValue.tabs[1],
-        ...formValue.tabs[2],
-        ...transportData,
-        months: selectedMonthIds,
-        Docs: formValue.tabs[4], // Document Upload array
-        ...formValue.tabs[5], // Other
-        // ... merge other tabs
-        // documents: this.selectedFiles // Include the selected files
+      const model: StudentAdmissionRequestDto = {
+        Student: formValue.Student,
+        Academic: formValue.Academic,
+        Parents: formValue.Parents,
+        Transport: {
+          ...formValue.Transport,
+          months: selectedMonthIds
+        } as TransportDto,
+        Documents: formValue.Documents as StudentDocumentRequestDto[],
+        Other: formValue.Other,
+        Record: formValue.Record,
+        CategoryCertificate: formValue.CategoryCertificate
       };
-      console.log('Combined Value:', combinedValue);
 
-      const formData = this.toFormData(combinedValue);
+      const formData = this.toFormData(model);
 
       this.studentService.saveStudent(formData).subscribe(response => {
-        console.log('Save successful', response);
         alert('Student saved successfully');
-        this.save.emit(combinedValue);
+        this.save.emit(model);
         this.close.emit();
       }, error => {
-        console.error('Save failed', error);
         if (error.error && error.error.errors) {
           let errorMessage = 'Validation failed:\n';
           for (const key in error.error.errors) {
@@ -454,9 +459,8 @@ export class StudentDetailComponent {
           alert('Save failed: ' + (error.message || 'Unknown error'));
         }
       });
-
     } else {
-      console.log('Form is invalid');
+      this.studentForm.markAllAsTouched();
     }
   }
 

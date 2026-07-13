@@ -14,10 +14,9 @@
 
     <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="form-layout">
       <div class="modal-body">
-        <div formArrayName="tabs">
         
         <!-- Student Tab Content -->
-        <div *ngIf="activeTab === 'Student'" [formGroupName]="0" class="tab-content fade-in">
+        <div *ngIf="activeTab === 'Student'" formGroupName="Student" class="tab-content fade-in">
           
           <div class="form-section">
             <h3 class="section-title">Student Details</h3>
@@ -207,7 +206,7 @@
             </div>
           </div>
         </div>        <!-- Academic Tab Content -->
-        <div *ngIf="activeTab === 'Academic'" [formGroupName]="1" class="tab-content fade-in">
+        <div *ngIf="activeTab === 'Academic'" formGroupName="Academic" class="tab-content fade-in">
           <!-- Admission Details Section -->
           <div class="form-section">
             <h3 class="section-title">Admission Details</h3>
@@ -360,7 +359,7 @@
         </div>
 
         <!-- Parent's Tab Content -->
-        <div *ngIf="activeTab === 'Parents'" [formGroupName]="2" class="tab-content fade-in">
+        <div *ngIf="activeTab === 'Parents'" formGroupName="Parents" class="tab-content fade-in">
           
           <div class="grid-2">
             <!-- Father Details -->
@@ -516,7 +515,7 @@
         </div>
 
         <!-- Transport Tab Content -->
-        <div *ngIf="activeTab === 'Transport'" [formGroupName]="3" class="tab-content fade-in">
+        <div *ngIf="activeTab === 'Transport'" formGroupName="Transport" class="tab-content fade-in">
           <div class="form-section">
             <h3 class="section-title">Transport Details</h3>
             <div class="grid-2">
@@ -645,16 +644,16 @@
         </div>
 
         <!-- Document Upload Tab Content -->
-        <div *ngIf="activeTab === 'DocumentUpload'" [formArrayName]="4" class="tab-content fade-in">
+        <div *ngIf="activeTab === 'Documents'" formArrayName="Documents" class="tab-content fade-in">
           <div class="form-section">
             <h3 class="section-title">Document Upload</h3>
             <div class="docs-grid">
-              @for (docGroup of getDocsArray().controls; track $index) {
-              <div class="doc-item" [formGroupName]="$index">
+              @for (docGroup of docsArray.controls; track $index; let i = $index) {
+              <div class="doc-item" [formGroupName]="i">
                 <label>{{ docGroup.get('doc_label')?.value }}</label>
                 <div class="file-upload-container">
-                  <input type="file" [id]="'file-upload-' + $index" (change)="onFileSelected($event, $index)" class="hidden-file-input">
-                  <label [for]="'file-upload-' + $index" class="custom-file-label">
+                  <input type="file" [id]="'file-upload-' + i" (change)="onFileSelected($event, i)" class="hidden-file-input">
+                  <label [for]="'file-upload-' + i" class="custom-file-label">
                     <span class="upload-icon">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -676,7 +675,6 @@
             </div>
           </div>
         </div>
-      </div>
       </div>
 
       <div class="modal-footer">

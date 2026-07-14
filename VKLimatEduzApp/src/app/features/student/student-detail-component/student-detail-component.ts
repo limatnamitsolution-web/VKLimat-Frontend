@@ -466,6 +466,8 @@ export class StudentDetailComponent {
             errorMessage += `${key}: ${error.error.errors[key].join(', ')}\n`;
           }
           alert(errorMessage);
+          console.error('Validation errors:', error.error.errors);
+          console.log('Validation log-errors:', error.error.errors);
         } else {
           alert('Save failed: ' + (error.message || 'Unknown error'));
         }

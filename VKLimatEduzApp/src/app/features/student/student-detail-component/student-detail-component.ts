@@ -4,7 +4,6 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } fr
 import { StudentService } from '../services/student.service';
 import {
   StudentAdmissionRequestDto,
-  StudentDocumentRequestDto,
   TransportDto
 } from '../../../models/student-admission.model';
 
@@ -379,6 +378,17 @@ export class StudentDetailComponent {
     return formData;
   }
 
+  private removeFormDataByPrefixes(formData: FormData, prefixes: string[]): void {
+    const keysToRemove: string[] = [];
+    formData.forEach((_value, key) => {
+      if (prefixes.some(prefix => key.startsWith(prefix))) {
+        keysToRemove.push(key);
+      }
+    });
+
+    keysToRemove.forEach((key) => formData.delete(key));
+  }
+
   private appendToFormData(formData: FormData, value: unknown, parentKey?: string): void {
     if (value === null || value === undefined) {
       return;
@@ -436,13 +446,14 @@ export class StudentDetailComponent {
           ...formValue.Transport,
           months: selectedMonthIds
         } as TransportDto,
-        Documents: formValue.Documents as StudentDocumentRequestDto[],
+        Documents: [],
         Other: formValue.Other,
         Record: formValue.Record,
         CategoryCertificate: formValue.CategoryCertificate
       };
 
       const formData = this.toFormData(model);
+      this.removeFormDataByPrefixes(formData, ['Documents', 'Docs']);
 
       this.studentService.saveStudent(formData).subscribe(response => {
         alert('Student saved successfully');

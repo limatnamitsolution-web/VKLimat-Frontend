@@ -322,10 +322,10 @@ export class AdmissionComponent implements OnInit {
     const allData = this.gridData();
     this.filteredGridData.set(
       allData.filter((item: any) =>
-        (item.Student || '').toLowerCase().includes(term) ||
-        (item.AdmNo || '').toLowerCase().includes(term) ||
-        (item.Class || '').toLowerCase().includes(term) ||
-        (item.Father || '').toLowerCase().includes(term)
+        String(item.Student ?? '').toLowerCase().includes(term) ||
+        String(item.AdmNo ?? '').toLowerCase().includes(term) ||
+        String(item.Class ?? '').toLowerCase().includes(term) ||
+        String(item.Father ?? '').toLowerCase().includes(term)
       )
     );
   }
@@ -342,12 +342,28 @@ export class AdmissionComponent implements OnInit {
     this.showModal = false;
   }
 
+  private mapSavedStudentToGridRow(studentData: any): any {
+    const student = studentData?.Student ?? {};
+    const parents = studentData?.Parents ?? {};
+    const academic = studentData?.Academic ?? {};
+
+    return {
+      AdmNo: student.adm_no ?? '',
+      AdmDate: student.adm_date || new Date().toISOString().split('T')[0],
+      DOB: student.adm_dob ?? '',
+      Student: `${student.sess_stud_first_name ?? ''} ${student.sess_stud_last_name ?? ''}`.trim(),
+      Class: String(academic.sess_class_id ?? academic.adm_class_id ?? ''),
+      Sec: String(academic.sess_section_id ?? academic.adm_section_id ?? ''),
+      Father: parents.sess_father_name ?? '',
+      Mother: parents.sess_mother_name ?? '',
+      F_MobileNo: parents.sess_father_mobile_no ?? '',
+      M_MobileNo: parents.sess_mother_mobile_no ?? ''
+    };
+  }
+
   onSaveStudent(studentData: any) {
     const currentData = this.gridData();
-    const newStudent = {
-      ...studentData,
-      AdmDate: new Date().toISOString().split('T')[0]
-    };
+    const newStudent = this.mapSavedStudentToGridRow(studentData);
     
     this.gridData.set([...currentData, newStudent]);
     this.applyFilters();

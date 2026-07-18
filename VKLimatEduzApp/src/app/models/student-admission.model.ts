@@ -90,6 +90,7 @@ export interface StudentDocumentRequestDto {
   doc_Code: string;
   doc_label: string;
   doc_File: File | null;
+  SavedPath?: string;
 }
 
 export interface StudentAdmissionRequestDto {
@@ -98,6 +99,7 @@ export interface StudentAdmissionRequestDto {
   Parents: ParentDto;
   Transport: TransportDto;
   Documents: StudentDocumentRequestDto[];
+  Docs?: StudentDocumentRequestDto[];
   Other?: Record<string, unknown>;
   Record?: Record<string, unknown>;
   CategoryCertificate?: Record<string, unknown>;

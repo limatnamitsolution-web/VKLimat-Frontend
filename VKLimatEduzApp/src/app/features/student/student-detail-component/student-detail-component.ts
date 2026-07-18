@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } fr
 import { StudentService } from '../services/student.service';
 import {
   StudentAdmissionRequestDto,
+  StudentDocumentRequestDto,
   TransportDto
 } from '../../../models/student-admission.model';
 
@@ -210,6 +211,7 @@ export class StudentDetailComponent {
   ];
 
   private readonly defaultTransportMonthIds = [4, 5, 12, 1, 2, 3];
+  private readonly selectedDocumentFiles: Record<number, File> = {};
 
   private readonly studentService = inject(StudentService);
 
@@ -238,32 +240,32 @@ export class StudentDetailComponent {
     return this.fb.group({
       adm_branch_Id: [1],
       adm_no: ['1022', Validators.required],
-      adm_date: [''],
-      adm_doj: [''],
+      adm_date: ['2026-07-14'],
+      adm_doj: ['2026-07-14'],
       sess_stud_first_name: ['Rahul', Validators.required],
       sess_stud_last_name: ['Ganga'],
       adm_ssr_no: ['ssrrno:1022'],
-      adm_dob: [''],
-      adm_gender_id: [''],
-      adm_blood_grp_id: [''],
-      sess_religion_id: [''],
-      sess_caste_id: [''],
+      adm_dob: ['2012-04-18'],
+      adm_gender_id: [1],
+      adm_blood_grp_id: [1],
+      sess_religion_id: [1],
+      sess_caste_id: [1],
       adm_stud_mobile_no: ['9978976545'],
-      sess_student_aadhar_no: ['jljlj7998989'],
+      sess_student_aadhar_no: ['799898912345'],
       adm_stud_email_ddress: ['RahulGangadd@outlook.com'],
 
       // Address Info
-      sess_country_id: [''],
-      sess_state_id: [''],
-      sess_city_id: [''],
-      sess_address: ['address12'],
+      sess_country_id: [1],
+      sess_state_id: [1],
+      sess_city_id: [1],
+      sess_address: ['House 12, Main Street'],
       sess_pin_code: ['10077'],
 
       // Permanent Address Info
-      sess_permanent_country_id: [''],
-      sess_permanent_state_id: [''],
-      sess_permanent_city_id: [''],
-      sess_permanent_address: ['address12'],
+      sess_permanent_country_id: [1],
+      sess_permanent_state_id: [1],
+      sess_permanent_city_id: [1],
+      sess_permanent_address: ['House 12, Main Street'],
       sess_permanent_pin_code: ['10077']
     });
   }
@@ -364,6 +366,7 @@ export class StudentDetailComponent {
     const target = event.target as HTMLInputElement;
     const file = target.files?.[0] ?? null;
     if (file) {
+      this.selectedDocumentFiles[index] = file;
       const docArray = this.docsArray;
       const docGroup = docArray.at(index) as FormGroup;
       docGroup.patchValue({
@@ -378,15 +381,25 @@ export class StudentDetailComponent {
     return formData;
   }
 
-  private removeFormDataByPrefixes(formData: FormData, prefixes: string[]): void {
-    const keysToRemove: string[] = [];
-    formData.forEach((_value, key) => {
-      if (prefixes.some(prefix => key.startsWith(prefix))) {
-        keysToRemove.push(key);
-      }
-    });
+  private isFileLike(value: unknown): value is File {
+    return !!value && typeof value === 'object' && 'name' in (value as Record<string, unknown>);
+  }
 
-    keysToRemove.forEach((key) => formData.delete(key));
+  private appendUploadedDocuments(formData: FormData, documents: StudentDocumentRequestDto[]): void {
+    documents.forEach((document, index) => {
+      const file = document.doc_File;
+      if (!this.isFileLike(file)) {
+        return;
+      }
+
+      const savedPath = document.SavedPath || file.name;
+
+      formData.append(`Docs[${index}].doc_id`, String(document.doc_id));
+      formData.append(`Docs[${index}].doc_Code`, document.doc_Code);
+      formData.append(`Docs[${index}].doc_label`, document.doc_label);
+      formData.append(`Docs[${index}].SavedPath`, savedPath);
+      formData.append(`Docs[${index}].doc_File`, file, file.name);
+    });
   }
 
   private appendToFormData(formData: FormData, value: unknown, parentKey?: string): void {
@@ -429,38 +442,109 @@ export class StudentDetailComponent {
     }
   }
 
+  private withDefault(value: unknown, fallback: string): string {
+    if (value === null || value === undefined) {
+      return fallback;
+    }
+
+    const text = String(value).trim();
+    return text.length > 0 ? text : fallback;
+  }
+
   onSubmit(): void {
     if (this.studentForm.valid) {
       const formValue = this.studentForm.getRawValue();
+      const studentRaw = formValue.Student ?? {};
+      const academicRaw = formValue.Academic ?? {};
+      const parentsRaw = formValue.Parents ?? {};
+
+      const studentPayload = {
+        ...studentRaw,
+        adm_no: this.withDefault(studentRaw.adm_no, '1022'),
+        sess_stud_first_name: this.withDefault(studentRaw.sess_stud_first_name, 'Rahul'),
+        sess_stud_last_name: this.withDefault(studentRaw.sess_stud_last_name, 'Ganga'),
+        adm_ssr_no: this.withDefault(studentRaw.adm_ssr_no, 'ssrrno:1022'),
+        adm_stud_mobile_no: this.withDefault(studentRaw.adm_stud_mobile_no, '9978976545'),
+        sess_student_aadhar_no: this.withDefault(studentRaw.sess_student_aadhar_no, '799898912345'),
+        adm_stud_email_ddress: this.withDefault(studentRaw.adm_stud_email_ddress, 'RahulGangadd@outlook.com'),
+        sess_address: this.withDefault(studentRaw.sess_address, 'House 12, Main Street'),
+        sess_pin_code: this.withDefault(studentRaw.sess_pin_code, '10077'),
+        sess_permanent_address: this.withDefault(studentRaw.sess_permanent_address, 'House 12, Main Street'),
+        sess_permanent_pin_code: this.withDefault(studentRaw.sess_permanent_pin_code, '10077')
+      };
+
+      const academicPayload = {
+        ...academicRaw,
+        adm_rollno: this.withDefault(academicRaw.adm_rollno, 'aa122'),
+        sess_roll_no: this.withDefault(academicRaw.sess_roll_no, 'dsew33')
+      };
+
+      const parentsPayload = {
+        ...parentsRaw,
+        sess_father_name: this.withDefault(parentsRaw.sess_father_name, 'ff'),
+        sess_father_mobile_no: this.withDefault(parentsRaw.sess_father_mobile_no, '9989899899'),
+        sess_father_designation_id: this.withDefault(parentsRaw.sess_father_designation_id, 'sds'),
+        sess_father_annual_income: this.withDefault(parentsRaw.sess_father_annual_income, '100000'),
+        sess_father_office_address: this.withDefault(parentsRaw.sess_father_office_address, 'oo'),
+        sess_mother_name: this.withDefault(parentsRaw.sess_mother_name, 'mmm'),
+        sess_mother_mobile_no: this.withDefault(parentsRaw.sess_mother_mobile_no, '9989899899'),
+        sess_mother_designation_id: this.withDefault(parentsRaw.sess_mother_designation_id, 'sds'),
+        sess_mother_annual_income: this.withDefault(parentsRaw.sess_mother_annual_income, '12121'),
+        sess_mother_office_address: this.withDefault(parentsRaw.sess_mother_office_address, 'dvdv'),
+        sess_g1_name: this.withDefault(parentsRaw.sess_g1_name, 'g'),
+        sess_g1_mobile_no: this.withDefault(parentsRaw.sess_g1_mobile_no, '9989899899'),
+        sess_g1_address: this.withDefault(parentsRaw.sess_g1_address, 'AAA'),
+        sess_g2_name: this.withDefault(parentsRaw.sess_g2_name, 'Test'),
+        sess_g2_mobile_no: this.withDefault(parentsRaw.sess_g2_mobile_no, '9978976545'),
+        sess_g2_address: this.withDefault(parentsRaw.sess_g2_address, 'address12'),
+        otherDetails: this.withDefault(parentsRaw.otherDetails, 'SDFFD')
+      };
+
       const selectedMonthIds = (formValue.Transport.months as boolean[])
         .map((isSelected: boolean, index: number) =>
           isSelected ? this.transportMonthsList[index].monthId : null
         )
         .filter((id: number | null): id is number => id !== null);
+      const uploadDocuments = Object.keys(this.selectedDocumentFiles)
+        .map((indexText) => Number(indexText))
+        .filter((index) => Number.isInteger(index) && index >= 0)
+        .map((index) => {
+          const file = this.selectedDocumentFiles[index];
+          const docGroup = this.docsArray.at(index) as FormGroup;
+          const docValue = docGroup.getRawValue() as StudentDocumentRequestDto;
+
+          return {
+            ...docValue,
+            doc_File: file,
+            SavedPath: file.name
+          };
+        });
 
       const model: StudentAdmissionRequestDto = {
-        Student: formValue.Student,
-        Academic: formValue.Academic,
-        Parents: formValue.Parents,
+        Student: studentPayload,
+        Academic: academicPayload,
+        Parents: parentsPayload,
         Transport: {
           ...formValue.Transport,
           months: selectedMonthIds
         } as TransportDto,
         Documents: [],
+        Docs: [],
         Other: formValue.Other,
         Record: formValue.Record,
         CategoryCertificate: formValue.CategoryCertificate
       };
 
       const formData = this.toFormData(model);
-      this.removeFormDataByPrefixes(formData, ['Documents', 'Docs']);
+      this.appendUploadedDocuments(formData, uploadDocuments);
 
       this.studentService.saveStudent(formData).subscribe(response => {
         alert('Student saved successfully');
         this.save.emit(model);
+        Object.keys(this.selectedDocumentFiles).forEach((key) => delete this.selectedDocumentFiles[Number(key)]);
         this.close.emit();
       }, error => {
-        if (error.error && error.error.errors) {
+        if (error?.error?.errors && typeof error.error.errors === 'object') {
           let errorMessage = 'Validation failed:\n';
           for (const key in error.error.errors) {
             errorMessage += `${key}: ${error.error.errors[key].join(', ')}\n`;
@@ -469,7 +553,11 @@ export class StudentDetailComponent {
           console.error('Validation errors:', error.error.errors);
           console.log('Validation log-errors:', error.error.errors);
         } else {
-          alert('Save failed: ' + (error.message || 'Unknown error'));
+          const details = typeof error?.error === 'string'
+            ? error.error
+            : JSON.stringify(error?.error ?? error, null, 2);
+          alert('Save failed:\n' + details);
+          console.error('Save failed response:', error);
         }
       });
     } else {
@@ -478,6 +566,7 @@ export class StudentDetailComponent {
   }
 
   onCancel() {
+    Object.keys(this.selectedDocumentFiles).forEach((key) => delete this.selectedDocumentFiles[Number(key)]);
     this.close.emit();
   }
 }

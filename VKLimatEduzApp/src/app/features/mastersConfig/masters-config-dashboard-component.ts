@@ -7,6 +7,7 @@ import { DataGridComponent } from './Shared/component/data-grid-component/data-g
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators, FormsModule } from '@angular/forms';
 import { MenuLabelService } from '../../shared/services/menu-label.service';
 import { EncryptionService } from '../../shared/services/encryption.service';
+import { MasterConfigsDWN } from '../../shared/services/master-configs-dwn';
 
 
 @Component({

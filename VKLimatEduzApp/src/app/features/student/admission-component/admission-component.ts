@@ -22,7 +22,6 @@ export class AdmissionComponent implements OnInit {
   editIndex: number | null = null;
   searchTerm: string = '';
   showModal = false;
-
   // Hardcoded data for now
   private initialData = [
     {
@@ -304,7 +303,7 @@ export class AdmissionComponent implements OnInit {
     this.gridData.set(this.initialData);
     this.applyFilters();
   }
-
+ keyParam: string = '';
   ngOnInit(): void {
       // Any init logic
       this.studentService.getAdmissions().subscribe({

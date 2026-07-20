@@ -1,12 +1,18 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, effect, inject, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { StudentService } from '../services/student.service';
+import { MASTER_CONFIG_DWN_TYPES, MasterConfigsDWN } from '../../../shared/services/master-configs-dwn';
 import {
   StudentAdmissionRequestDto,
   StudentDocumentRequestDto,
   TransportDto
 } from '../../../models/student-admission.model';
+
+interface DropdownOption {
+  id: number | string;
+  name: string;
+}
 
 @Component({
   selector: 'app-student-detail',
@@ -15,7 +21,7 @@ import {
   templateUrl: './student-detail-component.html',
   styleUrls: ['./student-detail-component.scss']
 })
-export class StudentDetailComponent {
+export class StudentDetailComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<any>();
 
@@ -33,154 +39,53 @@ export class StudentDetailComponent {
   ];
 
   // Dropdown Data
-  branches = [
-    { id: 1, name: 'Main Branch' },
-    { id: 2, name: 'City Branch' },
-    { id: 3, name: 'North Campus' }
-  ];
+  branches: DropdownOption[] = [];
 
-  genders = [
-    { id: 1, name: 'Male' },
-    { id: 2, name: 'Female' },
-    { id: 3, name: 'Other' }
-  ];
+  genders: DropdownOption[] = [];
 
-  bloodGroups = [
-    { id: 1, name: 'A+' },
-    { id: 2, name: 'A-' },
-    { id: 3, name: 'B+' },
-    { id: 4, name: 'B-' },
-    { id: 5, name: 'O+' },
-    { id: 6, name: 'O-' },
-    { id: 7, name: 'AB+' },
-    { id: 8, name: 'AB-' }
-  ];
+  bloodGroups: DropdownOption[] = [];
 
-  religions = [
-    { id: 1, name: 'Hindu' },
-    { id: 2, name: 'Muslim' },
-    { id: 3, name: 'Christian' },
-    { id: 4, name: 'Sikh' },
-    { id: 5, name: 'Jain' },
-    { id: 6, name: 'Buddhist' },
-    { id: 7, name: 'Other' }
-  ];
+  religions: DropdownOption[] = [];
 
-  castes = [
-    { id: 1, name: 'General' },
-    { id: 2, name: 'OBC' },
-    { id: 3, name: 'SC' },
-    { id: 4, name: 'ST' },
-    { id: 5, name: 'Other' }
-  ];
+  castes: DropdownOption[] = [];
 
-  countries = [
-    { id: 1, name: 'India' },
-    { id: 2, name: 'USA' },
-    { id: 3, name: 'UK' }
-  ];
+  countries: DropdownOption[] = [];
 
-  states = [
-    { id: 1, name: 'Delhi' },
-    { id: 2, name: 'Maharashtra' },
-    { id: 3, name: 'Karnataka' }
-  ];
+  states: DropdownOption[] = [];
 
-  cities = [
-    { id: 1, name: 'New Delhi' },
-    { id: 2, name: 'Mumbai' },
-    { id: 3, name: 'Bangalore' }
-  ];
+  cities: DropdownOption[] = [];
 
   // Academic Dropdown Data
-  categories = [
-    { id: 1, name: 'General' },
-    { id: 2, name: 'OBC' },
-    { id: 3, name: 'SC/ST' }
-  ];
+  categories: DropdownOption[] = [];
 
-  groups = [
-    { id: 1, name: 'Science' },
-    { id: 2, name: 'Commerce' },
-    { id: 3, name: 'Arts' }
-  ];
+  groups: DropdownOption[] = [];
 
-  streams = [
-    { id: 1, name: 'PCM' },
-    { id: 2, name: 'PCB' },
-    { id: 3, name: 'Commerce with Maths' }
-  ];
+  streams: DropdownOption[] = [];
 
-  classes = [
-    { id: 1, name: 'Class 1' },
-    { id: 2, name: 'Class 2' },
-    { id: 3, name: 'Class 3' },
-    { id: 4, name: 'Class 4' },
-    { id: 5, name: 'Class 5' }
-  ];
+  classes: DropdownOption[] = [];
 
-  sections = [
-    { id: 1, name: 'A' },
-    { id: 2, name: 'B' },
-    { id: 3, name: 'C' }
-  ];
+  sections: DropdownOption[] = [];
 
-  concessions = [
-    { id: 1, name: 'None' },
-    { id: 2, name: 'Sibling' },
-    { id: 3, name: 'Staff' }
-  ];
+  concessions: DropdownOption[] = [];
 
-  feeGroups = [
-    { id: 1, name: 'Regular' },
-    { id: 2, name: 'Scholarship' }
-  ];
+  feeGroups: DropdownOption[] = [];
 
-  qualifications = [
-    { id: 1, name: 'Graduate' },
-    { id: 2, name: 'Post Graduate' },
-    { id: 3, name: 'Doctorate' },
-    { id: 4, name: 'Other' }
-  ];
+  qualifications: DropdownOption[] = [];
 
-  occupations = [
-    { id: 1, name: 'Service' },
-    { id: 2, name: 'Business' },
-    { id: 3, name: 'Self Employed' },
-    { id: 4, name: 'Other' }
-  ];
+  occupations: DropdownOption[] = [];
 
   // Transport Dropdown Data
-  transportModes = [
-    { id: 1, name: 'Own' },
-    { id: 2, name: 'School Transport' }
-  ];
+  transportModes: DropdownOption[] = [];
 
-  pickDropOptions = [
-    { id: 1, name: 'Both' },
-    { id: 2, name: 'Pick Only' },
-    { id: 3, name: 'Drop Only' }
-  ];
+  pickDropOptions: DropdownOption[] = [];
 
-  transportAreas = [
-    { id: 1, name: 'Area 1' },
-    { id: 2, name: 'Area 2' }
-  ];
+  transportAreas: DropdownOption[] = [];
 
-  transportStands = [
-    { id: 1, name: 'Stand 1' },
-    { id: 2, name: 'Stand 2' }
-  ];
+  transportStands: DropdownOption[] = [];
 
-  transportRoutes = [
-    { id: 1, name: 'Route 1' },
-    { id: 2, name: 'Route 2' }
-  ];
+  transportRoutes: DropdownOption[] = [];
 
-  transportDrivers = [
-    { id: 1, name: 'Driver 1' },
-    { id: 2, name: 'Driver 2' }
-  ];
+  transportDrivers: DropdownOption[] = [];
 
   transportMonthsList = [
     { label: 'Apr', monthId: 4 },
@@ -214,6 +119,8 @@ export class StudentDetailComponent {
   private readonly selectedDocumentFiles: Record<number, File> = {};
 
   private readonly studentService = inject(StudentService);
+  private readonly masterConfigsDWN = inject(MasterConfigsDWN);
+  private readonly masterConfigDwnTypes = MASTER_CONFIG_DWN_TYPES;
 
   constructor(private fb: FormBuilder) {
     this.studentForm = this.fb.group({
@@ -226,6 +133,129 @@ export class StudentDetailComponent {
       Record: this.fb.group({}),
       CategoryCertificate: this.fb.group({})
     });
+
+    effect(() => {
+      const dwnList = this.masterConfigsDWN.masterConfigDwnList();
+      if (!Array.isArray(dwnList) || dwnList.length === 0) {
+        return;
+      }
+
+      this.bindMasterDropdowns(dwnList);
+    });
+  }
+
+  ngOnInit(): void {
+    this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
+  }
+
+  private bindMasterDropdowns(rawMasterItems: unknown[]): void {
+    console.log('Binding master dropdowns with raw items:', rawMasterItems);
+    this.branches = this.getMasterOptions(rawMasterItems, ['Branch'], this.branches);
+    this.genders = this.getMasterOptions(rawMasterItems, ['Gender'], this.genders);
+    this.bloodGroups = this.getMasterOptions(rawMasterItems, ['BloodGroup'], this.bloodGroups);
+    this.religions = this.getMasterOptions(rawMasterItems, ['Religion'], this.religions);
+    this.castes = this.getMasterOptions(rawMasterItems, ['Caste', 'CasteCategory'], this.castes);
+    this.countries = this.getMasterOptions(rawMasterItems, ['Country'], this.countries);
+    this.states = this.getMasterOptions(rawMasterItems, ['State'], this.states);
+    this.cities = this.getMasterOptions(rawMasterItems, ['City'], this.cities);
+    this.categories = this.getMasterOptions(rawMasterItems, ['AdmissionCategory'], this.categories);
+    this.groups = this.getMasterOptions(rawMasterItems, ['ExamClassGroup', 'ClassGroup'], this.groups);
+    this.streams = this.getMasterOptions(rawMasterItems, ['STREAM'], this.streams);
+    this.classes = this.getMasterOptions(rawMasterItems, ['ClassGroup'], this.classes);
+    this.sections = this.getMasterOptions(rawMasterItems, ['Section'], this.sections);
+    this.concessions = this.getMasterOptions(rawMasterItems, ['ConcCategory'], this.concessions);
+    this.feeGroups = this.getMasterOptions(rawMasterItems, ['feeGroup'], this.feeGroups);
+    this.qualifications = this.getMasterOptions(rawMasterItems, ['Qualification'], this.qualifications);
+    this.occupations = this.getMasterOptions(rawMasterItems, ['Occupation', 'Occuption'], this.occupations);
+    this.transportAreas = this.getMasterOptions(rawMasterItems, ['Zone', 'Location'], this.transportAreas);
+    this.transportStands = this.getMasterOptions(rawMasterItems, ['BusStop'], this.transportStands);
+    this.transportRoutes = this.getMasterOptions(rawMasterItems, ['ROUTE'], this.transportRoutes);
+    this.transportModes= this.getMasterOptions(rawMasterItems, ['TransportMode'], this.transportModes);
+    this.pickDropOptions = this.getMasterOptions(rawMasterItems, ['PickDrop'], this.pickDropOptions);
+  }
+
+  private getMasterOptions(
+    rawItems: unknown[],
+    configurations: string[],
+    fallback: DropdownOption[]
+  ): DropdownOption[] {
+    const matches = rawItems
+      .filter((item) => this.matchesConfiguration(item, configurations))
+      .map((item, index) => this.toDropdownOption(item, index))
+      .filter((option): option is DropdownOption => !!option);
+
+    return matches.length > 0 ? matches : fallback;
+  }
+
+  private matchesConfiguration(item: unknown, configurations: string[]): boolean {
+    if (!item || typeof item !== 'object') {
+      return false;
+    }
+
+    const record = item as Record<string, unknown>;
+    const rawConfiguration =
+      record['configuration'] ??
+      record['Configuration'] ??
+      record['configurationName'] ??
+      record['config_name'] ??
+      record['configType'] ??
+      record['type'];
+
+    if (typeof rawConfiguration !== 'string') {
+      return false;
+    }
+
+    const normalized = this.normalizeKey(rawConfiguration);
+    return configurations.some((config) => {
+      const normalizedConfig = this.normalizeKey(config);
+      return (
+        normalizedConfig === normalized ||
+        normalized.includes(normalizedConfig) ||
+        normalizedConfig.includes(normalized)
+      );
+    });
+  }
+
+  private normalizeKey(value: string): string {
+    return value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+
+  private toDropdownOption(item: unknown, index: number): DropdownOption | null {
+    if (!item || typeof item !== 'object') {
+      return null;
+    }
+
+    const record = item as Record<string, unknown>;
+    const displayName =
+      this.asNonEmptyString(record['configValue']) ??
+      this.asNonEmptyString(record['description']) ??
+      this.asNonEmptyString(record['name']) ??
+      this.asNonEmptyString(record['label']);
+
+    if (!displayName) {
+      return null;
+    }
+
+    const idValue =
+      record['id'] ??
+      record['configKey'] ??
+      record['key'] ??
+      record['value'] ??
+      index + 1;
+
+    return {
+      id: typeof idValue === 'number' || typeof idValue === 'string' ? idValue : index + 1,
+      name: displayName
+    };
+  }
+
+  private asNonEmptyString(value: unknown): string | null {
+    if (value === null || value === undefined) {
+      return null;
+    }
+
+    const text = String(value).trim();
+    return text.length > 0 ? text : null;
   }
 
   get docsArray(): FormArray {

@@ -21,7 +21,7 @@ export class MastersConfig {
     }
     return (response ?? null) as T | null;
   }
-
+  
   fetchMasterConfig(configuration: string) {
     const state = this.appState.userState();
     const { academicId } = state;

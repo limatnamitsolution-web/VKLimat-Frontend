@@ -1,8 +1,9 @@
-import { Component, EventEmitter, OnInit, effect, inject, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, effect, inject, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { StudentService } from '../services/student.service';
 import { MASTER_CONFIG_DWN_TYPES, MasterConfigsDWN } from '../../../shared/services/master-configs-dwn';
+import { LoaderService } from '../../../shared/services/loader.service';
 import {
   StudentAdmissionRequestDto,
   StudentDocumentRequestDto,
@@ -12,6 +13,32 @@ import {
 interface DropdownOption {
   id: number | string;
   name: string;
+}
+
+interface MasterDropdownData {
+  branches: DropdownOption[];
+  genders: DropdownOption[];
+  bloodGroups: DropdownOption[];
+  religions: DropdownOption[];
+  castes: DropdownOption[];
+  countries: DropdownOption[];
+  states: DropdownOption[];
+  cities: DropdownOption[];
+  categories: DropdownOption[];
+  groups: DropdownOption[];
+  streams: DropdownOption[];
+  classes: DropdownOption[];
+  sections: DropdownOption[];
+  concessions: DropdownOption[];
+  feeGroups: DropdownOption[];
+  qualifications: DropdownOption[];
+  occupations: DropdownOption[];
+  transportModes: DropdownOption[];
+  pickDropOptions: DropdownOption[];
+  transportAreas: DropdownOption[];
+  transportStands: DropdownOption[];
+  transportRoutes: DropdownOption[];
+  transportDrivers: DropdownOption[];
 }
 
 @Component({
@@ -39,53 +66,55 @@ export class StudentDetailComponent implements OnInit {
   ];
 
   // Dropdown Data
-  branches: DropdownOption[] = [];
+  masterData = signal<MasterDropdownData>({
+    branches: [],
+    genders: [],
+    bloodGroups: [],
+    religions: [],
+    castes: [],
+    countries: [],
+    states: [],
+    cities: [],
+    categories: [],
+    groups: [],
+    streams: [],
+    classes: [],
+    sections: [],
+    concessions: [],
+    feeGroups: [],
+    qualifications: [],
+    occupations: [],
+    transportModes: [],
+    pickDropOptions: [],
+    transportAreas: [],
+    transportStands: [],
+    transportRoutes: [],
+    transportDrivers: []
+  });
 
-  genders: DropdownOption[] = [];
-
-  bloodGroups: DropdownOption[] = [];
-
-  religions: DropdownOption[] = [];
-
-  castes: DropdownOption[] = [];
-
-  countries: DropdownOption[] = [];
-
-  states: DropdownOption[] = [];
-
-  cities: DropdownOption[] = [];
-
-  // Academic Dropdown Data
-  categories: DropdownOption[] = [];
-
-  groups: DropdownOption[] = [];
-
-  streams: DropdownOption[] = [];
-
-  classes: DropdownOption[] = [];
-
-  sections: DropdownOption[] = [];
-
-  concessions: DropdownOption[] = [];
-
-  feeGroups: DropdownOption[] = [];
-
-  qualifications: DropdownOption[] = [];
-
-  occupations: DropdownOption[] = [];
-
-  // Transport Dropdown Data
-  transportModes: DropdownOption[] = [];
-
-  pickDropOptions: DropdownOption[] = [];
-
-  transportAreas: DropdownOption[] = [];
-
-  transportStands: DropdownOption[] = [];
-
-  transportRoutes: DropdownOption[] = [];
-
-  transportDrivers: DropdownOption[] = [];
+  get branches(): DropdownOption[] { return this.masterData().branches; }
+  get genders(): DropdownOption[] { return this.masterData().genders; }
+  get bloodGroups(): DropdownOption[] { return this.masterData().bloodGroups; }
+  get religions(): DropdownOption[] { return this.masterData().religions; }
+  get castes(): DropdownOption[] { return this.masterData().castes; }
+  get countries(): DropdownOption[] { return this.masterData().countries; }
+  get states(): DropdownOption[] { return this.masterData().states; }
+  get cities(): DropdownOption[] { return this.masterData().cities; }
+  get categories(): DropdownOption[] { return this.masterData().categories; }
+  get groups(): DropdownOption[] { return this.masterData().groups; }
+  get streams(): DropdownOption[] { return this.masterData().streams; }
+  get classes(): DropdownOption[] { return this.masterData().classes; }
+  get sections(): DropdownOption[] { return this.masterData().sections; }
+  get concessions(): DropdownOption[] { return this.masterData().concessions; }
+  get feeGroups(): DropdownOption[] { return this.masterData().feeGroups; }
+  get qualifications(): DropdownOption[] { return this.masterData().qualifications; }
+  get occupations(): DropdownOption[] { return this.masterData().occupations; }
+  get transportModes(): DropdownOption[] { return this.masterData().transportModes; }
+  get pickDropOptions(): DropdownOption[] { return this.masterData().pickDropOptions; }
+  get transportAreas(): DropdownOption[] { return this.masterData().transportAreas; }
+  get transportStands(): DropdownOption[] { return this.masterData().transportStands; }
+  get transportRoutes(): DropdownOption[] { return this.masterData().transportRoutes; }
+  get transportDrivers(): DropdownOption[] { return this.masterData().transportDrivers; }
 
   transportMonthsList = [
     { label: 'Apr', monthId: 4 },
@@ -120,9 +149,13 @@ export class StudentDetailComponent implements OnInit {
 
   private readonly studentService = inject(StudentService);
   private readonly masterConfigsDWN = inject(MasterConfigsDWN);
+  private readonly loaderService = inject(LoaderService);
   private readonly masterConfigDwnTypes = MASTER_CONFIG_DWN_TYPES;
+  private isDropdownLoadPending = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder
+  ) {
     this.studentForm = this.fb.group({
       Student: this.createStudentGroup(),
       Academic: this.createAcademicGroup(),
@@ -136,7 +169,7 @@ export class StudentDetailComponent implements OnInit {
 
     effect(() => {
       const dwnList = this.masterConfigsDWN.masterConfigDwnList();
-      if (!Array.isArray(dwnList) || dwnList.length === 0) {
+      if (!this.isDropdownLoadPending || !Array.isArray(dwnList)) {
         return;
       }
 
@@ -145,75 +178,91 @@ export class StudentDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isDropdownLoadPending = true;
+    this.loaderService.show();
     this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
   }
 
   private bindMasterDropdowns(rawMasterItems: unknown[]): void {
-    console.log('Binding master dropdowns with raw items:', rawMasterItems);
-    this.branches = this.getMasterOptions(rawMasterItems, ['Branch'], this.branches);
-    this.genders = this.getMasterOptions(rawMasterItems, ['Gender'], this.genders);
-    this.bloodGroups = this.getMasterOptions(rawMasterItems, ['BloodGroup'], this.bloodGroups);
-    this.religions = this.getMasterOptions(rawMasterItems, ['Religion'], this.religions);
-    this.castes = this.getMasterOptions(rawMasterItems, ['Caste', 'CasteCategory'], this.castes);
-    this.countries = this.getMasterOptions(rawMasterItems, ['Country'], this.countries);
-    this.states = this.getMasterOptions(rawMasterItems, ['State'], this.states);
-    this.cities = this.getMasterOptions(rawMasterItems, ['City'], this.cities);
-    this.categories = this.getMasterOptions(rawMasterItems, ['AdmissionCategory'], this.categories);
-    this.groups = this.getMasterOptions(rawMasterItems, ['ExamClassGroup', 'ClassGroup'], this.groups);
-    this.streams = this.getMasterOptions(rawMasterItems, ['STREAM'], this.streams);
-    this.classes = this.getMasterOptions(rawMasterItems, ['ClassGroup'], this.classes);
-    this.sections = this.getMasterOptions(rawMasterItems, ['Section'], this.sections);
-    this.concessions = this.getMasterOptions(rawMasterItems, ['ConcCategory'], this.concessions);
-    this.feeGroups = this.getMasterOptions(rawMasterItems, ['feeGroup'], this.feeGroups);
-    this.qualifications = this.getMasterOptions(rawMasterItems, ['Qualification'], this.qualifications);
-    this.occupations = this.getMasterOptions(rawMasterItems, ['Occupation', 'Occuption'], this.occupations);
-    this.transportAreas = this.getMasterOptions(rawMasterItems, ['Zone', 'Location'], this.transportAreas);
-    this.transportStands = this.getMasterOptions(rawMasterItems, ['BusStop'], this.transportStands);
-    this.transportRoutes = this.getMasterOptions(rawMasterItems, ['ROUTE'], this.transportRoutes);
-    this.transportModes= this.getMasterOptions(rawMasterItems, ['TransportMode'], this.transportModes);
-    this.pickDropOptions = this.getMasterOptions(rawMasterItems, ['PickDrop'], this.pickDropOptions);
+    try {
+      const optionsMap = this.buildDropdownMap(rawMasterItems);
+      const current = this.masterData();
+
+      this.masterData.set({
+        branches: this.getDropdownOptions(optionsMap, ['branch'], current.branches),
+        genders: this.getDropdownOptions(optionsMap, ['gender'], current.genders),
+        bloodGroups: this.getDropdownOptions(optionsMap, ['bloodgroup'], current.bloodGroups),
+        religions: this.getDropdownOptions(optionsMap, ['religion'], current.religions),
+        castes: this.getDropdownOptions(optionsMap, ['caste', 'castecategory'], current.castes),
+        countries: this.getDropdownOptions(optionsMap, ['country'], current.countries),
+        states: this.getDropdownOptions(optionsMap, ['state'], current.states),
+        cities: this.getDropdownOptions(optionsMap, ['city'], current.cities),
+        categories: this.getDropdownOptions(optionsMap, ['admissioncategory'], current.categories),
+        groups: this.getDropdownOptions(optionsMap, ['examclassgroup', 'classgroup'], current.groups),
+        streams: this.getDropdownOptions(optionsMap, ['stream'], current.streams),
+        classes: this.getDropdownOptions(optionsMap, ['classgroup'], current.classes),
+        sections: this.getDropdownOptions(optionsMap, ['section'], current.sections),
+        concessions: this.getDropdownOptions(optionsMap, ['conccategory'], current.concessions),
+        feeGroups: this.getDropdownOptions(optionsMap, ['feegroup'], current.feeGroups),
+        qualifications: this.getDropdownOptions(optionsMap, ['qualification'], current.qualifications),
+        occupations: this.getDropdownOptions(optionsMap, ['occupation', 'occuption'], current.occupations),
+        transportAreas: this.getDropdownOptions(optionsMap, ['zone', 'location'], current.transportAreas),
+        transportStands: this.getDropdownOptions(optionsMap, ['busstop'], current.transportStands),
+        transportRoutes: this.getDropdownOptions(optionsMap, ['route'], current.transportRoutes),
+        transportModes: this.getDropdownOptions(optionsMap, ['transportmode'], current.transportModes),
+        pickDropOptions: this.getDropdownOptions(optionsMap, ['pickdrop'], current.pickDropOptions),
+        transportDrivers: this.getDropdownOptions(optionsMap, ['driver', 'transportdriver', 'busdriver'], current.transportDrivers)
+      });
+    } finally {
+      this.isDropdownLoadPending = false;
+      this.loaderService.hide();
+    }
   }
 
-  private getMasterOptions(
-    rawItems: unknown[],
-    configurations: string[],
+  private buildDropdownMap(rawItems: unknown[]): Map<string, DropdownOption[]> {
+    const map = new Map<string, DropdownOption[]>();
+    let index = 0;
+
+    for (const item of rawItems) {
+      if (!item || typeof item !== 'object') {
+        continue;
+      }
+
+      const record = item as Record<string, unknown>;
+      const rawConfiguration =
+        record['configuration'] ??
+        record['Configuration'] ??
+        record['configurationName'] ??
+        record['config_name'] ??
+        record['configType'] ??
+        record['type'];
+
+      if (typeof rawConfiguration !== 'string') {
+        continue;
+      }
+
+      const option = this.toDropdownOption(item, index);
+      index += 1;
+      if (!option) {
+        continue;
+      }
+
+      const normalizedConfiguration = this.normalizeKey(rawConfiguration);
+      const list = map.get(normalizedConfiguration) ?? [];
+      list.push(option);
+      map.set(normalizedConfiguration, list);
+    }
+
+    return map;
+  }
+
+  private getDropdownOptions(
+    optionsMap: Map<string, DropdownOption[]>,
+    aliases: string[],
     fallback: DropdownOption[]
   ): DropdownOption[] {
-    const matches = rawItems
-      .filter((item) => this.matchesConfiguration(item, configurations))
-      .map((item, index) => this.toDropdownOption(item, index))
-      .filter((option): option is DropdownOption => !!option);
-
-    return matches.length > 0 ? matches : fallback;
-  }
-
-  private matchesConfiguration(item: unknown, configurations: string[]): boolean {
-    if (!item || typeof item !== 'object') {
-      return false;
-    }
-
-    const record = item as Record<string, unknown>;
-    const rawConfiguration =
-      record['configuration'] ??
-      record['Configuration'] ??
-      record['configurationName'] ??
-      record['config_name'] ??
-      record['configType'] ??
-      record['type'];
-
-    if (typeof rawConfiguration !== 'string') {
-      return false;
-    }
-
-    const normalized = this.normalizeKey(rawConfiguration);
-    return configurations.some((config) => {
-      const normalizedConfig = this.normalizeKey(config);
-      return (
-        normalizedConfig === normalized ||
-        normalized.includes(normalizedConfig) ||
-        normalizedConfig.includes(normalized)
-      );
-    });
+    const matched = aliases.flatMap((alias) => optionsMap.get(this.normalizeKey(alias)) ?? []);
+    return matched.length > 0 ? matched : fallback;
   }
 
   private normalizeKey(value: string): string {
@@ -269,7 +318,7 @@ export class StudentDetailComponent implements OnInit {
   createStudentGroup(): FormGroup {
     return this.fb.group({
       adm_branch_Id: [1],
-      adm_no: ['1022', Validators.required],
+      adm_no: ['1001-1', Validators.required],
       adm_date: ['2026-07-14'],
       adm_doj: ['2026-07-14'],
       sess_stud_first_name: ['Rahul', Validators.required],
@@ -472,13 +521,26 @@ export class StudentDetailComponent implements OnInit {
     }
   }
 
-  private withDefault(value: unknown, fallback: string): string {
-    if (value === null || value === undefined) {
-      return fallback;
-    }
+  private applyStringDefaults<T extends Record<string, unknown>>(
+    source: T,
+    defaults: Record<string, string>
+  ): T {
+    const normalized: Record<string, unknown> = { ...source };
 
-    const text = String(value).trim();
-    return text.length > 0 ? text : fallback;
+    Object.entries(defaults).forEach(([key, fallback]) => {
+      const currentValue = normalized[key];
+      if (currentValue === null || currentValue === undefined) {
+        normalized[key] = fallback;
+        return;
+      }
+
+      const text = String(currentValue).trim();
+      if (text.length === 0) {
+        normalized[key] = fallback;
+      }
+    });
+
+    return normalized as T;
   }
 
   onSubmit(): void {
@@ -488,47 +550,44 @@ export class StudentDetailComponent implements OnInit {
       const academicRaw = formValue.Academic ?? {};
       const parentsRaw = formValue.Parents ?? {};
 
-      const studentPayload = {
-        ...studentRaw,
-        adm_no: this.withDefault(studentRaw.adm_no, '1022'),
-        sess_stud_first_name: this.withDefault(studentRaw.sess_stud_first_name, 'Rahul'),
-        sess_stud_last_name: this.withDefault(studentRaw.sess_stud_last_name, 'Ganga'),
-        adm_ssr_no: this.withDefault(studentRaw.adm_ssr_no, 'ssrrno:1022'),
-        adm_stud_mobile_no: this.withDefault(studentRaw.adm_stud_mobile_no, '9978976545'),
-        sess_student_aadhar_no: this.withDefault(studentRaw.sess_student_aadhar_no, '799898912345'),
-        adm_stud_email_ddress: this.withDefault(studentRaw.adm_stud_email_ddress, 'RahulGangadd@outlook.com'),
-        sess_address: this.withDefault(studentRaw.sess_address, 'House 12, Main Street'),
-        sess_pin_code: this.withDefault(studentRaw.sess_pin_code, '10077'),
-        sess_permanent_address: this.withDefault(studentRaw.sess_permanent_address, 'House 12, Main Street'),
-        sess_permanent_pin_code: this.withDefault(studentRaw.sess_permanent_pin_code, '10077')
-      };
+      const studentPayload = this.applyStringDefaults(studentRaw, {
+        adm_no: '1022',
+        sess_stud_first_name: 'Rahul',
+        sess_stud_last_name: 'Ganga',
+        adm_ssr_no: 'ssrrno:1022',
+        adm_stud_mobile_no: '9978976545',
+        sess_student_aadhar_no: '799898912345',
+        adm_stud_email_ddress: 'RahulGangadd@outlook.com',
+        sess_address: 'House 12, Main Street',
+        sess_pin_code: '10077',
+        sess_permanent_address: 'House 12, Main Street',
+        sess_permanent_pin_code: '10077'
+      });
 
-      const academicPayload = {
-        ...academicRaw,
-        adm_rollno: this.withDefault(academicRaw.adm_rollno, 'aa122'),
-        sess_roll_no: this.withDefault(academicRaw.sess_roll_no, 'dsew33')
-      };
+      const academicPayload = this.applyStringDefaults(academicRaw, {
+        adm_rollno: 'aa122',
+        sess_roll_no: 'dsew33'
+      });
 
-      const parentsPayload = {
-        ...parentsRaw,
-        sess_father_name: this.withDefault(parentsRaw.sess_father_name, 'ff'),
-        sess_father_mobile_no: this.withDefault(parentsRaw.sess_father_mobile_no, '9989899899'),
-        sess_father_designation_id: this.withDefault(parentsRaw.sess_father_designation_id, 'sds'),
-        sess_father_annual_income: this.withDefault(parentsRaw.sess_father_annual_income, '100000'),
-        sess_father_office_address: this.withDefault(parentsRaw.sess_father_office_address, 'oo'),
-        sess_mother_name: this.withDefault(parentsRaw.sess_mother_name, 'mmm'),
-        sess_mother_mobile_no: this.withDefault(parentsRaw.sess_mother_mobile_no, '9989899899'),
-        sess_mother_designation_id: this.withDefault(parentsRaw.sess_mother_designation_id, 'sds'),
-        sess_mother_annual_income: this.withDefault(parentsRaw.sess_mother_annual_income, '12121'),
-        sess_mother_office_address: this.withDefault(parentsRaw.sess_mother_office_address, 'dvdv'),
-        sess_g1_name: this.withDefault(parentsRaw.sess_g1_name, 'g'),
-        sess_g1_mobile_no: this.withDefault(parentsRaw.sess_g1_mobile_no, '9989899899'),
-        sess_g1_address: this.withDefault(parentsRaw.sess_g1_address, 'AAA'),
-        sess_g2_name: this.withDefault(parentsRaw.sess_g2_name, 'Test'),
-        sess_g2_mobile_no: this.withDefault(parentsRaw.sess_g2_mobile_no, '9978976545'),
-        sess_g2_address: this.withDefault(parentsRaw.sess_g2_address, 'address12'),
-        otherDetails: this.withDefault(parentsRaw.otherDetails, 'SDFFD')
-      };
+      const parentsPayload = this.applyStringDefaults(parentsRaw, {
+        sess_father_name: 'ff',
+        sess_father_mobile_no: '9989899899',
+        sess_father_designation_id: 'sds',
+        sess_father_annual_income: '100000',
+        sess_father_office_address: 'oo',
+        sess_mother_name: 'mmm',
+        sess_mother_mobile_no: '9989899899',
+        sess_mother_designation_id: 'sds',
+        sess_mother_annual_income: '12121',
+        sess_mother_office_address: 'dvdv',
+        sess_g1_name: 'g',
+        sess_g1_mobile_no: '9989899899',
+        sess_g1_address: 'AAA',
+        sess_g2_name: 'Test',
+        sess_g2_mobile_no: '9978976545',
+        sess_g2_address: 'address12',
+        otherDetails: 'SDFFD'
+      });
 
       const selectedMonthIds = (formValue.Transport.months as boolean[])
         .map((isSelected: boolean, index: number) =>

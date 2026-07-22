@@ -185,126 +185,150 @@ export class StudentDetailComponent implements OnInit {
 
   private bindMasterDropdowns(rawMasterItems: unknown[]): void {
     try {
-      const optionsMap = this.buildDropdownMap(rawMasterItems);
       const current = this.masterData();
+      const next: MasterDropdownData = {
+        branches: [...current.branches],
+        genders: [...current.genders],
+        bloodGroups: [...current.bloodGroups],
+        religions: [...current.religions],
+        castes: [...current.castes],
+        countries: [...current.countries],
+        states: [...current.states],
+        cities: [...current.cities],
+        categories: [...current.categories],
+        groups: [...current.groups],
+        streams: [...current.streams],
+        classes: [...current.classes],
+        sections: [...current.sections],
+        concessions: [...current.concessions],
+        feeGroups: [...current.feeGroups],
+        qualifications: [...current.qualifications],
+        occupations: [...current.occupations],
+        transportModes: [...current.transportModes],
+        pickDropOptions: [...current.pickDropOptions],
+        transportAreas: [...current.transportAreas],
+        transportStands: [...current.transportStands],
+        transportRoutes: [...current.transportRoutes],
+        transportDrivers: [...current.transportDrivers]
+      };
+      let generatedId = 1;
 
-      this.masterData.set({
-        branches: this.getDropdownOptions(optionsMap, ['branch'], current.branches),
-        genders: this.getDropdownOptions(optionsMap, ['gender'], current.genders),
-        bloodGroups: this.getDropdownOptions(optionsMap, ['bloodgroup'], current.bloodGroups),
-        religions: this.getDropdownOptions(optionsMap, ['religion'], current.religions),
-        castes: this.getDropdownOptions(optionsMap, ['caste', 'castecategory'], current.castes),
-        countries: this.getDropdownOptions(optionsMap, ['country'], current.countries),
-        states: this.getDropdownOptions(optionsMap, ['state'], current.states),
-        cities: this.getDropdownOptions(optionsMap, ['city'], current.cities),
-        categories: this.getDropdownOptions(optionsMap, ['admissioncategory'], current.categories),
-        groups: this.getDropdownOptions(optionsMap, ['examclassgroup', 'classgroup'], current.groups),
-        streams: this.getDropdownOptions(optionsMap, ['stream'], current.streams),
-        classes: this.getDropdownOptions(optionsMap, ['classgroup'], current.classes),
-        sections: this.getDropdownOptions(optionsMap, ['section'], current.sections),
-        concessions: this.getDropdownOptions(optionsMap, ['conccategory'], current.concessions),
-        feeGroups: this.getDropdownOptions(optionsMap, ['feegroup'], current.feeGroups),
-        qualifications: this.getDropdownOptions(optionsMap, ['qualification'], current.qualifications),
-        occupations: this.getDropdownOptions(optionsMap, ['occupation', 'occuption'], current.occupations),
-        transportAreas: this.getDropdownOptions(optionsMap, ['zone', 'location'], current.transportAreas),
-        transportStands: this.getDropdownOptions(optionsMap, ['busstop'], current.transportStands),
-        transportRoutes: this.getDropdownOptions(optionsMap, ['route'], current.transportRoutes),
-        transportModes: this.getDropdownOptions(optionsMap, ['transportmode'], current.transportModes),
-        pickDropOptions: this.getDropdownOptions(optionsMap, ['pickdrop'], current.pickDropOptions),
-        transportDrivers: this.getDropdownOptions(optionsMap, ['driver', 'transportdriver', 'busdriver'], current.transportDrivers)
-      });
+      for (const item of rawMasterItems) {
+        if (!item || typeof item !== 'object') {
+          continue;
+        }
+
+        const record = item as Record<string, unknown>;
+        const rawType = record['type'];
+        const type = typeof rawType === 'string' ? rawType.trim().toLowerCase() : '';
+        if (!type) {
+          continue;
+        }
+
+        const rawName = record['name'];
+        const name = typeof rawName === 'string' ? rawName.trim() : '';
+        if (!name) {
+          continue;
+        }
+
+        const idValue =
+          record['id'] ??
+          record['configKey'] ??
+          record['key'] ??
+          record['value'] ??
+          generatedId;
+        const option: DropdownOption = {
+          id: typeof idValue === 'number' || typeof idValue === 'string' ? idValue : generatedId,
+          name
+        };
+        generatedId += 1;
+
+        switch (type) {
+          case 'branch':
+            next.branches.push(option);
+            break;
+          case 'gender':
+            next.genders.push(option);
+            break;
+          case 'bloodgroup':
+            next.bloodGroups.push(option);
+            break;
+          case 'religion':
+            next.religions.push(option);
+            break;
+          case 'caste':
+          case 'castecategory':
+            next.castes.push(option);
+            break;
+          case 'country':
+            next.countries.push(option);
+            break;
+          case 'state':
+            next.states.push(option);
+            break;
+          case 'city':
+            next.cities.push(option);
+            break;
+          case 'admissioncategory':
+            next.categories.push(option);
+            break;
+          case 'examclassgroup':
+            next.groups.push(option);
+            break;
+          case 'classgroup':
+            next.groups.push(option);
+            next.classes.push(option);
+            break;
+          case 'stream':
+            next.streams.push(option);
+            break;
+          case 'section':
+            next.sections.push(option);
+            break;
+          case 'conccategory':
+            next.concessions.push(option);
+            break;
+          case 'feegroup':
+            next.feeGroups.push(option);
+            break;
+          case 'qualification':
+            next.qualifications.push(option);
+            break;
+          case 'occupation':
+          case 'occuption':
+            next.occupations.push(option);
+            break;
+          case 'zone':
+          case 'location':
+            next.transportAreas.push(option);
+            break;
+          case 'busstop':
+            next.transportStands.push(option);
+            break;
+          case 'route':
+            next.transportRoutes.push(option);
+            break;
+          case 'transportmode':
+            next.transportModes.push(option);
+            break;
+          case 'pickdrop':
+            next.pickDropOptions.push(option);
+            break;
+          case 'driver':
+          case 'transportdriver':
+          case 'busdriver':
+            next.transportDrivers.push(option);
+            break;
+          default:
+            break;
+        }
+      }
+
+      this.masterData.set(next);
     } finally {
       this.isDropdownLoadPending = false;
       this.loaderService.hide();
     }
-  }
-
-  private buildDropdownMap(rawItems: unknown[]): Map<string, DropdownOption[]> {
-    const map = new Map<string, DropdownOption[]>();
-    let index = 0;
-
-    for (const item of rawItems) {
-      if (!item || typeof item !== 'object') {
-        continue;
-      }
-
-      const record = item as Record<string, unknown>;
-      const rawConfiguration =
-        record['configuration'] ??
-        record['Configuration'] ??
-        record['configurationName'] ??
-        record['config_name'] ??
-        record['configType'] ??
-        record['type'];
-
-      if (typeof rawConfiguration !== 'string') {
-        continue;
-      }
-
-      const option = this.toDropdownOption(item, index);
-      index += 1;
-      if (!option) {
-        continue;
-      }
-
-      const normalizedConfiguration = this.normalizeKey(rawConfiguration);
-      const list = map.get(normalizedConfiguration) ?? [];
-      list.push(option);
-      map.set(normalizedConfiguration, list);
-    }
-
-    return map;
-  }
-
-  private getDropdownOptions(
-    optionsMap: Map<string, DropdownOption[]>,
-    aliases: string[],
-    fallback: DropdownOption[]
-  ): DropdownOption[] {
-    const matched = aliases.flatMap((alias) => optionsMap.get(this.normalizeKey(alias)) ?? []);
-    return matched.length > 0 ? matched : fallback;
-  }
-
-  private normalizeKey(value: string): string {
-    return value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-  }
-
-  private toDropdownOption(item: unknown, index: number): DropdownOption | null {
-    if (!item || typeof item !== 'object') {
-      return null;
-    }
-
-    const record = item as Record<string, unknown>;
-    const displayName =
-      this.asNonEmptyString(record['configValue']) ??
-      this.asNonEmptyString(record['description']) ??
-      this.asNonEmptyString(record['name']) ??
-      this.asNonEmptyString(record['label']);
-
-    if (!displayName) {
-      return null;
-    }
-
-    const idValue =
-      record['id'] ??
-      record['configKey'] ??
-      record['key'] ??
-      record['value'] ??
-      index + 1;
-
-    return {
-      id: typeof idValue === 'number' || typeof idValue === 'string' ? idValue : index + 1,
-      name: displayName
-    };
-  }
-
-  private asNonEmptyString(value: unknown): string | null {
-    if (value === null || value === undefined) {
-      return null;
-    }
-
-    const text = String(value).trim();
-    return text.length > 0 ? text : null;
   }
 
   get docsArray(): FormArray {

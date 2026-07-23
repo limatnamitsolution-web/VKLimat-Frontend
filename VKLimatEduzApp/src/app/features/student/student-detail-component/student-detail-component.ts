@@ -15,6 +15,12 @@ interface DropdownOption {
   name: string;
 }
 
+interface RawMasterItem {
+  id: number | string;
+  name: string;
+  type: string;
+}
+
 interface MasterDropdownData {
   branches: DropdownOption[];
   genders: DropdownOption[];
@@ -183,7 +189,7 @@ export class StudentDetailComponent implements OnInit {
     this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
   }
 
-  private bindMasterDropdowns(rawMasterItems: unknown[]): void {
+  private bindMasterDropdowns(rawMasterItems: RawMasterItem[]): void {
     try {
       const current = this.masterData();
       const next: MasterDropdownData = {
@@ -211,37 +217,17 @@ export class StudentDetailComponent implements OnInit {
         transportRoutes: [...current.transportRoutes],
         transportDrivers: [...current.transportDrivers]
       };
-      let generatedId = 1;
-
-      for (const item of rawMasterItems) {
-        if (!item || typeof item !== 'object') {
-          continue;
-        }
-
-        const record = item as Record<string, unknown>;
-        const rawType = record['type'];
-        const type = typeof rawType === 'string' ? rawType.trim().toLowerCase() : '';
+      console.log('Raw Master Items:', rawMasterItems);
+      for (const record of rawMasterItems) {
+        const type = record.type.trim().toLowerCase();
         if (!type) {
           continue;
         }
 
-        const rawName = record['name'];
-        const name = typeof rawName === 'string' ? rawName.trim() : '';
-        if (!name) {
-          continue;
-        }
-
-        const idValue =
-          record['id'] ??
-          record['configKey'] ??
-          record['key'] ??
-          record['value'] ??
-          generatedId;
         const option: DropdownOption = {
-          id: typeof idValue === 'number' || typeof idValue === 'string' ? idValue : generatedId,
-          name
+          id: record.id,
+          name: record.name
         };
-        generatedId += 1;
 
         switch (type) {
           case 'branch':

@@ -166,6 +166,13 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     guardian1: 'Guardian1Image',
     guardian2: 'Guardian2Image'
   };
+  private readonly profileImageKeyToPathField: Record<ProfileImageKey, string> = {
+    student: 'StudentImagePath',
+    father: 'FatherImagePath',
+    mother: 'MotherImagePath',
+    guardian1: 'Guardian1ImagePath',
+    guardian2: 'Guardian2ImagePath'
+  };
 
   profileImages: Record<ProfileImageKey, ProfileImageState> = {
     student: { file: null, previewUrl: null },
@@ -524,11 +531,17 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
   private appendProfileImages(formData: FormData): void {
     (Object.keys(this.profileImageKeyToApiField) as ProfileImageKey[]).forEach((key) => {
       const imageFile = this.profileImages[key].file;
+      const pathFieldName = this.profileImageKeyToPathField[key];
+
+      // Backend currently validates *ImagePath fields as required.
+      // Always send path fields so model validation can pass.
       if (!imageFile) {
+        formData.append(pathFieldName, 'N/A');
         return;
       }
 
       formData.append(this.profileImageKeyToApiField[key], imageFile, imageFile.name);
+      formData.append(pathFieldName, imageFile.name);
     });
   }
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, effect, inject, Output, signal } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, effect, inject, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { StudentService } from '../services/student.service';
@@ -47,6 +47,13 @@ interface MasterDropdownData {
   transportDrivers: DropdownOption[];
 }
 
+type ProfileImageKey = 'student' | 'father' | 'mother' | 'guardian1' | 'guardian2';
+
+interface ProfileImageState {
+  file: File | null;
+  previewUrl: string | null;
+}
+
 @Component({
   selector: 'app-student-detail',
   standalone: true,
@@ -54,7 +61,7 @@ interface MasterDropdownData {
   templateUrl: './student-detail-component.html',
   styleUrls: ['./student-detail-component.scss']
 })
-export class StudentDetailComponent implements OnInit {
+export class StudentDetailComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<any>();
 
@@ -152,6 +159,21 @@ export class StudentDetailComponent implements OnInit {
 
   private readonly defaultTransportMonthIds = [4, 5, 12, 1, 2, 3];
   private readonly selectedDocumentFiles: Record<number, File> = {};
+  private readonly profileImageKeyToApiField: Record<ProfileImageKey, string> = {
+    student: 'StudentImage',
+    father: 'FatherImage',
+    mother: 'MotherImage',
+    guardian1: 'Guardian1Image',
+    guardian2: 'Guardian2Image'
+  };
+
+  profileImages: Record<ProfileImageKey, ProfileImageState> = {
+    student: { file: null, previewUrl: null },
+    father: { file: null, previewUrl: null },
+    mother: { file: null, previewUrl: null },
+    guardian1: { file: null, previewUrl: null },
+    guardian2: { file: null, previewUrl: null }
+  };
 
   private readonly studentService = inject(StudentService);
   private readonly masterConfigsDWN = inject(MasterConfigsDWN);
@@ -187,6 +209,10 @@ export class StudentDetailComponent implements OnInit {
     this.isDropdownLoadPending = true;
     this.loaderService.show();
     this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
+  }
+
+  ngOnDestroy(): void {
+    this.clearProfileImages();
   }
 
   private bindMasterDropdowns(rawMasterItems: RawMasterItem[]): void {
@@ -464,6 +490,59 @@ export class StudentDetailComponent implements OnInit {
     }
   }
 
+  onProfileImageSelected(event: Event, key: ProfileImageKey): void {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0] ?? null;
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      target.value = '';
+      return;
+    }
+
+    const currentPreview = this.profileImages[key].previewUrl;
+    if (currentPreview) {
+      URL.revokeObjectURL(currentPreview);
+    }
+
+    this.profileImages[key] = {
+      file,
+      previewUrl: URL.createObjectURL(file)
+    };
+  }
+
+  getProfileImagePreview(key: ProfileImageKey): string | null {
+    return this.profileImages[key].previewUrl;
+  }
+
+  getProfileImageFileName(key: ProfileImageKey): string {
+    return this.profileImages[key].file?.name ?? '';
+  }
+
+  private appendProfileImages(formData: FormData): void {
+    (Object.keys(this.profileImageKeyToApiField) as ProfileImageKey[]).forEach((key) => {
+      const imageFile = this.profileImages[key].file;
+      if (!imageFile) {
+        return;
+      }
+
+      formData.append(this.profileImageKeyToApiField[key], imageFile, imageFile.name);
+    });
+  }
+
+  private clearProfileImages(): void {
+    (Object.keys(this.profileImages) as ProfileImageKey[]).forEach((key) => {
+      const preview = this.profileImages[key].previewUrl;
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+
+      this.profileImages[key] = { file: null, previewUrl: null };
+    });
+  }
+
   private toFormData(model: unknown): FormData {
     const formData = new FormData();
     this.appendToFormData(formData, model);
@@ -636,11 +715,13 @@ export class StudentDetailComponent implements OnInit {
 
       const formData = this.toFormData(model);
       this.appendUploadedDocuments(formData, uploadDocuments);
+      this.appendProfileImages(formData);
 
       this.studentService.saveStudent(formData).subscribe(response => {
         alert('Student saved successfully');
         this.save.emit(model);
         Object.keys(this.selectedDocumentFiles).forEach((key) => delete this.selectedDocumentFiles[Number(key)]);
+        this.clearProfileImages();
         this.close.emit();
       }, error => {
         if (error?.error?.errors && typeof error.error.errors === 'object') {
@@ -666,6 +747,7 @@ export class StudentDetailComponent implements OnInit {
 
   onCancel() {
     Object.keys(this.selectedDocumentFiles).forEach((key) => delete this.selectedDocumentFiles[Number(key)]);
+    this.clearProfileImages();
     this.close.emit();
   }
 }

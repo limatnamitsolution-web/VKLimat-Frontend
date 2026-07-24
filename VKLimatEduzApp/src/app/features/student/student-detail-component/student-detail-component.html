@@ -19,7 +19,36 @@
         <div *ngIf="activeTab === 'Student'" formGroupName="Student" class="tab-content fade-in">
           
           <div class="form-section">
-            <h3 class="section-title">Student Details</h3>
+            <h3 class="section-title section-title-with-upload">
+              <span>Student Details</span>
+              <span class="title-upload-control">
+                <input
+                  type="file"
+                  id="student-image-upload"
+                  accept="image/*"
+                  class="hidden-file-input"
+                  (change)="onProfileImageSelected($event, 'student')">
+                <label for="student-image-upload" class="avatar-upload-circle title-avatar" title="Upload Student Image">
+                  <img
+                    *ngIf="getProfileImagePreview('student'); else studentUploadIcon"
+                    [src]="getProfileImagePreview('student')!"
+                    alt="Student Image Preview"
+                    class="avatar-preview">
+                  <ng-template #studentUploadIcon>
+                    <span class="avatar-upload-plus">+</span>
+                  </ng-template>
+                  <span class="avatar-camera-badge" aria-hidden="true">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                      <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                  </span>
+                  <span class="avatar-hover-preview" *ngIf="getProfileImagePreview('student')">
+                    <img [src]="getProfileImagePreview('student')!" alt="Student Large Preview" class="avatar-hover-preview-image">
+                  </span>
+                </label>
+              </span>
+            </h3>
             <div class="grid-4">
               <!-- Row 1 -->
               <div class="form-field">
@@ -364,7 +393,36 @@
           <div class="grid-2">
             <!-- Father Details -->
             <div class="form-section">
-              <h3 class="section-title">Father Details</h3>
+              <h3 class="section-title section-title-with-upload">
+                <span>Father Details</span>
+                <span class="title-upload-control">
+                  <input
+                    type="file"
+                    id="image-upload-father"
+                    accept="image/*"
+                    class="hidden-file-input"
+                    (change)="onProfileImageSelected($event, 'father')">
+                  <label for="image-upload-father" class="avatar-upload-circle title-avatar" title="Upload Father Image">
+                    <img
+                      *ngIf="getProfileImagePreview('father'); else fatherUploadIcon"
+                      [src]="getProfileImagePreview('father')!"
+                      alt="Father Image Preview"
+                      class="avatar-preview">
+                    <ng-template #fatherUploadIcon>
+                      <span class="avatar-upload-plus">+</span>
+                    </ng-template>
+                    <span class="avatar-camera-badge" aria-hidden="true">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                      </svg>
+                    </span>
+                    <span class="avatar-hover-preview" *ngIf="getProfileImagePreview('father')">
+                      <img [src]="getProfileImagePreview('father')!" alt="Father Large Preview" class="avatar-hover-preview-image">
+                    </span>
+                  </label>
+                </span>
+              </h3>
               <div class="grid-4">
                 <!-- Row 1 -->
                 <div class="form-field">
@@ -416,7 +474,36 @@
 
             <!-- Mother Details -->
             <div class="form-section">
-              <h3 class="section-title">Mother Detail</h3>
+              <h3 class="section-title section-title-with-upload">
+                <span>Mother Detail</span>
+                <span class="title-upload-control">
+                  <input
+                    type="file"
+                    id="image-upload-mother"
+                    accept="image/*"
+                    class="hidden-file-input"
+                    (change)="onProfileImageSelected($event, 'mother')">
+                  <label for="image-upload-mother" class="avatar-upload-circle title-avatar" title="Upload Mother Image">
+                    <img
+                      *ngIf="getProfileImagePreview('mother'); else motherUploadIcon"
+                      [src]="getProfileImagePreview('mother')!"
+                      alt="Mother Image Preview"
+                      class="avatar-preview">
+                    <ng-template #motherUploadIcon>
+                      <span class="avatar-upload-plus">+</span>
+                    </ng-template>
+                    <span class="avatar-camera-badge" aria-hidden="true">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                      </svg>
+                    </span>
+                    <span class="avatar-hover-preview" *ngIf="getProfileImagePreview('mother')">
+                      <img [src]="getProfileImagePreview('mother')!" alt="Mother Large Preview" class="avatar-hover-preview-image">
+                    </span>
+                  </label>
+                </span>
+              </h3>
               <div class="grid-4">
                 <!-- Row 1 -->
                 <div class="form-field">
@@ -469,7 +556,36 @@
 
           <!-- Guardian 1 Details -->
           <div class="form-section">
-            <h3 class="section-title">Guardian 1 Details</h3>
+            <h3 class="section-title section-title-with-upload">
+              <span>Guardian 1 Details</span>
+              <span class="title-upload-control">
+                <input
+                  type="file"
+                  id="image-upload-guardian1"
+                  accept="image/*"
+                  class="hidden-file-input"
+                  (change)="onProfileImageSelected($event, 'guardian1')">
+                <label for="image-upload-guardian1" class="avatar-upload-circle title-avatar" title="Upload Guardian 1 Image">
+                  <img
+                    *ngIf="getProfileImagePreview('guardian1'); else guardian1UploadIcon"
+                    [src]="getProfileImagePreview('guardian1')!"
+                    alt="Guardian 1 Image Preview"
+                    class="avatar-preview">
+                  <ng-template #guardian1UploadIcon>
+                    <span class="avatar-upload-plus">+</span>
+                  </ng-template>
+                  <span class="avatar-camera-badge" aria-hidden="true">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                      <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                  </span>
+                  <span class="avatar-hover-preview" *ngIf="getProfileImagePreview('guardian1')">
+                    <img [src]="getProfileImagePreview('guardian1')!" alt="Guardian 1 Large Preview" class="avatar-hover-preview-image">
+                  </span>
+                </label>
+              </span>
+            </h3>
             <div class="grid-3">
               <div class="form-field">
                 <label>Name</label>
@@ -488,7 +604,36 @@
 
           <!-- Guardian 2 Details -->
           <div class="form-section">
-            <h3 class="section-title">Guardian 2 Details</h3>
+            <h3 class="section-title section-title-with-upload">
+              <span>Guardian 2 Details</span>
+              <span class="title-upload-control">
+                <input
+                  type="file"
+                  id="image-upload-guardian2"
+                  accept="image/*"
+                  class="hidden-file-input"
+                  (change)="onProfileImageSelected($event, 'guardian2')">
+                <label for="image-upload-guardian2" class="avatar-upload-circle title-avatar" title="Upload Guardian 2 Image">
+                  <img
+                    *ngIf="getProfileImagePreview('guardian2'); else guardian2UploadIcon"
+                    [src]="getProfileImagePreview('guardian2')!"
+                    alt="Guardian 2 Image Preview"
+                    class="avatar-preview">
+                  <ng-template #guardian2UploadIcon>
+                    <span class="avatar-upload-plus">+</span>
+                  </ng-template>
+                  <span class="avatar-camera-badge" aria-hidden="true">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                      <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                  </span>
+                  <span class="avatar-hover-preview" *ngIf="getProfileImagePreview('guardian2')">
+                    <img [src]="getProfileImagePreview('guardian2')!" alt="Guardian 2 Large Preview" class="avatar-hover-preview-image">
+                  </span>
+                </label>
+              </span>
+            </h3>
             <div class="grid-3">
               <div class="form-field">
                 <label>Name</label>

@@ -17,7 +17,7 @@
         
         <!-- Student Tab Content -->
         <div *ngIf="activeTab === 'Student'" formGroupName="Student" class="tab-content fade-in">
-          
+          <div Class="grid-2">
           <div class="form-section">
             <h3 class="section-title section-title-with-upload">
               <span>Student Details</span>
@@ -144,6 +144,163 @@
                 </div>
               </div>
             </div>
+            
+            <div Class="grid-2">
+              <!-- Admission Details Section -->
+          <div class="form-section">
+            <h3 class="section-title">Admission Details</h3>
+            <div class="grid-2">
+              <div class="form-field">
+                <label>Admission Category</label>
+                <select formControlName="adm_cat_id">
+                  <option value="">Select Category</option>
+                  @for (cat of categories; track cat.id) {
+                  <option [ngValue]="cat.id">{{ cat.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Admission Group</label>
+                <select formControlName="adm_grp_id">
+                  <option value="">Select Group</option>
+                  @for (grp of groups; track grp.id) {
+                  <option [ngValue]="grp.id">{{ grp.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Admission Stream</label>
+                <select formControlName="adm_stream_id">
+                  <option value="">Select Stream</option>
+                  @for (stream of streams; track stream.id) {
+                  <option [ngValue]="stream.id">{{ stream.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Admission Class</label>
+                <select formControlName="adm_class_id">
+                  <option value="">Select Class</option>
+                  @for (cls of classes; track cls.id) {
+                  <option [ngValue]="cls.id">{{ cls.name }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label>Admission Section</label>
+                <select formControlName="adm_section_id">
+                  <option value="">Select Section</option>
+                  @for (sec of sections; track sec.id) {
+                  <option [ngValue]="sec.id">{{ sec.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Admission Roll No</label>
+                <input type="text" formControlName="adm_rollno">
+              </div>
+              <div class="form-field">
+                <label>Admission Concession</label>
+                <select formControlName="adm_concession_id">
+                  <option value="">Select Concession</option>
+                  @for (conc of concessions; track conc.id) {
+                  <option [ngValue]="conc.id">{{ conc.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Admission Fee Group</label>
+                <select formControlName="adm_fee_group_id">
+                  <option value="">Select Fee Group</option>
+                  @for (fg of feeGroups; track fg.id) {
+                  <option [ngValue]="fg.id">{{ fg.name }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+         
+          </div>
+
+                    <!-- Current Session Details Section -->
+          <div class="form-section">
+            <h3 class="section-title">Current Session Details</h3>
+            <div class="grid-2">
+              <div class="form-field">
+                <label>Session Category</label>
+                <select formControlName="sess_cat_id">
+                  <option value="">Select Category</option>
+                  @for (cat of categories; track cat.id) {
+                  <option [ngValue]="cat.id">{{ cat.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Session Group</label>
+                <select formControlName="sess_grp_id">
+                  <option value="">Select Group</option>
+                  @for (grp of groups; track grp.id) {
+                  <option [ngValue]="grp.id">{{ grp.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Session Stream</label>
+                <select formControlName="sess_stream_id">
+                  <option value="">Select Stream</option>
+                  @for (stream of streams; track stream.id) {
+                  <option [ngValue]="stream.id">{{ stream.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Session Class</label>
+                <select formControlName="sess_class_id">
+                  <option value="">Select Class</option>
+                  @for (cls of classes; track cls.id) {
+                  <option [ngValue]="cls.id">{{ cls.name }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label>Session Section</label>
+                <select formControlName="sess_section_id">
+                  <option value="">Select Section</option>
+                  @for (sec of sections; track sec.id) {
+                  <option [ngValue]="sec.id">{{ sec.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Session Roll No</label>
+                <input type="text" formControlName="sess_roll_no">
+              </div>
+              <div class="form-field">
+                <label>Session Concession</label>
+                <select formControlName="sess_concession_id">
+                  <option value="">Select Concession</option>
+                  @for (conc of concessions; track conc.id) {
+                  <option [ngValue]="conc.id">{{ conc.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Session Fee Group</label>
+                <select formControlName="sess_fee_group_id">
+                  <option value="">Select Fee Group</option>
+                  @for (fg of feeGroups; track fg.id) {
+                  <option [ngValue]="fg.id">{{ fg.name }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>  
+
+          </div>
+
+
+            </div>
 
           <div class="grid-2">
             <div class="form-section">
@@ -235,157 +392,9 @@
             </div>
           </div>
         </div>        <!-- Academic Tab Content -->
-        <div *ngIf="activeTab === 'Academic'" formGroupName="Academic" class="tab-content fade-in">
-          <!-- Admission Details Section -->
-          <div class="form-section">
-            <h3 class="section-title">Admission Details</h3>
-            <div class="grid-4">
-              <div class="form-field">
-                <label>Admission Category</label>
-                <select formControlName="adm_cat_id">
-                  <option value="">Select Category</option>
-                  @for (cat of categories; track cat.id) {
-                  <option [ngValue]="cat.id">{{ cat.name }}</option>
-                  }
-                </select>
-              </div>
-              <div class="form-field">
-                <label>Admission Group</label>
-                <select formControlName="adm_grp_id">
-                  <option value="">Select Group</option>
-                  @for (grp of groups; track grp.id) {
-                  <option [ngValue]="grp.id">{{ grp.name }}</option>
-                  }
-                </select>
-              </div>
-              <div class="form-field">
-                <label>Admission Stream</label>
-                <select formControlName="adm_stream_id">
-                  <option value="">Select Stream</option>
-                  @for (stream of streams; track stream.id) {
-                  <option [ngValue]="stream.id">{{ stream.name }}</option>
-                  }
-                </select>
-              </div>
-              <div class="form-field">
-                <label>Admission Class</label>
-                <select formControlName="adm_class_id">
-                  <option value="">Select Class</option>
-                  @for (cls of classes; track cls.id) {
-                  <option [ngValue]="cls.id">{{ cls.name }}</option>
-                  }
-                </select>
-              </div>
-
-              <div class="form-field">
-                <label>Admission Section</label>
-                <select formControlName="adm_section_id">
-                  <option value="">Select Section</option>
-                  @for (sec of sections; track sec.id) {
-                  <option [ngValue]="sec.id">{{ sec.name }}</option>
-                  }
-                </select>
-              </div>
-              <div class="form-field">
-                <label>Admission Roll No</label>
-                <input type="text" formControlName="adm_rollno">
-              </div>
-              <div class="form-field">
-                <label>Admission Concession</label>
-                <select formControlName="adm_concession_id">
-                  <option value="">Select Concession</option>
-                  @for (conc of concessions; track conc.id) {
-                  <option [ngValue]="conc.id">{{ conc.name }}</option>
-                  }
-                </select>
-              </div>
-              <div class="form-field">
-                <label>Admission Fee Group</label>
-                <select formControlName="adm_fee_group_id">
-                  <option value="">Select Fee Group</option>
-                  @for (fg of feeGroups; track fg.id) {
-                  <option [ngValue]="fg.id">{{ fg.name }}</option>
-                  }
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- Current Session Details Section -->
-          <div class="form-section">
-            <h3 class="section-title">Current Session Details</h3>
-            <div class="grid-4">
-              <div class="form-field">
-                <label>Session Category</label>
-                <select formControlName="sess_cat_id">
-                  <option value="">Select Category</option>
-                  @for (cat of categories; track cat.id) {
-                  <option [ngValue]="cat.id">{{ cat.name }}</option>
-                  }
-                </select>
-              </div>
-              <div class="form-field">
-                <label>Session Group</label>
-                <select formControlName="sess_grp_id">
-                  <option value="">Select Group</option>
-                  @for (grp of groups; track grp.id) {
-                  <option [ngValue]="grp.id">{{ grp.name }}</option>
-                  }
-                </select>
-              </div>
-              <div class="form-field">
-                <label>Session Stream</label>
-                <select formControlName="sess_stream_id">
-                  <option value="">Select Stream</option>
-                  @for (stream of streams; track stream.id) {
-                  <option [ngValue]="stream.id">{{ stream.name }}</option>
-                  }
-                </select>
-              </div>
-              <div class="form-field">
-                <label>Session Class</label>
-                <select formControlName="sess_class_id">
-                  <option value="">Select Class</option>
-                  @for (cls of classes; track cls.id) {
-                  <option [ngValue]="cls.id">{{ cls.name }}</option>
-                  }
-                </select>
-              </div>
-
-              <div class="form-field">
-                <label>Session Section</label>
-                <select formControlName="sess_section_id">
-                  <option value="">Select Section</option>
-                  @for (sec of sections; track sec.id) {
-                  <option [ngValue]="sec.id">{{ sec.name }}</option>
-                  }
-                </select>
-              </div>
-              <div class="form-field">
-                <label>Session Roll No</label>
-                <input type="text" formControlName="sess_roll_no">
-              </div>
-              <div class="form-field">
-                <label>Session Concession</label>
-                <select formControlName="sess_concession_id">
-                  <option value="">Select Concession</option>
-                  @for (conc of concessions; track conc.id) {
-                  <option [ngValue]="conc.id">{{ conc.name }}</option>
-                  }
-                </select>
-              </div>
-              <div class="form-field">
-                <label>Session Fee Group</label>
-                <select formControlName="sess_fee_group_id">
-                  <option value="">Select Fee Group</option>
-                  @for (fg of feeGroups; track fg.id) {
-                  <option [ngValue]="fg.id">{{ fg.name }}</option>
-                  }
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- <div *ngIf="activeTab === 'Academic'" formGroupName="Academic" class="tab-content fade-in">
+        
+        </div> -->
 
         <!-- Parent's Tab Content -->
         <div *ngIf="activeTab === 'Parents'" formGroupName="Parents" class="tab-content fade-in">

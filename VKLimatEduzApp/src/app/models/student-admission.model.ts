@@ -95,7 +95,7 @@ export interface StudentDocumentRequestDto {
 
 export interface StudentAdmissionRequestDto {
   Student: StudentDetailsDto;
-  Academic: AcademicDto;
+  //Academic: AcademicDto;
   Parents: ParentDto;
   Transport: TransportDto;
   Documents: StudentDocumentRequestDto[];

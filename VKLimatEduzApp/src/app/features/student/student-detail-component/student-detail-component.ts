@@ -1,13 +1,25 @@
-import { Component, EventEmitter, OnDestroy, OnInit, effect, inject, Output, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  effect,
+  inject,
+  Output,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { StudentService } from '../services/student.service';
-import { MASTER_CONFIG_DWN_TYPES, MasterConfigsDWN } from '../../../shared/services/master-configs-dwn';
+import {
+  MASTER_CONFIG_DWN_TYPES,
+  MasterConfigsDWN,
+} from '../../../shared/services/master-configs-dwn';
 import { LoaderService } from '../../../shared/services/loader.service';
 import {
   StudentAdmissionRequestDto,
   StudentDocumentRequestDto,
-  TransportDto
+  TransportDto,
 } from '../../../models/student-admission.model';
 
 interface DropdownOption {
@@ -59,7 +71,7 @@ interface ProfileImageState {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './student-detail-component.html',
-  styleUrls: ['./student-detail-component.scss']
+  styleUrls: ['./student-detail-component.scss'],
 })
 export class StudentDetailComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter<void>();
@@ -69,13 +81,13 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
   activeTab: string = 'Student';
   tabs = [
     { id: 'Student', label: 'Student', index: 0 },
-    { id: 'Academic', label: 'Academic', index: 1 },
+    // { id: 'Academic', label: 'Academic', index: 1 },
     { id: 'Parents', label: "Parent's", index: 2 },
     { id: 'Transport', label: 'Transport', index: 3 },
     { id: 'Documents', label: 'Document Upload', index: 4 },
     { id: 'Other', label: 'Other', index: 5 },
     { id: 'Record', label: 'Record', index: 6 },
-    { id: 'CategoryCertificate', label: 'Category Certificate', index: 7 }
+    { id: 'CategoryCertificate', label: 'Category Certificate', index: 7 },
   ];
 
   // Dropdown Data
@@ -102,32 +114,78 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     transportAreas: [],
     transportStands: [],
     transportRoutes: [],
-    transportDrivers: []
+    transportDrivers: [],
   });
 
-  get branches(): DropdownOption[] { return this.masterData().branches; }
-  get genders(): DropdownOption[] { return this.masterData().genders; }
-  get bloodGroups(): DropdownOption[] { return this.masterData().bloodGroups; }
-  get religions(): DropdownOption[] { return this.masterData().religions; }
-  get castes(): DropdownOption[] { return this.masterData().castes; }
-  get countries(): DropdownOption[] { return this.masterData().countries; }
-  get states(): DropdownOption[] { return this.masterData().states; }
-  get cities(): DropdownOption[] { return this.masterData().cities; }
-  get categories(): DropdownOption[] { return this.masterData().categories; }
-  get groups(): DropdownOption[] { return this.masterData().groups; }
-  get streams(): DropdownOption[] { return this.masterData().streams; }
-  get classes(): DropdownOption[] { return this.masterData().classes; }
-  get sections(): DropdownOption[] { return this.masterData().sections; }
-  get concessions(): DropdownOption[] { return this.masterData().concessions; }
-  get feeGroups(): DropdownOption[] { return this.masterData().feeGroups; }
-  get qualifications(): DropdownOption[] { return this.masterData().qualifications; }
-  get occupations(): DropdownOption[] { return this.masterData().occupations; }
-  get transportModes(): DropdownOption[] { return this.masterData().transportModes; }
-  get pickDropOptions(): DropdownOption[] { return this.masterData().pickDropOptions; }
-  get transportAreas(): DropdownOption[] { return this.masterData().transportAreas; }
-  get transportStands(): DropdownOption[] { return this.masterData().transportStands; }
-  get transportRoutes(): DropdownOption[] { return this.masterData().transportRoutes; }
-  get transportDrivers(): DropdownOption[] { return this.masterData().transportDrivers; }
+  get branches(): DropdownOption[] {
+    return this.masterData().branches;
+  }
+  get genders(): DropdownOption[] {
+    return this.masterData().genders;
+  }
+  get bloodGroups(): DropdownOption[] {
+    return this.masterData().bloodGroups;
+  }
+  get religions(): DropdownOption[] {
+    return this.masterData().religions;
+  }
+  get castes(): DropdownOption[] {
+    return this.masterData().castes;
+  }
+  get countries(): DropdownOption[] {
+    return this.masterData().countries;
+  }
+  get states(): DropdownOption[] {
+    return this.masterData().states;
+  }
+  get cities(): DropdownOption[] {
+    return this.masterData().cities;
+  }
+  get categories(): DropdownOption[] {
+    return this.masterData().categories;
+  }
+  get groups(): DropdownOption[] {
+    return this.masterData().groups;
+  }
+  get streams(): DropdownOption[] {
+    return this.masterData().streams;
+  }
+  get classes(): DropdownOption[] {
+    return this.masterData().classes;
+  }
+  get sections(): DropdownOption[] {
+    return this.masterData().sections;
+  }
+  get concessions(): DropdownOption[] {
+    return this.masterData().concessions;
+  }
+  get feeGroups(): DropdownOption[] {
+    return this.masterData().feeGroups;
+  }
+  get qualifications(): DropdownOption[] {
+    return this.masterData().qualifications;
+  }
+  get occupations(): DropdownOption[] {
+    return this.masterData().occupations;
+  }
+  get transportModes(): DropdownOption[] {
+    return this.masterData().transportModes;
+  }
+  get pickDropOptions(): DropdownOption[] {
+    return this.masterData().pickDropOptions;
+  }
+  get transportAreas(): DropdownOption[] {
+    return this.masterData().transportAreas;
+  }
+  get transportStands(): DropdownOption[] {
+    return this.masterData().transportStands;
+  }
+  get transportRoutes(): DropdownOption[] {
+    return this.masterData().transportRoutes;
+  }
+  get transportDrivers(): DropdownOption[] {
+    return this.masterData().transportDrivers;
+  }
 
   transportMonthsList = [
     { label: 'Apr', monthId: 4 },
@@ -141,7 +199,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     { label: 'Dec', monthId: 12 },
     { label: 'Jan', monthId: 1 },
     { label: 'Feb', monthId: 2 },
-    { label: 'Mar', monthId: 3 }
+    { label: 'Mar', monthId: 3 },
   ];
 
   documentTypes = [
@@ -154,7 +212,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     { doc_id: 107, doc_Code: 'casteCert', doc_label: 'Caste Certificate', doc_File: '' },
     { doc_id: 108, doc_Code: 'addressProof1', doc_label: 'Address Proof 1', doc_File: '' },
     { doc_id: 109, doc_Code: 'addressProof2', doc_label: 'Address Proof 2', doc_File: '' },
-    { doc_id: 110, doc_Code: 'migrationCert', doc_label: 'Migration Certificate', doc_File: '' }
+    { doc_id: 110, doc_Code: 'migrationCert', doc_label: 'Migration Certificate', doc_File: '' },
   ];
 
   private readonly defaultTransportMonthIds = [4, 5, 12, 1, 2, 3];
@@ -164,14 +222,14 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     father: 'FatherImage',
     mother: 'MotherImage',
     guardian1: 'Guardian1Image',
-    guardian2: 'Guardian2Image'
+    guardian2: 'Guardian2Image',
   };
   private readonly profileImageKeyToPathField: Record<ProfileImageKey, string> = {
     student: 'StudentImagePath',
     father: 'FatherImagePath',
     mother: 'MotherImagePath',
     guardian1: 'Guardian1ImagePath',
-    guardian2: 'Guardian2ImagePath'
+    guardian2: 'Guardian2ImagePath',
   };
 
   profileImages: Record<ProfileImageKey, ProfileImageState> = {
@@ -179,7 +237,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     father: { file: null, previewUrl: null },
     mother: { file: null, previewUrl: null },
     guardian1: { file: null, previewUrl: null },
-    guardian2: { file: null, previewUrl: null }
+    guardian2: { file: null, previewUrl: null },
   };
 
   private readonly studentService = inject(StudentService);
@@ -188,18 +246,16 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
   private readonly masterConfigDwnTypes = MASTER_CONFIG_DWN_TYPES;
   private isDropdownLoadPending = false;
 
-  constructor(
-    private fb: FormBuilder
-  ) {
+  constructor(private fb: FormBuilder) {
     this.studentForm = this.fb.group({
       Student: this.createStudentGroup(),
-      Academic: this.createAcademicGroup(),
+      // Academic: this.createAcademicGroup(),
       Parents: this.createParentGroup(),
       Transport: this.createTransportGroup(),
       Documents: this.createDocumentUploadGroup(),
       Other: this.fb.group({}),
       Record: this.fb.group({}),
-      CategoryCertificate: this.fb.group({})
+      CategoryCertificate: this.fb.group({}),
     });
 
     effect(() => {
@@ -248,7 +304,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
         transportAreas: [...current.transportAreas],
         transportStands: [...current.transportStands],
         transportRoutes: [...current.transportRoutes],
-        transportDrivers: [...current.transportDrivers]
+        transportDrivers: [...current.transportDrivers],
       };
       console.log('Raw Master Items:', rawMasterItems);
       for (const record of rawMasterItems) {
@@ -259,7 +315,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
 
         const option: DropdownOption = {
           id: record.id,
-          name: record.name
+          name: record.name,
         };
 
         switch (type) {
@@ -388,46 +444,8 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
       sess_permanent_state_id: [1],
       sess_permanent_city_id: [1],
       sess_permanent_address: ['House 12, Main Street'],
-      sess_permanent_pin_code: ['10077']
-    });
-  }
+      sess_permanent_pin_code: ['10077'],
 
-  createParentGroup(): FormGroup {
-    return this.fb.group({
-      // Father Details
-      sess_father_name: ['ff'],
-      sess_father_mobile_no: ['9989899899'],
-      sess_father_qualification_id: [2],
-      sess_father_occupation_id: [2],
-      sess_father_designation_id: ['sds'],
-      sess_father_annual_income: ['100000'],
-      sess_father_office_address: ['oo'],
-      sess_is_fse: [false],
-      
-      // Mother Details
-      sess_mother_name: ['mmm'],
-      sess_mother_mobile_no: ['9989899899'],
-      sess_mother_qualification_id: [3],
-      sess_mother_occupation_id: [1],
-      sess_mother_designation_id: ['sds'],
-      sess_mother_annual_income: ['12121'],
-      sess_mother_office_address: ['dvdv'],
-      sess_is_mse: [true],
-
-      // Guardian Details
-      sess_g1_name: ['g'],
-      sess_g1_mobile_no: ['9989899899'],
-      sess_g1_address: ['AAA'],
-      sess_g2_name: ['Test'],
-      sess_g2_mobile_no: ['9978976545'],
-      sess_g2_address: ['address12'],
-      
-      otherDetails: ['SDFFD']
-    });
-  }
-
-  createAcademicGroup(): FormGroup {
-    return this.fb.group({
       // Admission Details
       adm_cat_id: [1],
       adm_grp_id: [1],
@@ -446,8 +464,46 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
       sess_section_id: [1],
       sess_roll_no: ['dsew33'],
       sess_concession_id: [2],
-      sess_fee_group_id: [1]
+      sess_fee_group_id: [1],
     });
+  }
+
+  createParentGroup(): FormGroup {
+    return this.fb.group({
+      // Father Details
+      sess_father_name: ['ff'],
+      sess_father_mobile_no: ['9989899899'],
+      sess_father_qualification_id: [2],
+      sess_father_occupation_id: [2],
+      sess_father_designation_id: ['sds'],
+      sess_father_annual_income: ['100000'],
+      sess_father_office_address: ['oo'],
+      sess_is_fse: [false],
+
+      // Mother Details
+      sess_mother_name: ['mmm'],
+      sess_mother_mobile_no: ['9989899899'],
+      sess_mother_qualification_id: [3],
+      sess_mother_occupation_id: [1],
+      sess_mother_designation_id: ['sds'],
+      sess_mother_annual_income: ['12121'],
+      sess_mother_office_address: ['dvdv'],
+      sess_is_mse: [true],
+
+      // Guardian Details
+      sess_g1_name: ['g'],
+      sess_g1_mobile_no: ['9989899899'],
+      sess_g1_address: ['AAA'],
+      sess_g2_name: ['Test'],
+      sess_g2_mobile_no: ['9978976545'],
+      sess_g2_address: ['address12'],
+
+      otherDetails: ['SDFFD'],
+    });
+  }
+
+  createAcademicGroup(): FormGroup {
+    return this.fb.group({});
   }
 
   createTransportGroup(): FormGroup {
@@ -463,18 +519,20 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
       dropRoute: [2],
       dropDriver: [2],
       months: this.fb.array(
-        this.transportMonthsList.map((month) => this.defaultTransportMonthIds.includes(month.monthId))
-      )
+        this.transportMonthsList.map((month) =>
+          this.defaultTransportMonthIds.includes(month.monthId),
+        ),
+      ),
     });
   }
 
   createDocumentUploadGroup(): FormArray {
-    const controls = this.documentTypes.map(doc => {
+    const controls = this.documentTypes.map((doc) => {
       return this.fb.group({
         doc_id: [doc.doc_id],
         doc_Code: [doc.doc_Code],
         doc_label: [doc.doc_label],
-        doc_File: [null]
+        doc_File: [null],
       });
     });
     return this.fb.array(controls);
@@ -492,7 +550,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
       const docArray = this.docsArray;
       const docGroup = docArray.at(index) as FormGroup;
       docGroup.patchValue({
-        doc_File: file
+        doc_File: file,
       });
     }
   }
@@ -516,7 +574,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
 
     this.profileImages[key] = {
       file,
-      previewUrl: URL.createObjectURL(file)
+      previewUrl: URL.createObjectURL(file),
     };
   }
 
@@ -566,7 +624,10 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     return !!value && typeof value === 'object' && 'name' in (value as Record<string, unknown>);
   }
 
-  private appendUploadedDocuments(formData: FormData, documents: StudentDocumentRequestDto[]): void {
+  private appendUploadedDocuments(
+    formData: FormData,
+    documents: StudentDocumentRequestDto[],
+  ): void {
     documents.forEach((document, index) => {
       const file = document.doc_File;
       if (!this.isFileLike(file)) {
@@ -625,7 +686,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
 
   private applyStringDefaults<T extends Record<string, unknown>>(
     source: T,
-    defaults: Record<string, string>
+    defaults: Record<string, string>,
   ): T {
     const normalized: Record<string, unknown> = { ...source };
 
@@ -649,7 +710,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     if (this.studentForm.valid) {
       const formValue = this.studentForm.getRawValue();
       const studentRaw = formValue.Student ?? {};
-      const academicRaw = formValue.Academic ?? {};
+      //const academicRaw = formValue.Academic ?? {};
       const parentsRaw = formValue.Parents ?? {};
 
       const studentPayload = this.applyStringDefaults(studentRaw, {
@@ -663,13 +724,15 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
         sess_address: 'House 12, Main Street',
         sess_pin_code: '10077',
         sess_permanent_address: 'House 12, Main Street',
-        sess_permanent_pin_code: '10077'
+        sess_permanent_pin_code: '10077',
+        adm_rollno: 'aa122',
+        sess_roll_no: 'dsew33',
       });
 
-      const academicPayload = this.applyStringDefaults(academicRaw, {
-        adm_rollno: 'aa122',
-        sess_roll_no: 'dsew33'
-      });
+      // const academicPayload = this.applyStringDefaults(academicRaw, {
+      //   adm_rollno: 'aa122',
+      //   sess_roll_no: 'dsew33'
+      // });
 
       const parentsPayload = this.applyStringDefaults(parentsRaw, {
         sess_father_name: 'ff',
@@ -688,12 +751,12 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
         sess_g2_name: 'Test',
         sess_g2_mobile_no: '9978976545',
         sess_g2_address: 'address12',
-        otherDetails: 'SDFFD'
+        otherDetails: 'SDFFD',
       });
 
       const selectedMonthIds = (formValue.Transport.months as boolean[])
         .map((isSelected: boolean, index: number) =>
-          isSelected ? this.transportMonthsList[index].monthId : null
+          isSelected ? this.transportMonthsList[index].monthId : null,
         )
         .filter((id: number | null): id is number => id !== null);
       const uploadDocuments = Object.keys(this.selectedDocumentFiles)
@@ -707,59 +770,67 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
           return {
             ...docValue,
             doc_File: file,
-            SavedPath: file.name
+            SavedPath: file.name,
           };
         });
 
       const model: StudentAdmissionRequestDto = {
         Student: studentPayload,
-        Academic: academicPayload,
+        // Academic: academicPayload,
         Parents: parentsPayload,
         Transport: {
           ...formValue.Transport,
-          months: selectedMonthIds
+          months: selectedMonthIds,
         } as TransportDto,
         Documents: [],
         Docs: [],
         Other: formValue.Other,
         Record: formValue.Record,
-        CategoryCertificate: formValue.CategoryCertificate
+        CategoryCertificate: formValue.CategoryCertificate,
       };
 
       const formData = this.toFormData(model);
       this.appendUploadedDocuments(formData, uploadDocuments);
       this.appendProfileImages(formData);
 
-      this.studentService.saveStudent(formData).subscribe(response => {
-        alert('Student saved successfully');
-        this.save.emit(model);
-        Object.keys(this.selectedDocumentFiles).forEach((key) => delete this.selectedDocumentFiles[Number(key)]);
-        this.clearProfileImages();
-        this.close.emit();
-      }, error => {
-        if (error?.error?.errors && typeof error.error.errors === 'object') {
-          let errorMessage = 'Validation failed:\n';
-          for (const key in error.error.errors) {
-            errorMessage += `${key}: ${error.error.errors[key].join(', ')}\n`;
+      this.studentService.saveStudent(formData).subscribe(
+        (response) => {
+          alert('Student saved successfully');
+          // this.save.emit(model);
+          // Object.keys(this.selectedDocumentFiles).forEach(
+          //   (key) => delete this.selectedDocumentFiles[Number(key)],
+          // );
+          // this.clearProfileImages();
+          // this.close.emit();
+        },
+        (error) => {
+          if (error?.error?.errors && typeof error.error.errors === 'object') {
+            let errorMessage = 'Validation failed:\n';
+            for (const key in error.error.errors) {
+              errorMessage += `${key}: ${error.error.errors[key].join(', ')}\n`;
+            }
+            alert(errorMessage);
+            console.error('Validation errors:', error.error.errors);
+            console.log('Validation log-errors:', error.error.errors);
+          } else {
+            const details =
+              typeof error?.error === 'string'
+                ? error.error
+                : JSON.stringify(error?.error ?? error, null, 2);
+            alert('Save failed:\n' + details);
+            console.error('Save failed response:', error);
           }
-          alert(errorMessage);
-          console.error('Validation errors:', error.error.errors);
-          console.log('Validation log-errors:', error.error.errors);
-        } else {
-          const details = typeof error?.error === 'string'
-            ? error.error
-            : JSON.stringify(error?.error ?? error, null, 2);
-          alert('Save failed:\n' + details);
-          console.error('Save failed response:', error);
-        }
-      });
+        },
+      );
     } else {
       this.studentForm.markAllAsTouched();
     }
   }
 
   onCancel() {
-    Object.keys(this.selectedDocumentFiles).forEach((key) => delete this.selectedDocumentFiles[Number(key)]);
+    Object.keys(this.selectedDocumentFiles).forEach(
+      (key) => delete this.selectedDocumentFiles[Number(key)],
+    );
     this.clearProfileImages();
     this.close.emit();
   }

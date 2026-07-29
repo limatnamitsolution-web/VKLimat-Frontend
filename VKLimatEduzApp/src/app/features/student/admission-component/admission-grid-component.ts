@@ -45,13 +45,13 @@ export class AdmissionGridComponent implements OnInit, OnChanges {
       const searchLower = this.searchText.toLowerCase();
       result = result.filter(row =>
         (row.AdmNo || '').toLowerCase().includes(searchLower) ||
-        (row.AdmDate || '').toLowerCase().includes(searchLower) ||
-        (row.DOB || '').toLowerCase().includes(searchLower) ||
-        (row.Student || '').toLowerCase().includes(searchLower) ||
+        (row.adm_date || '').toLowerCase().includes(searchLower) ||
+        (row.adm_dob || '').toLowerCase().includes(searchLower) ||
+        (row.Name || '').toLowerCase().includes(searchLower) ||
         (row.Class || '').toLowerCase().includes(searchLower) ||
-        (row.Sec || '').toLowerCase().includes(searchLower) ||
-        (row.Father || '').toLowerCase().includes(searchLower) ||
-        (row.Mother || '').toLowerCase().includes(searchLower) ||
+        (row.Section || '').toLowerCase().includes(searchLower) ||
+        (row.sess_father_name || '').toLowerCase().includes(searchLower) ||
+        (row.sess_mother_name || '').toLowerCase().includes(searchLower) ||
         (row.F_MobileNo || '').toLowerCase().includes(searchLower) ||
         (row.M_MobileNo || '').toLowerCase().includes(searchLower)
       );

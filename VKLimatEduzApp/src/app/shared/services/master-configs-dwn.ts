@@ -55,6 +55,7 @@ export const MASTER_CONFIG_DWN_TYPES: string[] = [
   'UserRole',
   'Country',
   'ClassGroup',
+  'Class',
   'Language',
   'Subject',
   'ConcCategory',

@@ -24,11 +24,13 @@ import {
 
 interface DropdownOption {
   id: number | string;
+  parentId?: number | string;
   name: string;
 }
 
 interface RawMasterItem {
   id: number | string;
+  parentId: number | string;
   name: string;
   type: string;
 }
@@ -45,8 +47,11 @@ interface MasterDropdownData {
   categories: DropdownOption[];
   groups: DropdownOption[];
   streams: DropdownOption[];
-  classes: DropdownOption[];
+  admClasses: DropdownOption[];
+  sessClasses: DropdownOption[];
+  allClasses: DropdownOption[];
   sections: DropdownOption[];
+  allSections: DropdownOption[];
   concessions: DropdownOption[];
   feeGroups: DropdownOption[];
   qualifications: DropdownOption[];
@@ -57,6 +62,7 @@ interface MasterDropdownData {
   transportStands: DropdownOption[];
   transportRoutes: DropdownOption[];
   transportDrivers: DropdownOption[];
+
 }
 
 type ProfileImageKey = 'student' | 'father' | 'mother' | 'guardian1' | 'guardian2';
@@ -102,9 +108,12 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     cities: [],
     categories: [],
     groups: [],
-    streams: [],
-    classes: [],
+    streams: [],  
+    admClasses: [],
+    sessClasses:[],
+    allClasses: [],
     sections: [],
+    allSections: [],
     concessions: [],
     feeGroups: [],
     qualifications: [],
@@ -150,11 +159,11 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
   get streams(): DropdownOption[] {
     return this.masterData().streams;
   }
-  get classes(): DropdownOption[] {
-    return this.masterData().classes;
+  get allClasses(): DropdownOption[] {
+    return this.masterData().allClasses;
   }
-  get sections(): DropdownOption[] {
-    return this.masterData().sections;
+  get allSections(): DropdownOption[] {
+    return this.masterData().allSections;
   }
   get concessions(): DropdownOption[] {
     return this.masterData().concessions;
@@ -184,9 +193,29 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     return this.masterData().transportRoutes;
   }
   get transportDrivers(): DropdownOption[] {
+   
     return this.masterData().transportDrivers;
   }
+  get admClasses(): DropdownOption[] {
+    return this.masterData().admClasses;
+  }
+  get sessClasses(): DropdownOption[] {
+    return this.masterData().sessClasses;
+  }
 
+  // getClassByAdmGroup() {
+  //    const parentId = this.studentForm
+  //   .get('adm_grp_id')
+  //   ?.value;
+  //   console.log('Parent ID:', parentId);
+  //   this.masterData.set({
+  //     ...this.masterData(),
+  //     admClasses: this.masterData().allClasses.filter((option) => option.parentId ==parentId),
+  //   });
+  //   console.log('admClasses from Filtered  Classes:', this.masterData().allClasses.filter((option) => option.parentId == 2));
+  // }
+
+  
   transportMonthsList = [
     { label: 'Apr', monthId: 4 },
     { label: 'May', monthId: 5 },
@@ -265,6 +294,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
       }
 
       this.bindMasterDropdowns(dwnList);
+      console.log('Master Dropdowns bound:', this.masterData());
     });
   }
 
@@ -272,6 +302,24 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     this.isDropdownLoadPending = true;
     this.loaderService.show();
     this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
+    this.studentForm.controls['Student'].get('adm_grp_id')?.valueChanges.subscribe(parentId => {
+  
+
+    this.masterData.update(data => ({
+    ...data,
+    admClasses: data.allClasses.filter(x => x.parentId === parentId)
+  }));
+});
+
+this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(parentId => {
+    console.log(parentId);
+
+    this.masterData.update(data => ({
+    ...data,
+    sessClasses: data.allClasses.filter(x => x.parentId === parentId)
+  }));
+});
+
   }
 
   ngOnDestroy(): void {
@@ -293,8 +341,11 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
         categories: [...current.categories],
         groups: [...current.groups],
         streams: [...current.streams],
-        classes: [...current.classes],
+        admClasses: [...current.admClasses],
+        sessClasses: [...current.sessClasses],
+        allClasses: [...current.allClasses],
         sections: [...current.sections],
+        allSections: [...current.allSections],
         concessions: [...current.concessions],
         feeGroups: [...current.feeGroups],
         qualifications: [...current.qualifications],
@@ -316,6 +367,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
         const option: DropdownOption = {
           id: record.id,
           name: record.name,
+          parentId: record.parentId,
         };
 
         switch (type) {
@@ -352,13 +404,15 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
             break;
           case 'classgroup':
             next.groups.push(option);
-            next.classes.push(option);
+            break;
+          case 'class':
+            next.allClasses.push(option);
             break;
           case 'stream':
             next.streams.push(option);
             break;
           case 'section':
-            next.sections.push(option);
+            next.allSections.push(option);
             break;
           case 'conccategory':
             next.concessions.push(option);
@@ -405,7 +459,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
       this.loaderService.hide();
     }
   }
-
+  
   get docsArray(): FormArray {
     return this.studentForm.get('Documents') as FormArray;
   }
@@ -447,8 +501,8 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
       sess_permanent_pin_code: ['10077'],
 
       // Admission Details
-      adm_cat_id: [1],
-      adm_grp_id: [1],
+      adm_cat_id: [],
+      adm_grp_id: [],
       adm_stream_id: [1],
       adm_class_id: [5],
       adm_section_id: [2],
@@ -457,8 +511,8 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
       adm_fee_group_id: [1],
 
       // Session Details
-      sess_cat_id: [2],
-      sess_grp_id: [1],
+      sess_cat_id: [],
+      sess_grp_id: [],
       sess_stream_id: [1],
       sess_class_id: [1],
       sess_section_id: [1],

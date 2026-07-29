@@ -181,7 +181,7 @@
                 <label>Admission Class</label>
                 <select formControlName="adm_class_id">
                   <option value="">Select Class</option>
-                  @for (cls of classes; track cls.id) {
+                  @for (cls of admClasses; track cls.id) {
                   <option [ngValue]="cls.id">{{ cls.name }}</option>
                   }
                 </select>
@@ -191,7 +191,7 @@
                 <label>Admission Section</label>
                 <select formControlName="adm_section_id">
                   <option value="">Select Section</option>
-                  @for (sec of sections; track sec.id) {
+                  @for (sec of allSections; track sec.id) {
                   <option [ngValue]="sec.id">{{ sec.name }}</option>
                   }
                 </select>
@@ -257,7 +257,7 @@
                 <label>Session Class</label>
                 <select formControlName="sess_class_id">
                   <option value="">Select Class</option>
-                  @for (cls of classes; track cls.id) {
+                  @for (cls of sessClasses; track cls.id) {
                   <option [ngValue]="cls.id">{{ cls.name }}</option>
                   }
                 </select>
@@ -267,7 +267,7 @@
                 <label>Session Section</label>
                 <select formControlName="sess_section_id">
                   <option value="">Select Section</option>
-                  @for (sec of sections; track sec.id) {
+                  @for (sec of allSections; track sec.id) {
                   <option [ngValue]="sec.id">{{ sec.name }}</option>
                   }
                 </select>

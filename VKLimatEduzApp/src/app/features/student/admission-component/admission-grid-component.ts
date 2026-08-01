@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './admission-grid-component.html',
-  styleUrls: ['./admission-grid-component.scss']
+  styleUrls: ['./admission-grid-component.scss'],  
 })
 export class AdmissionGridComponent implements OnInit, OnChanges {
   @Input() data: any[] = [];
@@ -29,6 +29,7 @@ export class AdmissionGridComponent implements OnInit, OnChanges {
   Math = Math;
 
   ngOnInit() {
+    
     this.filterData();
   }
 
@@ -40,20 +41,21 @@ export class AdmissionGridComponent implements OnInit, OnChanges {
 
   filterData() {
     let result = [...this.data];
+    //console.log(`Filtering data: ${JSON.stringify(result)},searchText: ${JSON.stringify(this.searchText)}, sortColumn: ${JSON.stringify(this.sortColumn)}, sortDirection: ${JSON.stringify(this.sortDirection)}`);
     // Apply search filter
     if (this.searchText) {
       const searchLower = this.searchText.toLowerCase();
       result = result.filter(row =>
-        (row.AdmNo || '').toLowerCase().includes(searchLower) ||
+        (row.admNo || '').toLowerCase().includes(searchLower) ||
         (row.adm_date || '').toLowerCase().includes(searchLower) ||
         (row.adm_dob || '').toLowerCase().includes(searchLower) ||
-        (row.Name || '').toLowerCase().includes(searchLower) ||
-        (row.Class || '').toLowerCase().includes(searchLower) ||
-        (row.Section || '').toLowerCase().includes(searchLower) ||
+        (row.name || '').toLowerCase().includes(searchLower) ||
+        (row.class || '').toLowerCase().includes(searchLower) ||
+        (row.section || '').toLowerCase().includes(searchLower) ||
         (row.sess_father_name || '').toLowerCase().includes(searchLower) ||
         (row.sess_mother_name || '').toLowerCase().includes(searchLower) ||
-        (row.F_MobileNo || '').toLowerCase().includes(searchLower) ||
-        (row.M_MobileNo || '').toLowerCase().includes(searchLower)
+        (row.f_MobileNo || '').toLowerCase().includes(searchLower) ||
+        (row.m_MobileNo || '').toLowerCase().includes(searchLower)
       );
     }
 

@@ -19,5 +19,6 @@
       </div>
     </section>
   </div>
-  <app-student-detail *ngIf="showModal" (close)="closeModal()" (save)="onSaveStudent($event)"></app-student-detail>
+  
+  <app-student-detail  *ngIf="showModal() && editModel" [studentData]="editModel" (close)="closeModal()" (save)="onSaveStudent($event)"></app-student-detail>
 </div>

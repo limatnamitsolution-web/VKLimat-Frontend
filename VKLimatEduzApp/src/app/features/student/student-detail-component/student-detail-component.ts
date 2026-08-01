@@ -7,6 +7,7 @@ import {
   inject,
   Output,
   signal,
+  Input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -82,7 +83,7 @@ interface ProfileImageState {
 export class StudentDetailComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<any>();
-
+  @Input() studentData: any;
   studentForm: FormGroup;
   activeTab: string = 'Student';
   tabs = [
@@ -294,11 +295,11 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
       }
 
       this.bindMasterDropdowns(dwnList);
-      console.log('Master Dropdowns bound:', this.masterData());
     });
   }
 
   ngOnInit(): void {
+    console.log('Student Data:', this.studentData);
     this.isDropdownLoadPending = true;
     this.loaderService.show();
     this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
@@ -357,7 +358,6 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
         transportRoutes: [...current.transportRoutes],
         transportDrivers: [...current.transportDrivers],
       };
-      console.log('Raw Master Items:', rawMasterItems);
       for (const record of rawMasterItems) {
         const type = record.type.trim().toLowerCase();
         if (!type) {

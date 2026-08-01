@@ -3,7 +3,7 @@
     <h3 class="grid-title">{{ title }}</h3>
     <div class="header-actions">
       <div class="search-box">
-        <i class="fas fa-search"></i>
+        <i class="fas fa-search"></i>        
         <input 
           type="text" 
           placeholder="Search..." 
@@ -61,7 +61,7 @@
           <td class="col-name">
             <div class="name-cell">
               <i class="fas fa-user-circle"></i>
-              {{ row.Name }}
+              {{ row.name }}
             </div>
           </td>
           <td>{{ row.class }}</td>
@@ -116,7 +116,7 @@
     </div>
     <div class="page-size-selector">
       <label>Show:</label>
-      <select [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+      <select [(ngModel)]="pageSize" (change)="onPageSizeChange()" >
         <option *ngFor="let opt of pageSizeOptions" [value]="opt.value">{{ opt.label }}</option>
       </select>
     </div>

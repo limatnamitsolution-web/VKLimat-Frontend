@@ -20,8 +20,8 @@ export class AdmissionComponent implements OnInit {
   private fb = inject(FormBuilder);
   private studentService = inject(StudentService);
   editIndex: number | null = null;
-  searchTerm: string = '';
-  showModal = false;
+  searchTerm = signal('');
+  showModal = signal(false);
   // Hardcoded data for now
   private initialData = [
     {
@@ -55,10 +55,9 @@ export class AdmissionComponent implements OnInit {
   }
  keyParam: string = '';
   ngOnInit(): void {
-      // Any init logic
+      // Any init logic     
       this.studentService.getAdmissions().subscribe({
         next: (data) => {
-          console.log('Admissions loaded', data);
           this.gridData.set(data); // Uncomment when API is ready
           this.applyFilters();  
         },
@@ -68,13 +67,13 @@ export class AdmissionComponent implements OnInit {
 
   // Filtering logic for search
   applyFilters(): void {
-    const term = this.searchTerm.toLowerCase();
+    const term = this.searchTerm().toLowerCase();
     const allData = this.gridData();
     this.filteredGridData.set(
       allData.filter((item: any) =>
-        String(item.Name ?? '').toLowerCase().includes(term) ||
+        String(item.name ?? '').toLowerCase().includes(term) ||
         String(item.adm_no ?? '').toLowerCase().includes(term) ||
-        String(item.Class ?? '').toLowerCase().includes(term) ||
+        String(item.class ?? '').toLowerCase().includes(term) ||
         String(item.sess_father_name ?? '').toLowerCase().includes(term)
       )
     );
@@ -85,11 +84,11 @@ export class AdmissionComponent implements OnInit {
   }
 
   openAddModal() {
-    this.showModal = true;
+    this.showModal.set(true);
   }
 
   closeModal() {
-    this.showModal = false;
+    this.showModal.set(false);
   }
 
   // private mapSavedStudentToGridRow(studentData: any): any {
@@ -129,9 +128,11 @@ export class AdmissionComponent implements OnInit {
     this.form.reset();
     this.editIndex = null;
   }
-
+editModel:any=null;
   onModify(item: any) {
       // Handle modify
+      this.editModel=item;
+      this.showModal.set(true);
   }
 
   onDelete(item: any) {

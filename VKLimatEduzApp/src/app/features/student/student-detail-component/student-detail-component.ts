@@ -298,17 +298,21 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
     console.log('Student Data:', this.studentData);
+
+    
+    this.studentForm.controls['Student'].patchValue(this.studentData);
     this.isDropdownLoadPending = true;
     this.loaderService.show();
     this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
     this.studentForm.controls['Student'].get('adm_grp_id')?.valueChanges.subscribe(parentId => {
   
-
     this.masterData.update(data => ({
     ...data,
     admClasses: data.allClasses.filter(x => x.parentId === parentId)
   }));
+
 });
 
 this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(parentId => {

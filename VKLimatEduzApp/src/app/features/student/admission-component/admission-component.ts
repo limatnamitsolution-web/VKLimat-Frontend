@@ -24,19 +24,6 @@ export class AdmissionComponent implements OnInit {
   showModal = signal(false);
   // Hardcoded data for now
   private initialData = [
-    {
-      adm_id:1,
-      adm_no: '1001',
-      adm_date: '2023-04-01',
-      adm_dob: '2010-05-12',
-      name: 'Rahul Ganga',
-      class: 'LKG',
-      section: 'A',
-      sess_father_name: 'Amit Sharma',
-      sess_mother_name: 'Sunita Sharma',
-      sess_father_mobile_no: '9876543210',
-      sess_mother_mobile_no: '9876543211'
-    },
   ]
  
 

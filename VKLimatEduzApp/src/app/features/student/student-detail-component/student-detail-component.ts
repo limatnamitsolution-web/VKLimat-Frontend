@@ -245,7 +245,6 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     { doc_id: 110, doc_Code: 'migrationCert', doc_label: 'Migration Certificate', doc_File: '' },
   ];
 
-  private readonly defaultTransportMonthIds = [4, 5, 12, 1, 2, 3];
   private readonly selectedDocumentFiles: Record<number, File> = {};
   private readonly profileImageKeyToApiField: Record<ProfileImageKey, string> = {
     student: 'StudentImage',
@@ -468,91 +467,101 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
     return this.studentForm.get(['Transport', 'months']) as FormArray;
   }
 
+    private getCurrentDateString(): string {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
   createStudentGroup(): FormGroup {
+      const currentDate = this.getCurrentDateString();
+
     return this.fb.group({
-      adm_branch_Id: [1],
-      adm_no: ['1001-1', Validators.required],
-      adm_date: ['2026-07-14'],
-      adm_doj: ['2026-07-14'],
-      sess_stud_first_name: ['Rahul', Validators.required],
-      sess_stud_last_name: ['Ganga'],
-      adm_ssr_no: ['ssrrno:1022'],
-      adm_dob: ['2012-04-18'],
-      adm_gender_id: [1],
-      adm_blood_grp_id: [1],
-      sess_religion_id: [1],
-      sess_caste_id: [1],
-      adm_stud_mobile_no: ['9978976545'],
-      sess_student_aadhar_no: ['799898912345'],
-      adm_stud_email_ddress: ['RahulGangadd@outlook.com'],
+        adm_branch_Id: [null],
+        adm_no: ['', Validators.required],
+        adm_date: [currentDate],
+        adm_doj: [currentDate],
+        sess_stud_first_name: ['', Validators.required],
+        sess_stud_last_name: [''],
+        adm_ssr_no: [''],
+        adm_dob: [''],
+        adm_gender_id: [null],
+        adm_blood_grp_id: [null],
+        sess_religion_id: [null],
+        sess_caste_id: [null],
+        adm_stud_mobile_no: [''],
+        sess_student_aadhar_no: [''],
+        adm_stud_email_ddress: [''],
 
       // Address Info
-      sess_country_id: [1],
-      sess_state_id: [1],
-      sess_city_id: [1],
-      sess_address: ['House 12, Main Street'],
-      sess_pin_code: ['10077'],
+        sess_country_id: [null],
+        sess_state_id: [null],
+        sess_city_id: [null],
+        sess_address: [''],
+        sess_pin_code: [''],
 
       // Permanent Address Info
-      sess_permanent_country_id: [1],
-      sess_permanent_state_id: [1],
-      sess_permanent_city_id: [1],
-      sess_permanent_address: ['House 12, Main Street'],
-      sess_permanent_pin_code: ['10077'],
+        sess_permanent_country_id: [null],
+        sess_permanent_state_id: [null],
+        sess_permanent_city_id: [null],
+        sess_permanent_address: [''],
+        sess_permanent_pin_code: [''],
 
       // Admission Details
-      adm_cat_id: [],
-      adm_grp_id: [],
-      adm_stream_id: [1],
-      adm_class_id: [5],
-      adm_section_id: [2],
-      adm_rollno: ['aa122'],
-      adm_concession_id: [1],
-      adm_fee_group_id: [1],
+        adm_cat_id: [null],
+        adm_grp_id: [null],
+        adm_stream_id: [null],
+        adm_class_id: [null],
+        adm_section_id: [null],
+        adm_rollno: [''],
+        adm_concession_id: [null],
+        adm_fee_group_id: [null],
 
       // Session Details
-      sess_cat_id: [],
-      sess_grp_id: [],
-      sess_stream_id: [1],
-      sess_class_id: [1],
-      sess_section_id: [1],
-      sess_roll_no: ['dsew33'],
-      sess_concession_id: [2],
-      sess_fee_group_id: [1],
+        sess_cat_id: [null],
+        sess_grp_id: [null],
+        sess_stream_id: [null],
+        sess_class_id: [null],
+        sess_section_id: [null],
+        sess_roll_no: [''],
+        sess_concession_id: [null],
+        sess_fee_group_id: [null],
     });
   }
 
   createParentGroup(): FormGroup {
     return this.fb.group({
       // Father Details
-      sess_father_name: ['ff'],
-      sess_father_mobile_no: ['9989899899'],
-      sess_father_qualification_id: [2],
-      sess_father_occupation_id: [2],
-      sess_father_designation_id: ['sds'],
-      sess_father_annual_income: ['100000'],
-      sess_father_office_address: ['oo'],
+      sess_father_name: [''],
+      sess_father_mobile_no: [''],
+      sess_father_qualification_id: [null],
+      sess_father_occupation_id: [null],
+      sess_father_designation_id: [''],
+      sess_father_annual_income: [''],
+      sess_father_office_address: [''],
       sess_is_fse: [false],
 
       // Mother Details
-      sess_mother_name: ['mmm'],
-      sess_mother_mobile_no: ['9989899899'],
-      sess_mother_qualification_id: [3],
-      sess_mother_occupation_id: [1],
-      sess_mother_designation_id: ['sds'],
-      sess_mother_annual_income: ['12121'],
-      sess_mother_office_address: ['dvdv'],
-      sess_is_mse: [true],
+      sess_mother_name: [''],
+      sess_mother_mobile_no: [''],
+      sess_mother_qualification_id: [null],
+      sess_mother_occupation_id: [null],
+      sess_mother_designation_id: [''],
+      sess_mother_annual_income: [''],
+      sess_mother_office_address: [''],
+      sess_is_mse: [false],
 
       // Guardian Details
-      sess_g1_name: ['g'],
-      sess_g1_mobile_no: ['9989899899'],
-      sess_g1_address: ['AAA'],
-      sess_g2_name: ['Test'],
-      sess_g2_mobile_no: ['9978976545'],
-      sess_g2_address: ['address12'],
+      sess_g1_name: [''],
+      sess_g1_mobile_no: [''],
+      sess_g1_address: [''],
+      sess_g2_name: [''],
+      sess_g2_mobile_no: [''],
+      sess_g2_address: [''],
 
-      otherDetails: ['SDFFD'],
+      otherDetails: [''],
     });
   }
 
@@ -562,20 +571,18 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
 
   createTransportGroup(): FormGroup {
     return this.fb.group({
-      transportMode: [1],
-      pickArea: [1],
-      pickDrop: [1],
-      pickStand: [1],
-      pickRoute: [1],
-      pickDriver: [1],
-      dropArea: [2],
-      dropStand: [2],
-      dropRoute: [2],
-      dropDriver: [2],
+      transportMode: [null],
+      pickArea: [null],
+      pickDrop: [null],
+      pickStand: [null],
+      pickRoute: [null],
+      pickDriver: [null],
+      dropArea: [null],
+      dropStand: [null],
+      dropRoute: [null],
+      dropDriver: [null],
       months: this.fb.array(
-        this.transportMonthsList.map((month) =>
-          this.defaultTransportMonthIds.includes(month.monthId),
-        ),
+        this.transportMonthsList.map(() => false),
       ),
     });
   }
@@ -738,28 +745,6 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
     }
   }
 
-  private applyStringDefaults<T extends Record<string, unknown>>(
-    source: T,
-    defaults: Record<string, string>,
-  ): T {
-    const normalized: Record<string, unknown> = { ...source };
-
-    Object.entries(defaults).forEach(([key, fallback]) => {
-      const currentValue = normalized[key];
-      if (currentValue === null || currentValue === undefined) {
-        normalized[key] = fallback;
-        return;
-      }
-
-      const text = String(currentValue).trim();
-      if (text.length === 0) {
-        normalized[key] = fallback;
-      }
-    });
-
-    return normalized as T;
-  }
-
   onSubmit(): void {
     if (this.studentForm.valid) {
       const formValue = this.studentForm.getRawValue();
@@ -767,46 +752,14 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
       //const academicRaw = formValue.Academic ?? {};
       const parentsRaw = formValue.Parents ?? {};
 
-      const studentPayload = this.applyStringDefaults(studentRaw, {
-        adm_no: '1022',
-        sess_stud_first_name: 'Rahul',
-        sess_stud_last_name: 'Ganga',
-        adm_ssr_no: 'ssrrno:1022',
-        adm_stud_mobile_no: '9978976545',
-        sess_student_aadhar_no: '799898912345',
-        adm_stud_email_ddress: 'RahulGangadd@outlook.com',
-        sess_address: 'House 12, Main Street',
-        sess_pin_code: '10077',
-        sess_permanent_address: 'House 12, Main Street',
-        sess_permanent_pin_code: '10077',
-        adm_rollno: 'aa122',
-        sess_roll_no: 'dsew33',
-      });
+      const studentPayload = { ...studentRaw };
 
-      // const academicPayload = this.applyStringDefaults(academicRaw, {
+      // const academicPayload = {
       //   adm_rollno: 'aa122',
       //   sess_roll_no: 'dsew33'
-      // });
+      // };
 
-      const parentsPayload = this.applyStringDefaults(parentsRaw, {
-        sess_father_name: 'ff',
-        sess_father_mobile_no: '9989899899',
-        sess_father_designation_id: 'sds',
-        sess_father_annual_income: '100000',
-        sess_father_office_address: 'oo',
-        sess_mother_name: 'mmm',
-        sess_mother_mobile_no: '9989899899',
-        sess_mother_designation_id: 'sds',
-        sess_mother_annual_income: '12121',
-        sess_mother_office_address: 'dvdv',
-        sess_g1_name: 'g',
-        sess_g1_mobile_no: '9989899899',
-        sess_g1_address: 'AAA',
-        sess_g2_name: 'Test',
-        sess_g2_mobile_no: '9978976545',
-        sess_g2_address: 'address12',
-        otherDetails: 'SDFFD',
-      });
+      const parentsPayload = { ...parentsRaw };
 
       const selectedMonthIds = (formValue.Transport.months as boolean[])
         .map((isSelected: boolean, index: number) =>

@@ -20,7 +20,7 @@ export class LoginComponent {
     username: ['', Validators.required],
     password: ['', Validators.required],
     fyId: [null as number | null, Validators.required],
-    academicId: [null as number | null, Validators.required]
+    branchid: [null as number | null, Validators.required]
   });
 
   financialYears = [
@@ -32,17 +32,17 @@ export class LoginComponent {
   ];
 
   academics = [
-    { academicId: 1, name: 'ABC School' },
-    { academicId: 2, name: 'XYZ School' }
+    { branchid: 1, name: 'ABC School' },
+    { branchid: 2, name: 'XYZ School' }
   ];
 
   onSubmit() {
     if (this.loginForm.valid) {
       // Mock login logic
-      const { username, fyId, academicId } = this.loginForm.value;
+      const { username, fyId, branchid } = this.loginForm.value;
       
       const selectedFy = this.financialYears.find(f => f.fyId == fyId);
-      const selectedAcademic = this.academics.find(a => a.academicId == academicId);
+      const selectedAcademic = this.academics.find(a => a.branchid == branchid);
 
       // Set global state
       this.appState.setUser(1, username || 'User');
@@ -50,7 +50,7 @@ export class LoginComponent {
         this.appState.setFinancialYear(selectedFy.fyId, selectedFy.name);
       }
       if (selectedAcademic) {
-        this.appState.setAcademicYear(selectedAcademic.academicId, selectedAcademic.name);
+        this.appState.setAcademicYear(selectedAcademic.branchid, selectedAcademic.name);
       }
 
       // Navigate to dashboard

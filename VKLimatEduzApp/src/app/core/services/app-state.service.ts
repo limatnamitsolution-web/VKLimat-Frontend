@@ -15,7 +15,7 @@ export class AppStateService {
   private readonly EMPTY_STATE: IAppContext = {
     userId: null,
     userName: null,
-    academicId: null,
+    branchid: null,
     academicName: null,
     fyId: null,
     fy: null
@@ -56,7 +56,7 @@ export class AppStateService {
     return JSON.stringify({
       userId: state.userId,
       userName: state.userName,
-      academicId: state.academicId,
+      branchid: state.branchid,
       academicName: state.academicName,
       fyId: state.fyId,
       fy: state.fy
@@ -68,7 +68,7 @@ export class AppStateService {
   }
 
   setAcademicYear(id: number, name: string) {
-    this.userState.update(state => ({ ...state, academicId: id, academicName: name }));
+    this.userState.update(state => ({ ...state, branchid: id, academicName: name }));
   }
 
   setUser(id: number, name: string) {

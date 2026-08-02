@@ -24,12 +24,12 @@ export class MastersConfig {
   
   fetchMasterConfig(configuration: string) {
     const state = this.appState.userState();
-    const { academicId } = state;
-    const safeAcademicId = academicId?.toString() ?? '';
+    const { branchid } = state;
+    const safebranchid = branchid?.toString() ?? '';
 
     this.http.post(MastersConfigApiEndpoints.list, {
       configuration_en: configuration,
-      academicId_en: this.encryptionService.encrypt(safeAcademicId)
+      branchid_en: this.encryptionService.encrypt(safebranchid)
     }).subscribe({
       next: response => {
         const list = this.unwrapResponse<any[]>(response);

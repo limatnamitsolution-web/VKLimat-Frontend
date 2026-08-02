@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 export class HeaderComponent implements OnInit, OnDestroy {
   isThemeSwitcherOpen = false;
   isModuleSwitcherOpen = false;
+  isProfileMenuOpen = false;
   currentTheme: string = 'light';
   private themeSubscription!: Subscription;
   selectedMenuLabel: string = '';
@@ -60,6 +61,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @HostListener('document:click')
   closeThemeSwitcher() {
     this.isThemeSwitcherOpen = false;
+    this.isProfileMenuOpen = false;
   }
 
   changeTheme(theme: string) {
@@ -75,7 +77,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isModuleSwitcherOpen = false;
   }
 
+  toggleProfileMenu(event: Event) {
+    event.stopPropagation();
+    this.isProfileMenuOpen = !this.isProfileMenuOpen;
+  }
+
   logout() {
+    this.isProfileMenuOpen = false;
     this.appStateService.clearContextAndStorage();
     if (this.router) {
       this.router.navigate(['/login']);

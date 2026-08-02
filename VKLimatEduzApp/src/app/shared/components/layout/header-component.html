@@ -100,10 +100,16 @@
               <div class="avatar-fullname" role="tooltip">{{ userFullName() }}</div>
             </div>
             <div class="profile-menu">
-              <button class="icon-btn" title="Profile" aria-haspopup="menu" aria-label="Profile menu">
+              <button
+                class="icon-btn"
+                title="Profile"
+                aria-haspopup="menu"
+                aria-label="Profile menu"
+                [attr.aria-expanded]="isProfileMenuOpen"
+                (click)="toggleProfileMenu($event)">
                 <i class="fas fa-ellipsis-vertical"></i>
               </button>
-              <div class="logout-popup" role="menu">
+              <div class="logout-popup" role="menu" [class.active]="isProfileMenuOpen">
                 <button class="logout-btn" (click)="logout()" role="menuitem" type="button">
                   <i class="fas fa-sign-out-alt"></i>
                   <span>Logout</span>

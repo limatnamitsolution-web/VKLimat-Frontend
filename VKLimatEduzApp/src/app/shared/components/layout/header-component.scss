@@ -204,6 +204,13 @@
         color: #b42335;
       }
 
+      .logout-popup.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+      }
+
       &:hover .logout-popup,
       &:focus-within .logout-popup {
         opacity: 1;

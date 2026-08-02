@@ -10,15 +10,18 @@ export class AppStateService {
   private encryptionService = inject(EncryptionService);
   private platformId = inject(PLATFORM_ID);
   private readonly STORAGE_KEY = 'app_context';
+  private skipNextPersist = false;
 
-  readonly userState = signal<IAppContext>({
+  private readonly EMPTY_STATE: IAppContext = {
     userId: null,
     userName: null,
     academicId: null,
     academicName: null,
     fyId: null,
     fy: null
-  });
+  };
+
+  readonly userState = signal<IAppContext>({ ...this.EMPTY_STATE });
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -36,6 +39,11 @@ export class AppStateService {
       }
 
       effect(() => {
+        if (this.skipNextPersist) {
+          this.skipNextPersist = false;
+          return;
+        }
+
         const state = this.userState();
         const encryptedState = this.encryptionService.encrypt(JSON.stringify(state));
         localStorage.setItem(this.STORAGE_KEY, encryptedState);
@@ -68,13 +76,15 @@ export class AppStateService {
   }
 
   clearState() {
-    this.userState.set({
-      userId: null,
-      userName: null,
-      academicId: null,
-      academicName: null,
-      fyId: null,
-      fy: null
-    });
+    this.userState.set({ ...this.EMPTY_STATE });
+  }
+
+  clearContextAndStorage() {
+    this.skipNextPersist = true;
+    this.userState.set({ ...this.EMPTY_STATE });
+
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(this.STORAGE_KEY);
+    }
   }
 }

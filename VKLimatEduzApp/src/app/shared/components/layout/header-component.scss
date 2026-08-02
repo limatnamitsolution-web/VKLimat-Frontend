@@ -159,3 +159,56 @@
         transform: translate(-50%, 0) scale(1);
       }
     }
+
+    .profile-menu {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+
+      .logout-popup {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        min-width: 132px;
+        padding: 6px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.16);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-6px) scale(0.96);
+        pointer-events: none;
+        transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+        z-index: 30;
+      }
+
+      .logout-btn {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        border-radius: 8px;
+        padding: 8px 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.18s ease, color 0.18s ease;
+      }
+
+      .logout-btn:hover {
+        background: rgba(220, 53, 69, 0.12);
+        color: #b42335;
+      }
+
+      &:hover .logout-popup,
+      &:focus-within .logout-popup {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+      }
+    }

@@ -7,6 +7,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ModuleSwitcherComponent } from "../module-switcher/module-switcher.component";
 import { AppStateService } from '../../../core/services/app-state.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -30,7 +31,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private themeService: ThemeService,
     public menuLabelService: MenuLabelService,
     private cdr: ChangeDetectorRef,
-    private appStateService: AppStateService
+    private appStateService: AppStateService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -71,6 +73,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   closeModuleSwitcher() {
     this.isModuleSwitcherOpen = false;
+  }
+
+  logout() {
+    this.appStateService.clearContextAndStorage();
+    if (this.router) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (typeof window !== 'undefined') {
+      window.location.assign('/login');
+    }
   }
 
   private getFullUserName(): string {

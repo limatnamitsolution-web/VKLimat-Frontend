@@ -25,7 +25,10 @@ export class LoginComponent {
 
   financialYears = [
     { fyId: 1, name: '2023-2024' },
-    { fyId: 2, name: '2024-2025' }
+    { fyId: 2, name: '2024-2025' },
+    { fyId: 3, name: '2025-2026' },
+    {fyId: 4, name: '2026-2027' }
+
   ];
 
   academics = [

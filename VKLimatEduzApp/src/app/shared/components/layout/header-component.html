@@ -93,7 +93,12 @@
               <span>Switch Module</span>
             </button>
             
-            <div class="avatar">VK</div>
+            <div class="avatar-wrap">
+              <div class="avatar" [attr.aria-label]="userFullName()">
+                {{ userInitials() }}
+              </div>
+              <div class="avatar-fullname" role="tooltip">{{ userFullName() }}</div>
+            </div>
             <button class="icon-btn" title="Profile"><i class="fas fa-ellipsis-vertical"></i></button>
           </div>
         </div>

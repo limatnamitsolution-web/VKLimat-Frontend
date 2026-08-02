@@ -1,12 +1,12 @@
 // app/layout/header.component.ts
-import { Component, OnInit, OnDestroy, HostListener, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ThemeService } from '../../services/theme.service';
 import { MenuLabelService } from '../../services/menu-label.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ModuleSwitcherComponent } from "../module-switcher/module-switcher.component";
-import { sign } from 'crypto';
+import { AppStateService } from '../../../core/services/app-state.service';
 
 @Component({
   selector: 'app-header',
@@ -23,11 +23,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private themeSubscription!: Subscription;
   selectedMenuLabel: string = '';
   selectedLabel=signal<string>('');
+  readonly userFullName = computed(() => this.getFullUserName());
+  readonly userInitials = computed(() => this.getUserInitials(this.userFullName()));
 
   constructor(
     private themeService: ThemeService,
     public menuLabelService: MenuLabelService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private appStateService: AppStateService
   ) {}
 
   ngOnInit() {
@@ -68,5 +71,40 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   closeModuleSwitcher() {
     this.isModuleSwitcherOpen = false;
+  }
+
+  private getFullUserName(): string {
+    const contextHeader = this.appStateService.getContextHeaderValue();
+
+    if (!contextHeader) {
+      return 'User';
+    }
+
+    try {
+      const context = JSON.parse(contextHeader) as { userName?: string | null };
+      const fullName = context.userName?.trim();
+      return fullName && fullName.length > 0 ? fullName : 'User';
+    } catch {
+      return 'User';
+    }
+  }
+
+  private getUserInitials(fullName: string): string {
+    const nameParts = fullName
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+
+    if (nameParts.length >= 2) {
+      const firstInitial = nameParts[0][0] ?? '';
+      const lastInitial = nameParts[nameParts.length - 1][0] ?? '';
+      return `${firstInitial}${lastInitial}`.toUpperCase();
+    }
+
+    if (nameParts.length === 1) {
+      return nameParts[0].slice(0, 2).toUpperCase();
+    }
+
+    return 'US';
   }
 }

@@ -139,29 +139,29 @@
   --text-3: #92400e; /* Amber 800 */
 }
 
-/* Dark Color theme - Neon */
+/* Dark Color theme - VS Code Green Dark */
 [data-theme="dark-color"] {
-  --primary-blue: #10b981;
-  --secondary-blue: #34d399;
-  --dark-blue: #059669;
-  --light-blue: #064e3b;
+  --primary-blue: #7ec699;
+  --secondary-blue: #4f9a68;
+  --dark-blue: #3d8055;
+  --light-blue: #274334;
 
-  --accent-gold: #f59e0b;
-  --success: #10b981;
-  --danger: #ef4444;
-  --warning: #f97316;
+  --accent-gold: #dcdcaa;
+  --success: #7ec699;
+  --danger: #f48771;
+  --warning: #d7ba7d;
 
-  --bg: #022c22;
-  --surface: #064e3b;
-  --muted-surface: #065f46;
-  --border: #10b981;
-  --text: #ecfdf5;
-  --text-2: #d1fae5;
-  --text-3: #6ee7b7;
+  --bg: #102018;
+  --surface: #162b22;
+  --muted-surface: #1d352a;
+  --border: #2c4f3f;
+  --text: #d2e6da;
+  --text-2: #bcd7c8;
+  --text-3: #8fb4a1;
 
-  --shadow-1: 0 1px 3px rgba(16, 185, 129, 0.2);
-  --shadow-2: 0 4px 6px rgba(16, 185, 129, 0.3);
-  --shadow-3: 0 10px 15px rgba(16, 185, 129, 0.4);
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-3: 0 10px 15px rgba(0, 0, 0, 0.5);
 }
 
 /* Crazy theme - Rainbow */
@@ -470,10 +470,6 @@ body {
   z-index: 2;
 }
 
-.theme-option.active {
-  /* Active state styling */
-}
-
 .theme-option.active .theme-color-box {
   box-shadow: 0 0 0 1.5px var(--surface), 0 0 0 1.5px var(--primary-blue);
   border-color: transparent;
@@ -512,9 +508,10 @@ body {
 .theme-light .theme-label { color: #00bcd4; border-color: #00bcd4; }
 .theme-dark .theme-label { color: #bd93f9; border-color: #bd93f9; }
 .theme-color .theme-label { color: #f59e0b; border-color: #f59e0b; }
-.theme-dark-color .theme-label { color: #10b981; border-color: #10b981; }
+.theme-dark-color .theme-label { color: #89d185; border-color: #89d185; }
 .theme-crazy .theme-label { 
   background: linear-gradient(45deg, #06b6d4, #8b5cf6);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   border-color: #8b5cf6;
@@ -592,9 +589,9 @@ body {
 }
 
 .theme-dark-color .theme-color-box {
-  background: linear-gradient(135deg, #1e1b4b, #0f172a);
-  border-color: #6366f1;
-  color: #a5b4fc;
+  background: linear-gradient(135deg, #1e1e1e, #2d2d30);
+  border-color: #3e3e42;
+  color: #89d185;
 }
 
 .theme-crazy .theme-color-box {

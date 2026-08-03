@@ -25,14 +25,14 @@
             </i>
           </th>
           <th class="col-code" (click)="sortData('adm_no')">
-            adm_no
+            Adm No
              <i class="sort-icon" [class.asc]="sortColumn === 'adm_no' && sortDirection === 'asc'" 
                [class.desc]="sortColumn === 'adm_no' && sortDirection === 'desc'">
               ↕
             </i>
           </th>
-          <th (click)="sortData('adm_date')">adm_date</th>
-          <th (click)="sortData('adm_dob')">adm_dob</th>
+          <th (click)="sortData('adm_date')">Adm Date</th>
+          <th (click)="sortData('adm_dob')">Adm DOB</th>
           <th class="col-name" (click)="sortData('Name')">
             Name
              <i class="sort-icon" [class.asc]="sortColumn === 'Name' && sortDirection === 'asc'" 
@@ -42,10 +42,10 @@
           </th>
           <th (click)="sortData('Class')">Class</th>
           <th (click)="sortData('Section')">Section</th>
-          <th (click)="sortData('sess_father_name')">sess_father_name</th>
-           <th (click)="sortData('sess_father_mobile_no')">sess_father_mobile_no</th>
-          <th (click)="sortData('sess_mother_name')">sess_mother_name</th>         
-          <th (click)="sortData('sess_mother_mobile_no')">sess_mother_mobile_no</th>
+          <th (click)="sortData('sess_father_name')">Father Name</th>
+           <th (click)="sortData('sess_father_mobile_no')">Father Mobile No</th>
+          <th (click)="sortData('sess_mother_name')">Mother Name</th>         
+          <th (click)="sortData('sess_mother_mobile_no')">Mother Mobile No</th>
           <th class="col-actions">Actions</th>
         </tr>
       </thead>

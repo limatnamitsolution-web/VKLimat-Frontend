@@ -11,9 +11,9 @@ export interface StudentDetailsDto {
   adm_blood_grp_id?: number | string | null;
   sess_religion_id?: number | string | null;
   sess_caste_id?: number | string | null;
-  adm_stud_mobile_no?: string;
+  sess_stud_mobile_no?: string;
   sess_student_aadhar_no?: string;
-  adm_stud_email_ddress?: string;
+  sess_stud_email_ddress?: string;
   sess_country_id?: number | string | null;
   sess_state_id?: number | string | null;
   sess_city_id?: number | string | null;

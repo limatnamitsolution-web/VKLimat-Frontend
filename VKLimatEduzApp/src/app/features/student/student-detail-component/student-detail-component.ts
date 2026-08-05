@@ -27,6 +27,7 @@ interface DropdownOption {
   id: number | string;
   parentId?: number | string;
   name: string;
+  description?: string;
 }
 
 interface RawMasterItem {
@@ -34,6 +35,7 @@ interface RawMasterItem {
   parentId: number | string;
   name: string;
   type: string;
+  description?: string;
 }
 
 interface MasterDropdownData {
@@ -63,6 +65,7 @@ interface MasterDropdownData {
   transportStands: DropdownOption[];
   transportRoutes: DropdownOption[];
   transportDrivers: DropdownOption[];
+  AdmissionDocument: DropdownOption[];
 
 }
 
@@ -125,6 +128,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     transportStands: [],
     transportRoutes: [],
     transportDrivers: [],
+    AdmissionDocument: [],
   });
 
   get branches(): DropdownOption[] {
@@ -232,18 +236,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     { label: 'Mar', monthId: 3 },
   ];
 
-  documentTypes = [
-    { doc_id: 101, doc_Code: 'dobProof', doc_label: 'Date of Birth Proof', doc_File: '' },
-    { doc_id: 102, doc_Code: 'aadharCard', doc_label: 'Aadhar Card', doc_File: '' },
-    { doc_id: 103, doc_Code: 'signature', doc_label: 'Signature', doc_File: '' },
-    { doc_id: 104, doc_Code: 'fatherAadhar', doc_label: 'Father Aadharcard', doc_File: '' },
-    { doc_id: 105, doc_Code: 'motherAadhar', doc_label: 'Mother Aadharcard', doc_File: '' },
-    { doc_id: 106, doc_Code: 'incomeCert', doc_label: 'Income Certificate', doc_File: '' },
-    { doc_id: 107, doc_Code: 'casteCert', doc_label: 'Caste Certificate', doc_File: '' },
-    { doc_id: 108, doc_Code: 'addressProof1', doc_label: 'Address Proof 1', doc_File: '' },
-    { doc_id: 109, doc_Code: 'addressProof2', doc_label: 'Address Proof 2', doc_File: '' },
-    { doc_id: 110, doc_Code: 'migrationCert', doc_label: 'Migration Certificate', doc_File: '' },
-  ];
+  documentTypes = signal<Array<{ doc_id: number | string; doc_Code: string; doc_label: string; doc_File: string }>>([]);
 
   private readonly selectedDocumentFiles: Record<number, File> = {};
   private readonly profileImageKeyToApiField: Record<ProfileImageKey, string> = {
@@ -253,12 +246,12 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     guardian1: 'Guardian1Image',
     guardian2: 'Guardian2Image',
   };
-  private readonly profileImageKeyToPathField: Record<ProfileImageKey, string> = {
-    student: 'StudentImagePath',
-    father: 'FatherImagePath',
-    mother: 'MotherImagePath',
-    guardian1: 'Guardian1ImagePath',
-    guardian2: 'Guardian2ImagePath',
+  private readonly profileImageKeyToStudentPathField: Record<ProfileImageKey, string> = {
+    student: 'sess_student_image_path',
+    father: 'sess_father_image_path',
+    mother: 'sess_mother_image_path',
+    guardian1: 'sess_g1_image_path',
+    guardian2: 'sess_g2_image_path',
   };
 
   profileImages: Record<ProfileImageKey, ProfileImageState> = {
@@ -288,12 +281,16 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     });
 
     effect(() => {
+      const docs = this.documentTypes();
+      this.studentForm.setControl('Documents', this.createDocumentUploadGroup(docs));
+    });
+
+    effect(() => {
       const dwnList = this.masterConfigsDWN.masterConfigDwnList();
       if (!this.isDropdownLoadPending || !Array.isArray(dwnList)) {
         return;
-      }
-
-      this.bindMasterDropdowns(dwnList);
+      }      
+      this.bindMasterDropdowns(dwnList);      
     });
   }
 
@@ -332,7 +329,7 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
 
   private bindMasterDropdowns(rawMasterItems: RawMasterItem[]): void {
     try {
-      const current = this.masterData();
+      const current = this.masterData();           
       const next: MasterDropdownData = {
         branches: [...current.branches],
         genders: [...current.genders],
@@ -360,9 +357,13 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
         transportStands: [...current.transportStands],
         transportRoutes: [...current.transportRoutes],
         transportDrivers: [...current.transportDrivers],
+        AdmissionDocument: [...current.AdmissionDocument],
       };
       for (const record of rawMasterItems) {
-        const type = record.type.trim().toLowerCase();
+
+        const type =record.type.trim().toLowerCase();
+        console.log('Record Type:', type, 'Record Name:', record.name, 'Record ID:', record.id);
+        
         if (!type) {
           continue;
         }
@@ -371,6 +372,7 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
           id: record.id,
           name: record.name,
           parentId: record.parentId,
+          description: record.description ?? '',
         };
 
         switch (type) {
@@ -451,15 +453,28 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
           case 'busdriver':
             next.transportDrivers.push(option);
             break;
+          case 'admissiondocument':            
+            next.AdmissionDocument.push(option);
+            break;
           default:
             break;
         }
+   
       }
 
       this.masterData.set(next);
+   
     } finally {
       this.isDropdownLoadPending = false;
       this.loaderService.hide();
+      const docs = this.masterData().AdmissionDocument.map(doc => ({
+        doc_id: doc.id,
+        doc_Code: doc.name,
+        doc_label: doc.description ?? '',
+        doc_File: '',
+      }));
+      this.documentTypes.set([...this.documentTypes(), ...docs]);
+        console.log('admissiondocument:', this.documentTypes());
     }
   }
   
@@ -495,9 +510,9 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
         adm_blood_grp_id: [null],
         sess_religion_id: [null],
         sess_caste_id: [null],
-        adm_stud_mobile_no: [''],
+        sess_stud_mobile_no: [''],
         sess_student_aadhar_no: [''],
-        adm_stud_email_ddress: [''],
+        sess_stud_email_ddress: [''],
 
       // Address Info
         sess_country_id: [null],
@@ -591,8 +606,8 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
     });
   }
 
-  createDocumentUploadGroup(): FormArray {
-    const controls = this.documentTypes.map((doc) => {
+  createDocumentUploadGroup(docs: Array<{ doc_id: number | string; doc_Code: string; doc_label: string; doc_File: string }> = this.documentTypes()): FormArray {
+    const controls = docs.map((doc) => {
       return this.fb.group({
         doc_id: [doc.doc_id],
         doc_Code: [doc.doc_Code],
@@ -654,17 +669,28 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
   private appendProfileImages(formData: FormData): void {
     (Object.keys(this.profileImageKeyToApiField) as ProfileImageKey[]).forEach((key) => {
       const imageFile = this.profileImages[key].file;
-      const pathFieldName = this.profileImageKeyToPathField[key];
-
-      // Backend currently validates *ImagePath fields as required.
-      // Always send path fields so model validation can pass.
       if (!imageFile) {
-        formData.append(pathFieldName, 'N/A');
         return;
       }
 
       formData.append(this.profileImageKeyToApiField[key], imageFile, imageFile.name);
-      formData.append(pathFieldName, imageFile.name);
+    });
+  }
+
+  private applyProfileImagePaths(studentPayload: Record<string, unknown>): void {
+    (Object.keys(this.profileImageKeyToStudentPathField) as ProfileImageKey[]).forEach((key) => {
+      const pathField = this.profileImageKeyToStudentPathField[key];
+      const imageFile = this.profileImages[key].file;
+      const existing = studentPayload[pathField];
+
+      if (imageFile) {
+        studentPayload[pathField] = imageFile.name;
+        return;
+      }
+
+      if (existing === null || existing === undefined || existing === '') {
+        studentPayload[pathField] = 'N/A';
+      }
     });
   }
 
@@ -757,6 +783,7 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
       const parentsRaw = formValue.Parents ?? {};
 
       const studentPayload = { ...studentRaw };
+      this.applyProfileImagePaths(studentPayload as Record<string, unknown>);
 
       // const academicPayload = {
       //   adm_rollno: 'aa122',

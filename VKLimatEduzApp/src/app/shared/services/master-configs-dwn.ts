@@ -66,7 +66,8 @@ export const MASTER_CONFIG_DWN_TYPES: string[] = [
   'Salute',
   'DESIGNATION',
   'Occupation',
-  'DisabilityTypes'
+  'DisabilityTypes',
+  'AdmissionDocument'
 ] ;
 
 @Service()

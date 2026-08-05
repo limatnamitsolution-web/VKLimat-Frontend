@@ -71,7 +71,6 @@ export class AdmissionComponent implements OnInit {
   }
 
   openAddModal() {
-    console.log('Opening add modal');
     this.editModel={};
     this.showModal.set(true);
   }

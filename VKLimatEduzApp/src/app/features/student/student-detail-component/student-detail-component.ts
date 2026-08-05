@@ -361,8 +361,7 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
       };
       for (const record of rawMasterItems) {
 
-        const type =record.type.trim().toLowerCase();
-        console.log('Record Type:', type, 'Record Name:', record.name, 'Record ID:', record.id);
+        const type =record.type.trim().toLowerCase();       
         
         if (!type) {
           continue;
@@ -473,8 +472,7 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
         doc_label: doc.description ?? '',
         doc_File: '',
       }));
-      this.documentTypes.set([...this.documentTypes(), ...docs]);
-        console.log('admissiondocument:', this.documentTypes());
+      this.documentTypes.set([...this.documentTypes(), ...docs]);     
     }
   }
   

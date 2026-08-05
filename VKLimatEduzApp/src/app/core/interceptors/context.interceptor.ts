@@ -21,7 +21,7 @@ export class ContextInterceptor implements HttpInterceptor {
 
     // Attach the full app context as a single structured header
     const contextHeaderValue = this.appState.getContextHeaderValue();
-    console.log('Context Header Value:', contextHeaderValue);
+
 
     if (!contextHeaderValue) {
       return next.handle(request);

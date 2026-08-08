@@ -227,7 +227,7 @@
     &:focus {
       outline: none;
       border-color: var(--primary-blue);
-      box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-blue) 18%, transparent);
     }
 
     &::placeholder {
@@ -611,7 +611,7 @@
   border-radius: 999px;
   overflow: visible;
   border: 2px solid var(--surface);
-  background: linear-gradient(145deg, var(--primary-blue), color-mix(in srgb, var(--primary-blue) 76%, #004b72));
+  background: linear-gradient(145deg, var(--primary-blue), color-mix(in srgb, var(--primary-blue) 76%, var(--dark-blue)));
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.22);
 
   .avatar-upload-plus {

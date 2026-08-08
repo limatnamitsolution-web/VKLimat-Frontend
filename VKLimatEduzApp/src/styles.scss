@@ -431,6 +431,23 @@ body {
   animation: slideDown 0.2s ease-out;
 }
 
+/* Make theme popup visually distinct only when VS Code Green Dark is active */
+body[data-theme="dark-color"] .theme-switcher {
+  background: #145760;
+  border-color: #2b7b79;
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.35);
+}
+
+body[data-theme="dark-color"] .theme-toggle-btn {
+  background: #1b656f;
+  border-color: #2b7b79;
+  color: #e2f7f2;
+}
+
+body[data-theme="dark-color"] .theme-toggle-btn i {
+  color: #66d1ae;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -508,7 +525,7 @@ body {
 .theme-light .theme-label { color: #00bcd4; border-color: #00bcd4; }
 .theme-dark .theme-label { color: #bd93f9; border-color: #bd93f9; }
 .theme-color .theme-label { color: #f59e0b; border-color: #f59e0b; }
-.theme-dark-color .theme-label { color: #66d1ae; border-color: #66d1ae; }
+.theme-dark-color .theme-label { color: #89d185; border-color: #89d185; }
 .theme-crazy .theme-label { 
   background: linear-gradient(45deg, #06b6d4, #8b5cf6);
   background-clip: text;
@@ -589,9 +606,9 @@ body {
 }
 
 .theme-dark-color .theme-color-box {
-  background: linear-gradient(135deg, #0d4952, #145760);
-  border-color: #2b7b79;
-  color: #66d1ae;
+  background: linear-gradient(135deg, #1e1e1e, #2d2d30);
+  border-color: #3e3e42;
+  color: #89d185;
 }
 
 .theme-crazy .theme-color-box {

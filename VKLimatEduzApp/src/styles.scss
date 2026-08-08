@@ -141,23 +141,23 @@
 
 /* Dark Color theme - VS Code Green Dark */
 [data-theme="dark-color"] {
-  --primary-blue: #7ec699;
-  --secondary-blue: #4f9a68;
-  --dark-blue: #3d8055;
-  --light-blue: #274334;
+  --primary-blue: #66d1ae;
+  --secondary-blue: #43a888;
+  --dark-blue: #2f8a6f;
+  --light-blue: #1a5a58;
 
-  --accent-gold: #dcdcaa;
-  --success: #7ec699;
+  --accent-gold: #a2cf88;
+  --success: #66d1ae;
   --danger: #f48771;
-  --warning: #d7ba7d;
+  --warning: #d1b67a;
 
-  --bg: #102018;
-  --surface: #162b22;
-  --muted-surface: #1d352a;
-  --border: #2c4f3f;
-  --text: #d2e6da;
-  --text-2: #bcd7c8;
-  --text-3: #8fb4a1;
+  --bg: #0d4952;
+  --surface: #145760;
+  --muted-surface: #1b656f;
+  --border: #2b7b79;
+  --text: #e2f7f2;
+  --text-2: #bddfd7;
+  --text-3: #95bfb3;
 
   --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.35);
   --shadow-2: 0 4px 6px rgba(0, 0, 0, 0.4);
@@ -508,7 +508,7 @@ body {
 .theme-light .theme-label { color: #00bcd4; border-color: #00bcd4; }
 .theme-dark .theme-label { color: #bd93f9; border-color: #bd93f9; }
 .theme-color .theme-label { color: #f59e0b; border-color: #f59e0b; }
-.theme-dark-color .theme-label { color: #89d185; border-color: #89d185; }
+.theme-dark-color .theme-label { color: #66d1ae; border-color: #66d1ae; }
 .theme-crazy .theme-label { 
   background: linear-gradient(45deg, #06b6d4, #8b5cf6);
   background-clip: text;
@@ -589,9 +589,9 @@ body {
 }
 
 .theme-dark-color .theme-color-box {
-  background: linear-gradient(135deg, #1e1e1e, #2d2d30);
-  border-color: #3e3e42;
-  color: #89d185;
+  background: linear-gradient(135deg, #0d4952, #145760);
+  border-color: #2b7b79;
+  color: #66d1ae;
 }
 
 .theme-crazy .theme-color-box {

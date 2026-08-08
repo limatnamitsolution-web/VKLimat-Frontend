@@ -221,7 +221,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
   // }
 
   
-  transportMonthsList = [
+  transportmonthIdsList = [
     { label: 'Apr', monthId: 4 },
     { label: 'May', monthId: 5 },
     { label: 'Jun', monthId: 6 },
@@ -300,6 +300,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
 
     
     this.studentForm.controls['Student'].patchValue(this.studentData);
+    this.patchTransportData(this.studentData?.Transport ?? this.studentData?.transport ?? null);
     this.isDropdownLoadPending = true;
     this.loaderService.show();
     this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
@@ -455,6 +456,12 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
           case 'admissiondocument':            
             next.AdmissionDocument.push(option);
             break;
+          case 'transportmodes':
+            next.transportModes.push(option);
+            break;
+          case 'transportdrivers':
+            next.transportDrivers.push(option);
+            break;
           default:
             break;
         }
@@ -480,8 +487,34 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
     return this.studentForm.get('Documents') as FormArray;
   }
 
-  get transportMonthsArray(): FormArray {
+  get transportmonthIdsArray(): FormArray {
     return this.studentForm.get(['Transport', 'months']) as FormArray;
+  }
+
+  private buildTransportMonthSelections(monthIds: string | null | undefined): boolean[] {
+    const selectedIds = new Set(
+      String(monthIds ?? '')
+        .split(',')
+        .map((value) => Number(value.trim()))
+        .filter((value) => Number.isInteger(value)),
+    );
+
+    return this.transportmonthIdsList.map((month) => selectedIds.has(month.monthId));
+  }
+
+  private patchTransportData(transportData: Record<string, unknown> | null): void {
+    if (!transportData) {
+      return;
+    }
+
+    const months = this.buildTransportMonthSelections(
+      typeof transportData['monthIds'] === 'string' ? transportData['monthIds'] as string : '',
+    );
+
+    this.studentForm.controls['Transport'].patchValue({
+      ...transportData,
+      months,
+    });
   }
 
     private getCurrentDateString(): string {
@@ -588,18 +621,19 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
 
   createTransportGroup(): FormGroup {
     return this.fb.group({
-      transportMode: [null],
-      pickArea: [null],
-      pickDrop: [null],
-      pickStand: [null],
-      pickRoute: [null],
-      pickDriver: [null],
-      dropArea: [null],
-      dropStand: [null],
-      dropRoute: [null],
-      dropDriver: [null],
+      transportModeId: [null],
+      pickAreaId: [null],
+      pickDropId: [null],
+      pickStandId: [null],
+      pickRouteId: [null],
+      pickDriverId: [null],
+      dropAreaId: [null],
+      dropStandId: [null],
+      dropRouteId: [null],
+      dropDriverId: [null],
+      monthIds: [''],
       months: this.fb.array(
-        this.transportMonthsList.map(() => false),
+        this.transportmonthIdsList.map(() => false),
       ),
     });
   }
@@ -790,11 +824,13 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
 
       const parentsPayload = { ...parentsRaw };
 
-      const selectedMonthIds = (formValue.Transport.months as boolean[])
+      const transportRaw = formValue.Transport ?? {};
+      const selectedMonthIds = (transportRaw.months as boolean[])
         .map((isSelected: boolean, index: number) =>
-          isSelected ? this.transportMonthsList[index].monthId : null,
+          isSelected ? this.transportmonthIdsList[index].monthId : null,
         )
         .filter((id: number | null): id is number => id !== null);
+      const { months, ...transportPayload } = transportRaw;
       const uploadDocuments = Object.keys(this.selectedDocumentFiles)
         .map((indexText) => Number(indexText))
         .filter((index) => Number.isInteger(index) && index >= 0)
@@ -815,8 +851,8 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
         // Academic: academicPayload,
         Parents: parentsPayload,
         Transport: {
-          ...formValue.Transport,
-          months: selectedMonthIds,
+          ...transportPayload,
+          monthIds: selectedMonthIds.join(','),
         } as TransportDto,
         Documents: [],
         Docs: [],

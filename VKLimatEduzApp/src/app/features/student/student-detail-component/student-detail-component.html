@@ -676,7 +676,7 @@
               <!-- Row 1 -->
               <div class="form-field">
                 <label>Transport Mode</label>
-                <select formControlName="transportMode">
+                <select formControlName="transportModeId">
                   <option value="">Select Mode</option>
                   @for (mode of transportModes; track mode.id) {
                   <option [ngValue]="mode.id">{{ mode.name }}</option>
@@ -685,7 +685,7 @@
               </div>
               <div class="form-field">
                 <label>Pick / Drop</label>
-                <select formControlName="pickDrop">
+                <select formControlName="pickDropId">
                   <option value="">Select Option</option>
                   @for (opt of pickDropOptions; track opt.id) {
                   <option [ngValue]="opt.id">{{ opt.name }}</option>
@@ -701,7 +701,7 @@
                 <div class="grid-2">
                   <div class="form-field">
                     <label>Pick Area</label>
-                    <select formControlName="pickArea">
+                    <select formControlName="pickAreaId">
                       <option value="">Select Area</option>
                       @for (area of transportAreas; track area.id) {
                       <option [ngValue]="area.id">{{ area.name }}</option>
@@ -710,7 +710,7 @@
                   </div>
                   <div class="form-field">
                     <label>Pick Stand</label>
-                    <select formControlName="pickStand">
+                    <select formControlName="pickStandId">
                       <option value="">Select Stand</option>
                       @for (stand of transportStands; track stand.id) {
                       <option [ngValue]="stand.id">{{ stand.name }}</option>
@@ -719,7 +719,7 @@
                   </div>
                   <div class="form-field">
                     <label>Pick Route</label>
-                    <select formControlName="pickRoute">
+                    <select formControlName="pickRouteId">
                       <option value="">Select Route</option>
                       @for (route of transportRoutes; track route.id) {
                       <option [ngValue]="route.id">{{ route.name }}</option>
@@ -728,7 +728,7 @@
                   </div>
                   <div class="form-field">
                     <label>Pick Driver</label>
-                    <select formControlName="pickDriver">
+                    <select formControlName="pickDriverId">
                       <option value="">Select Driver</option>
                       @for (driver of transportDrivers; track driver.id) {
                       <option [ngValue]="driver.id">{{ driver.name }}</option>
@@ -744,7 +744,7 @@
                 <div class="grid-2">
                   <div class="form-field">
                     <label>Drop Area</label>
-                    <select formControlName="dropArea">
+                    <select formControlName="dropAreaId">
                       <option value="">Select Area</option>
                       @for (area of transportAreas; track area.id) {
                       <option [ngValue]="area.id">{{ area.name }}</option>
@@ -753,7 +753,7 @@
                   </div>
                   <div class="form-field">
                     <label>Drop Stand</label>
-                    <select formControlName="dropStand">
+                    <select formControlName="dropStandId">
                       <option value="">Select Stand</option>
                       @for (stand of transportStands; track stand.id) {
                       <option [ngValue]="stand.id">{{ stand.name }}</option>
@@ -762,7 +762,7 @@
                   </div>
                   <div class="form-field">
                     <label>Drop Route</label>
-                    <select formControlName="dropRoute">
+                    <select formControlName="dropRouteId">
                       <option value="">Select Route</option>
                       @for (route of transportRoutes; track route.id) {
                       <option [ngValue]="route.id">{{ route.name }}</option>
@@ -771,7 +771,7 @@
                   </div>
                   <div class="form-field">
                     <label>Drop Driver</label>
-                    <select formControlName="dropDriver">
+                    <select formControlName="dropDriverId">
                       <option value="">Select Driver</option>
                       @for (driver of transportDrivers; track driver.id) {
                       <option [ngValue]="driver.id">{{ driver.name }}</option>
@@ -782,11 +782,11 @@
               </div>
             </div>
 
-            <!-- Months Selection -->
+            <!-- monthIds Selection -->
             <div class="form-section">
-              <h3 class="section-title">Months</h3>
-              <div class="months-grid" formArrayName="months">
-                @for (month of transportMonthsList; track $index) {
+              <h3 class="section-title">month</h3>
+              <div class="monthIds-grid" formArrayName="months">
+                @for (month of transportmonthIdsList; track $index) {
                 <div class="month-item">
                   <label [for]="'month-'+$index">{{ month.label }}</label>
                   <input type="checkbox" [formControlName]="$index" [id]="'month-'+$index">

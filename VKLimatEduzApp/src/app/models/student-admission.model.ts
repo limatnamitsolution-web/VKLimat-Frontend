@@ -72,17 +72,17 @@ export interface ParentDto {
 }
 
 export interface TransportDto {
-  transportMode?: number | string | null;
-  pickArea?: number | string | null;
-  pickDrop?: number | string | null;
-  pickStand?: number | string | null;
-  pickRoute?: number | string | null;
-  pickDriver?: number | string | null;
-  dropArea?: number | string | null;
-  dropStand?: number | string | null;
-  dropRoute?: number | string | null;
-  dropDriver?: number | string | null;
-  months: number[];
+  transportModeId?: number | string | null;
+  pickAreaId?: number | string | null;
+  pickDropId?: number | string | null;
+  pickStandId?: number | string | null;
+  pickRouteId?: number | string | null;
+  pickDriverId?: number | string | null;
+  dropAreaId?: number | string | null;
+  dropStandId?: number | string | null;
+  dropRouteId?: number | string | null;
+  dropDriverId?: number | string | null;
+   monthIds:string;
 }
 
 export interface StudentDocumentRequestDto {

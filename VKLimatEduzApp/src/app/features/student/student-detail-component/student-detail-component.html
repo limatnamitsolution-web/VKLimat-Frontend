@@ -16,7 +16,7 @@
       <div class="modal-body">
         
         <!-- Student Tab Content -->
-        <div *ngIf="activeTab === 'Student'" formGroupName="Student" class="tab-content fade-in">
+        <div [hidden]="activeTab !== 'Student'" formGroupName="Student" class="tab-content fade-in">
           <div Class="grid-2">
           <div class="form-section">
             <h3 class="section-title section-title-with-upload">
@@ -397,7 +397,7 @@
         </div> -->
 
         <!-- Parent's Tab Content -->
-        <div *ngIf="activeTab === 'Parents'" formGroupName="Parents" class="tab-content fade-in">
+        <div [hidden]="activeTab !== 'Parents'" formGroupName="Parents" class="tab-content fade-in">
           
           <div class="grid-2">
             <!-- Father Details -->
@@ -669,7 +669,7 @@
         </div>
 
         <!-- Transport Tab Content -->
-        <div *ngIf="activeTab === 'Transport'" formGroupName="Transport" class="tab-content fade-in">
+        <div [hidden]="activeTab !== 'Transport'" formGroupName="Transport" class="tab-content fade-in">
           <div class="form-section">
             <h3 class="section-title">Transport Details</h3>
             <div class="grid-2">
@@ -798,7 +798,7 @@
         </div>
 
         <!-- Document Upload Tab Content -->
-        <div *ngIf="activeTab === 'Documents'" formArrayName="Documents" class="tab-content fade-in">
+        <div [hidden]="activeTab !== 'Documents'" formArrayName="Documents" class="tab-content fade-in">
           <div class="form-section">
             <h3 class="section-title">Document Upload</h3>
             <div class="docs-grid">

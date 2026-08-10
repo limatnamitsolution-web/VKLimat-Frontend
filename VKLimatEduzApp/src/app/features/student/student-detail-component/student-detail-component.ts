@@ -305,22 +305,18 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     this.loaderService.show();
     this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
     this.studentForm.controls['Student'].get('adm_grp_id')?.valueChanges.subscribe(parentId => {
-  
-    this.masterData.update(data => ({
-    ...data,
-    admClasses: data.allClasses.filter(x => x.parentId === parentId)
-  }));
+      this.masterData.update(data => ({
+        ...data,
+        admClasses: this.filterClassesByGroupId(parentId, data.allClasses),
+      }));
+    });
 
-});
-
-this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(parentId => {
-    console.log(parentId);
-
-    this.masterData.update(data => ({
-    ...data,
-    sessClasses: data.allClasses.filter(x => x.parentId === parentId)
-  }));
-});
+    this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(parentId => {
+      this.masterData.update(data => ({
+        ...data,
+        sessClasses: this.filterClassesByGroupId(parentId, data.allClasses),
+      }));
+    });
 
   }
 
@@ -468,6 +464,7 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
       }
 
       this.masterData.set(next);
+      this.updateClassDropdownsFromSelection();
    
     } finally {
       this.isDropdownLoadPending = false;
@@ -488,6 +485,31 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
 
   get transportmonthIdsArray(): FormArray {
     return this.studentForm.get(['Transport', 'months']) as FormArray;
+  }
+
+  private normalizeId(value: unknown): string {
+    return value === null || value === undefined ? '' : String(value);
+  }
+
+  private filterClassesByGroupId(groupId: unknown, allClasses: DropdownOption[]): DropdownOption[] {
+    const normalizedGroupId = this.normalizeId(groupId);
+    if (!normalizedGroupId) {
+      return [];
+    }
+
+    return allClasses.filter((classItem) => this.normalizeId(classItem.parentId) === normalizedGroupId);
+  }
+
+  private updateClassDropdownsFromSelection(): void {
+    const studentGroup = this.studentForm.controls['Student'];
+    const admGroupId = studentGroup.get('adm_grp_id')?.value;
+    const sessGroupId = studentGroup.get('sess_grp_id')?.value;
+
+    this.masterData.update((data) => ({
+      ...data,
+      admClasses: this.filterClassesByGroupId(admGroupId, data.allClasses),
+      sessClasses: this.filterClassesByGroupId(sessGroupId, data.allClasses),
+    }));
   }
 
   private buildTransportMonthSelections(monthIds: string | null | undefined): boolean[] {

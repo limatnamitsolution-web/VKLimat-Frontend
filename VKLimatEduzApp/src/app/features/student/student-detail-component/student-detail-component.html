@@ -152,7 +152,7 @@
             <div class="grid-2">
               <div class="form-field">
                 <label>Admission Category</label>
-                <select formControlName="adm_cat_id">
+                <select formControlName="adm_category_id">
                   <option value="">Select Category</option>
                   @for (cat of categories; track cat.id) {
                   <option [ngValue]="cat.id">{{ cat.name }}</option>
@@ -228,7 +228,7 @@
             <div class="grid-2">
               <div class="form-field">
                 <label>Session Category</label>
-                <select formControlName="sess_cat_id">
+                <select formControlName="sess_category_id">
                   <option value="">Select Category</option>
                   @for (cat of categories; track cat.id) {
                   <option [ngValue]="cat.id">{{ cat.name }}</option>

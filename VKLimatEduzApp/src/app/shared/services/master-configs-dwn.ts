@@ -15,6 +15,7 @@ export const MASTER_CONFIG_DWN_TYPES: string[] = [
   'BloodGroup',
   'ROUTE',
   'PickDrop',
+  'Category',
   'AdmissionCategory',
   'CasteCategory',
   'Caste',

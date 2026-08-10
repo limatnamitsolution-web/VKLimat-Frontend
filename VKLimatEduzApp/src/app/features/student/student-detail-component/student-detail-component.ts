@@ -429,7 +429,6 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
             next.qualifications.push(option);
             break;
           case 'occupation':
-          case 'occuption':
             next.occupations.push(option);
             break;
           case 'zone':
@@ -560,7 +559,7 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
         sess_permanent_pin_code: [''],
 
       // Admission Details
-        adm_cat_id: [null],
+        adm_category_id: [null],
         adm_grp_id: [null],
         adm_stream_id: [null],
         adm_class_id: [null],
@@ -570,7 +569,7 @@ this.studentForm.controls['Student'].get('sess_grp_id')?.valueChanges.subscribe(
         adm_fee_group_id: [null],
 
       // Session Details
-        sess_cat_id: [null],
+        sess_category_id: [null],
         sess_grp_id: [null],
         sess_stream_id: [null],
         sess_class_id: [null],

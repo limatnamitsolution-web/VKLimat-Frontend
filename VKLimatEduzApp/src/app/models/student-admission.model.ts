@@ -27,7 +27,7 @@ export interface StudentDetailsDto {
 }
 
 export interface AcademicDto {
-  adm_cat_id?: number | string | null;
+  adm_category_id?: number | string | null;
   adm_grp_id?: number | string | null;
   adm_stream_id?: number | string | null;
   adm_class_id?: number | string | null;
@@ -35,7 +35,7 @@ export interface AcademicDto {
   adm_rollno?: string;
   adm_concession_id?: number | string | null;
   adm_fee_group_id?: number | string | null;
-  sess_cat_id?: number | string | null;
+  sess_category_id?: number | string | null;
   sess_grp_id?: number | string | null;
   sess_stream_id?: number | string | null;
   sess_class_id?: number | string | null;

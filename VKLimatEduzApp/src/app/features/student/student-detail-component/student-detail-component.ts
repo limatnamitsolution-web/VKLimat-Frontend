@@ -1,8 +1,10 @@
 import {
   Component,
   EventEmitter,
+  OnChanges,
   OnDestroy,
   OnInit,
+  SimpleChanges,
   effect,
   inject,
   Output,
@@ -38,6 +40,22 @@ interface RawMasterItem {
   description?: string;
 }
 
+interface AdmissionApiDocument {
+  doc_id: number | string;
+  doc_Code: string;
+  doc_label: string;
+  savedPath?: string;
+  SavedPath?: string;
+}
+
+interface DocumentUploadItem {
+  doc_id: number | string;
+  doc_Code: string;
+  doc_label: string;
+  doc_File: string;
+  savedPath?: string;
+}
+
 interface MasterDropdownData {
   branches: DropdownOption[];
   genders: DropdownOption[];
@@ -48,6 +66,7 @@ interface MasterDropdownData {
   states: DropdownOption[];
   cities: DropdownOption[];
   categories: DropdownOption[];
+  admissionCategories: DropdownOption[];
   groups: DropdownOption[];
   streams: DropdownOption[];
   admClasses: DropdownOption[];
@@ -83,7 +102,7 @@ interface ProfileImageState {
   templateUrl: './student-detail-component.html',
   styleUrls: ['./student-detail-component.scss'],
 })
-export class StudentDetailComponent implements OnInit, OnDestroy {
+export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<any>();
   @Input() studentData: any;
@@ -111,6 +130,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     states: [],
     cities: [],
     categories: [],
+    admissionCategories: [],
     groups: [],
     streams: [],  
     admClasses: [],
@@ -157,6 +177,9 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
   }
   get categories(): DropdownOption[] {
     return this.masterData().categories;
+  }
+  get admissionCategories(): DropdownOption[] {
+    return this.masterData().admissionCategories;
   }
   get groups(): DropdownOption[] {
     return this.masterData().groups;
@@ -236,9 +259,10 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     { label: 'Mar', monthId: 3 },
   ];
 
-  documentTypes = signal<Array<{ doc_id: number | string; doc_Code: string; doc_label: string; doc_File: string }>>([]);
+  documentTypes = signal<DocumentUploadItem[]>([]);
 
   private readonly selectedDocumentFiles: Record<number, File> = {};
+  private readonly documentPreviewUrls: Record<number, string> = {};
   private readonly profileImageKeyToApiField: Record<ProfileImageKey, string> = {
     student: 'StudentImage',
     father: 'FatherImage',
@@ -253,6 +277,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     guardian1: 'sess_g1_image_path',
     guardian2: 'sess_g2_image_path',
   };
+  private readonly uploadedImagesBaseUrl = 'http://localhost:50684/UploadedDocs/Images/';
 
   profileImages: Record<ProfileImageKey, ProfileImageState> = {
     student: { file: null, previewUrl: null },
@@ -267,7 +292,8 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
   private readonly loaderService = inject(LoaderService);
   private readonly masterConfigDwnTypes = MASTER_CONFIG_DWN_TYPES;
   private isDropdownLoadPending = false;
-
+  private Admission: Record<string, unknown> | null = null;
+  private lastRequestedAdmId: number | null = null;
   constructor(private fb: FormBuilder) {
     this.studentForm = this.fb.group({
       Student: this.createStudentGroup(),
@@ -292,15 +318,15 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
       }      
       this.bindMasterDropdowns(dwnList);      
     });
+    effect(() => {
+      this.Admission = this.studentService.Admission();
+      if (this.Admission) {
+        this.patchFormFromAdmissionResponse(this.Admission);
+      }
+    });
   }
 
   ngOnInit(): void {
-
-    console.log('Student Data:', this.studentData);
-
-    
-    this.studentForm.controls['Student'].patchValue(this.studentData);
-    this.patchTransportData(this.studentData?.Transport ?? this.studentData?.transport ?? null);
     this.isDropdownLoadPending = true;
     this.loaderService.show();
     this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
@@ -320,7 +346,26 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
 
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    const studentChange = changes['studentData'];
+    if (!studentChange?.currentValue) {
+      return;
+    }
+
+    if (this.isFullAdmissionPayload(studentChange.currentValue)) {
+      this.studentService.Admission.set(studentChange.currentValue as Record<string, unknown>);
+      return;
+    }
+
+    const admId = this.resolveAdmissionId(studentChange.currentValue);
+    if (admId !== null && admId !== undefined && this.lastRequestedAdmId !== admId) {
+      this.lastRequestedAdmId = admId;
+      this.studentService.studentformview(admId);
+    }
+  }
+
   ngOnDestroy(): void {
+    this.clearDocumentPreviews();
     this.clearProfileImages();
   }
 
@@ -337,6 +382,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
         states: [...current.states],
         cities: [...current.cities],
         categories: [...current.categories],
+        admissionCategories: [...current.admissionCategories],
         groups: [...current.groups],
         streams: [...current.streams],
         admClasses: [...current.admClasses],
@@ -397,8 +443,11 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
           case 'city':
             next.cities.push(option);
             break;
-          case 'admissioncategory':
+          case 'category':
             next.categories.push(option);
+            break;
+          case 'admissioncategory':
+            next.admissionCategories.push(option);
             break;
           case 'examclassgroup':
             next.groups.push(option);
@@ -474,8 +523,11 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
         doc_Code: doc.name,
         doc_label: doc.description ?? '',
         doc_File: '',
+        savedPath: '',
       }));
       this.documentTypes.set([...this.documentTypes(), ...docs]);     
+
+      console.log('Master branches Loaded:', this.masterData().branches);
     }
   }
   
@@ -538,6 +590,192 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  private resolveAdmissionId(payload: Record<string, unknown> | null | undefined): number | null {
+    if (!payload) {
+      return null;
+    }
+
+    const topLevelId = payload['adm_id'];
+    if (typeof topLevelId === 'number') {
+      return topLevelId;
+    }
+
+    const student = payload['student'] as Record<string, unknown> | undefined;
+    const nestedId = student?.['adm_id'];
+    return typeof nestedId === 'number' ? nestedId : null;
+  }
+
+  private normalizeDateValue(value: unknown): unknown {
+    if (typeof value !== 'string') {
+      return value;
+    }
+
+    if (!value.includes('T')) {
+      return value;
+    }
+
+    const parsedDate = new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return value;
+    }
+
+    return parsedDate.toISOString().slice(0, 10);
+  }
+
+  private buildUploadedImageUrl(pathValue: unknown): string | null {
+    if (typeof pathValue !== 'string') {
+      return null;
+    }
+
+    const trimmedPath = pathValue.trim();
+    if (!trimmedPath) {
+      return null;
+    }
+
+    if (/^https?:\/\//i.test(trimmedPath)) {
+      return trimmedPath;
+    }
+
+    const normalizedPath = trimmedPath.replace(/\\/g, '/');
+    const marker = '/UploadedDocs/Images/';
+    const markerIndex = normalizedPath.lastIndexOf(marker);
+
+    if (markerIndex >= 0) {
+      const fileName = normalizedPath.slice(markerIndex + marker.length);
+      return `${this.uploadedImagesBaseUrl}${fileName}`;
+    }
+
+    const lastSlashIndex = normalizedPath.lastIndexOf('/');
+    const fileName = lastSlashIndex >= 0 ? normalizedPath.slice(lastSlashIndex + 1) : normalizedPath;
+    return fileName ? `${this.uploadedImagesBaseUrl}${fileName}` : null;
+  }
+
+  private isImageFileName(filePathOrName: string): boolean {
+    const normalized = filePathOrName.toLowerCase();
+    return normalized.endsWith('.png') || normalized.endsWith('.jpg') || normalized.endsWith('.jpeg') || normalized.endsWith('.webp') || normalized.endsWith('.gif');
+  }
+
+  private setDocumentPreviewFromSavedPath(index: number, savedPath: string): void {
+    if (!savedPath || !this.isImageFileName(savedPath)) {
+      delete this.documentPreviewUrls[index];
+      return;
+    }
+
+    const previewUrl = this.buildUploadedImageUrl(savedPath);
+    if (previewUrl) {
+      this.documentPreviewUrls[index] = previewUrl;
+    }
+  }
+
+  private setDocumentPreviewFromFile(index: number, file: File): void {
+    const currentPreview = this.documentPreviewUrls[index];
+    if (currentPreview?.startsWith('blob:')) {
+      URL.revokeObjectURL(currentPreview);
+    }
+
+    if (!file.type.startsWith('image/')) {
+      delete this.documentPreviewUrls[index];
+      return;
+    }
+
+    this.documentPreviewUrls[index] = URL.createObjectURL(file);
+  }
+
+  private clearDocumentPreviews(): void {
+    Object.values(this.documentPreviewUrls).forEach((preview) => {
+      if (preview?.startsWith('blob:')) {
+        URL.revokeObjectURL(preview);
+      }
+    });
+
+    Object.keys(this.documentPreviewUrls).forEach((key) => {
+      delete this.documentPreviewUrls[Number(key)];
+    });
+  }
+
+  private setProfileImagePreviews(studentPayload: Record<string, unknown>): void {
+    (Object.keys(this.profileImageKeyToStudentPathField) as ProfileImageKey[]).forEach((key) => {
+      const pathField = this.profileImageKeyToStudentPathField[key];
+      const previewUrl = this.buildUploadedImageUrl(studentPayload[pathField]);
+
+      if (!previewUrl) {
+        return;
+      }
+
+      const currentPreview = this.profileImages[key].previewUrl;
+      if (currentPreview?.startsWith('blob:')) {
+        URL.revokeObjectURL(currentPreview);
+      }
+
+      this.profileImages[key] = {
+        file: null,
+        previewUrl,
+      };
+    });
+  }
+
+  private normalizeStudentPayloadDates(studentPayload: Record<string, unknown>): Record<string, unknown> {
+    return {
+      ...studentPayload,
+      adm_date: this.normalizeDateValue(studentPayload['adm_date']),
+      adm_doj: this.normalizeDateValue(studentPayload['adm_doj']),
+      adm_dob: this.normalizeDateValue(studentPayload['adm_dob']),
+    };
+  }
+
+  private patchDocumentsFromApi(documents: AdmissionApiDocument[]): void {
+    const docs = documents.map((doc) => ({
+      doc_id: doc.doc_id,
+      doc_Code: doc.doc_Code,
+      doc_label: doc.doc_label,
+      doc_File: '',
+      savedPath: doc.savedPath ?? doc.SavedPath ?? '',
+    }));
+
+    this.studentForm.setControl('Documents', this.createDocumentUploadGroup(docs));
+    this.clearDocumentPreviews();
+    docs.forEach((doc, index) => {
+      if (doc.savedPath) {
+        this.setDocumentPreviewFromSavedPath(index, doc.savedPath);
+      }
+    });
+  }
+
+  private patchFormFromAdmissionResponse(payload: unknown): void {
+    if (!payload || typeof payload !== 'object') {
+      return;
+    }
+  
+    console.log('Patching form with payload:', payload);
+    const data = payload as Record<string, unknown>;
+    const studentPayloadRaw = (data['student'] ?? data['Student'] ?? data) as Record<string, unknown>;
+    const parentsPayload = (data['parents'] ?? data['Parents'] ?? {}) as Record<string, unknown>;
+    const transportPayload = (data['transport'] ?? data['Transport'] ?? null) as Record<string, unknown> | null;
+    const documentsPayload = (data['documents'] ?? data['docs'] ?? data['Documents'] ?? data['Docs'] ?? []) as AdmissionApiDocument[];
+
+    const studentPayload = this.normalizeStudentPayloadDates(studentPayloadRaw);
+
+    this.studentForm.controls['Student'].patchValue(studentPayload);
+    this.studentForm.controls['Parents'].patchValue(parentsPayload);
+    this.setProfileImagePreviews(studentPayloadRaw);
+    this.patchTransportData(transportPayload);
+
+    if (Array.isArray(documentsPayload) && documentsPayload.length > 0) {
+      this.patchDocumentsFromApi(documentsPayload);
+    }
+
+    this.updateClassDropdownsFromSelection();
+  }
+
+  private isFullAdmissionPayload(payload: unknown): boolean {
+    if (!payload || typeof payload !== 'object') {
+      return false;
+    }
+
+    const data = payload as Record<string, unknown>;
+    return 'student' in data || 'Student' in data || 'documents' in data || 'Documents' in data;
+  }
+
     private getCurrentDateString(): string {
       const now = new Date();
       const year = now.getFullYear();
@@ -591,6 +829,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
         adm_fee_group_id: [null],
 
       // Session Details
+        sess_std_category_id: [null],
         sess_category_id: [null],
         sess_grp_id: [null],
         sess_stream_id: [null],
@@ -632,7 +871,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
       sess_g2_mobile_no: [''],
       sess_g2_address: [''],
 
-      otherDetails: [''],
+      sess_otherDetails: ['', Validators.required],
     });
   }
 
@@ -659,13 +898,14 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  createDocumentUploadGroup(docs: Array<{ doc_id: number | string; doc_Code: string; doc_label: string; doc_File: string }> = this.documentTypes()): FormArray {
+  createDocumentUploadGroup(docs: DocumentUploadItem[] = this.documentTypes()): FormArray {
     const controls = docs.map((doc) => {
       return this.fb.group({
         doc_id: [doc.doc_id],
         doc_Code: [doc.doc_Code],
         doc_label: [doc.doc_label],
         doc_File: [null],
+        savedPath: [doc.savedPath ?? ''],
       });
     });
     return this.fb.array(controls);
@@ -679,11 +919,13 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     const target = event.target as HTMLInputElement;
     const file = target.files?.[0] ?? null;
     if (file) {
+      this.setDocumentPreviewFromFile(index, file);
       this.selectedDocumentFiles[index] = file;
       const docArray = this.docsArray;
       const docGroup = docArray.at(index) as FormGroup;
       docGroup.patchValue({
         doc_File: file,
+        savedPath: '',
       });
     }
   }
@@ -719,6 +961,31 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     return this.profileImages[key].file?.name ?? '';
   }
 
+  getDocumentPreview(index: number): string | null {
+    return this.documentPreviewUrls[index] ?? null;
+  }
+
+  getDocumentDisplayName(index: number): string {
+    const docGroup = this.docsArray.at(index) as FormGroup | null;
+    if (!docGroup) {
+      return '';
+    }
+
+    const fileValue = docGroup.get('doc_File')?.value;
+    if (this.isFileLike(fileValue)) {
+      return fileValue.name;
+    }
+
+    const savedPath = docGroup.get('savedPath')?.value;
+    if (typeof savedPath !== 'string' || !savedPath.trim()) {
+      return '';
+    }
+
+    const normalizedPath = savedPath.replace(/\\/g, '/');
+    const lastSlashIndex = normalizedPath.lastIndexOf('/');
+    return lastSlashIndex >= 0 ? normalizedPath.slice(lastSlashIndex + 1) : normalizedPath;
+  }
+
   private appendProfileImages(formData: FormData): void {
     (Object.keys(this.profileImageKeyToApiField) as ProfileImageKey[]).forEach((key) => {
       const imageFile = this.profileImages[key].file;
@@ -750,7 +1017,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
   private clearProfileImages(): void {
     (Object.keys(this.profileImages) as ProfileImageKey[]).forEach((key) => {
       const preview = this.profileImages[key].previewUrl;
-      if (preview) {
+      if (preview?.startsWith('blob:')) {
         URL.revokeObjectURL(preview);
       }
 
@@ -924,6 +1191,7 @@ export class StudentDetailComponent implements OnInit, OnDestroy {
     Object.keys(this.selectedDocumentFiles).forEach(
       (key) => delete this.selectedDocumentFiles[Number(key)],
     );
+    this.clearDocumentPreviews();
     this.clearProfileImages();
     this.close.emit();
   }

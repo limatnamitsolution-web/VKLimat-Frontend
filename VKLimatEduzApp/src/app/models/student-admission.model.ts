@@ -27,6 +27,7 @@ export interface StudentDetailsDto {
 }
 
 export interface AcademicDto {
+  sess_std_category_id?: number | string | null;
   adm_category_id?: number | string | null;
   adm_grp_id?: number | string | null;
   adm_stream_id?: number | string | null;
@@ -68,7 +69,7 @@ export interface ParentDto {
   sess_g2_name?: string;
   sess_g2_mobile_no?: string;
   sess_g2_address?: string;
-  otherDetails?: string;
+  sess_otherDetails?: string;
 }
 
 export interface TransportDto {

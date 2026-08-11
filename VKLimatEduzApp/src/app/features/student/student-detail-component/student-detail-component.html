@@ -142,6 +142,15 @@
                   <label>Email Address</label>
                   <input type="text" formControlName="sess_stud_email_ddress">
                 </div>
+                 <div class="form-field">
+                <label> Category</label>
+                <select formControlName="sess_std_category_id">
+                  <option value="">Select Category</option>
+                  @for (cat of categories; track cat.id) {
+                  <option [ngValue]="cat.id">{{ cat.name }}</option>
+                  }
+                </select>
+              </div>
               </div>
             </div>
             
@@ -154,7 +163,7 @@
                 <label>Admission Category</label>
                 <select formControlName="adm_category_id">
                   <option value="">Select Category</option>
-                  @for (cat of categories; track cat.id) {
+                  @for (cat of admissionCategories; track cat.id) {
                   <option [ngValue]="cat.id">{{ cat.name }}</option>
                   }
                 </select>
@@ -230,7 +239,7 @@
                 <label>Session Category</label>
                 <select formControlName="sess_category_id">
                   <option value="">Select Category</option>
-                  @for (cat of categories; track cat.id) {
+                  @for (cat of admissionCategories; track cat.id) {
                   <option [ngValue]="cat.id">{{ cat.name }}</option>
                   }
                 </select>
@@ -663,7 +672,7 @@
           <div class="form-section">
             <h3 class="section-title">Other Details</h3>
             <div class="form-field full-width">
-              <textarea formControlName="otherDetails" rows="4" placeholder="Enter any other details here..."></textarea>
+              <textarea formControlName="sess_otherDetails" rows="4" placeholder="Enter any other details here..."></textarea>
             </div>
           </div>
         </div>
@@ -805,6 +814,12 @@
               @for (docGroup of docsArray.controls; track $index; let i = $index) {
               <div class="doc-item" [formGroupName]="i">
                 <label>{{ docGroup.get('doc_label')?.value }}</label>
+                <div class="doc-preview" *ngIf="getDocumentPreview(i)">
+                  <img [src]="getDocumentPreview(i)!" alt="Document Preview" class="doc-preview-thumb">
+                  <span class="doc-hover-preview">
+                    <img [src]="getDocumentPreview(i)!" alt="Document Zoom Preview" class="doc-hover-preview-image">
+                  </span>
+                </div>
                 <div class="file-upload-container">
                   <input type="file" [id]="'file-upload-' + i" (change)="onFileSelected($event, i)" class="hidden-file-input">
                   <label [for]="'file-upload-' + i" class="custom-file-label">
@@ -817,8 +832,8 @@
                     </span>
                     Upload File
                   </label>
-                  <span class="file-name" *ngIf="docGroup.get('doc_File')?.value?.name; else noFile">
-                    {{ docGroup.get('doc_File')?.value?.name }}
+                  <span class="file-name" *ngIf="getDocumentDisplayName(i); else noFile">
+                    {{ getDocumentDisplayName(i) }}
                   </span>
                   <ng-template #noFile>
                     <span class="file-name placeholder">No file chosen</span>

@@ -32,8 +32,8 @@ export class LoginComponent {
   ];
 
   academics = [
-    { branchid: 1, name: 'ABC School' },
-    { branchid: 2, name: 'XYZ School' }
+    { branchid: 1375, name: 'ABC School' },
+    { branchid: 1376, name: 'XYZ School' }
   ];
 
   onSubmit() {

@@ -813,6 +813,7 @@
             <div class="docs-grid">
               @for (docGroup of docsArray.controls; track $index; let i = $index) {
               <div class="doc-item" [formGroupName]="i">
+                <span class="doc-status-badge" *ngIf="docGroup.get('savedPath')?.value">Uploaded</span>
                 <label>{{ docGroup.get('doc_label')?.value }}</label>
                 <div class="doc-preview" *ngIf="getDocumentPreview(i)">
                   <img [src]="getDocumentPreview(i)!" alt="Document Preview" class="doc-preview-thumb">

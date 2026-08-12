@@ -525,7 +525,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
         doc_File: '',
         savedPath: '',
       }));
-      this.documentTypes.set([...this.documentTypes(), ...docs]);     
+      this.documentTypes.set(docs);
 
       
     }
@@ -723,14 +723,61 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
     };
   }
 
+  private buildDocumentLookupKey(doc: Pick<DocumentUploadItem, 'doc_id' | 'doc_Code'>): string {
+    const normalizedId = this.normalizeId(doc.doc_id);
+    if (normalizedId) {
+      return `id:${normalizedId}`;
+    }
+
+    return `code:${String(doc.doc_Code ?? '').trim().toLowerCase()}`;
+  }
+
+  private mergeDocumentCatalogWithExistingUploads(
+    masterDocs: DocumentUploadItem[],
+    apiDocs: DocumentUploadItem[],
+  ): DocumentUploadItem[] {
+    const apiByKey = new Map<string, DocumentUploadItem>();
+    apiDocs.forEach((doc) => {
+      apiByKey.set(this.buildDocumentLookupKey(doc), doc);
+    });
+
+    const merged = masterDocs.map((doc) => {
+      const existing = apiByKey.get(this.buildDocumentLookupKey(doc));
+      return {
+        ...doc,
+        doc_label: doc.doc_label || existing?.doc_label || '',
+        savedPath: existing?.savedPath ?? '',
+      };
+    });
+
+    const knownKeys = new Set(merged.map((doc) => this.buildDocumentLookupKey(doc)));
+    apiDocs.forEach((doc) => {
+      const key = this.buildDocumentLookupKey(doc);
+      if (!knownKeys.has(key)) {
+        merged.push({
+          ...doc,
+          savedPath: doc.savedPath ?? '',
+        });
+        knownKeys.add(key);
+      }
+    });
+
+    return merged;
+  }
+
   private patchDocumentsFromApi(documents: AdmissionApiDocument[]): void {
-    const docs = documents.map((doc) => ({
+    const apiDocs = documents.map((doc) => ({
       doc_id: doc.doc_id,
       doc_Code: doc.doc_Code,
       doc_label: doc.doc_label,
       doc_File: '',
       savedPath: doc.savedPath ?? doc.SavedPath ?? '',
     }));
+
+    const masterDocs = this.documentTypes();
+    const docs = masterDocs.length > 0
+      ? this.mergeDocumentCatalogWithExistingUploads(masterDocs, apiDocs)
+      : apiDocs;
 
     this.studentForm.setControl('Documents', this.createDocumentUploadGroup(docs));
     this.clearDocumentPreviews();

@@ -527,7 +527,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
       }));
       this.documentTypes.set([...this.documentTypes(), ...docs]);     
 
-      console.log('Master branches Loaded:', this.masterData().branches);
+      
     }
   }
   
@@ -871,7 +871,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
       sess_g2_mobile_no: [''],
       sess_g2_address: [''],
 
-      sess_otherDetails: ['', Validators.required],
+      sess_otherDetails: [''],
     });
   }
 
@@ -1170,6 +1170,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
               errorMessage += `${key}: ${error.error.errors[key].join(', ')}\n`;
             }
             alert(errorMessage);
+            console.log('Validation errors:', errorMessage);
             console.error('Validation errors:', error.error.errors);
             console.log('Validation log-errors:', error.error.errors);
           } else {
@@ -1183,8 +1184,37 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
         },
       );
     } else {
-      this.studentForm.markAllAsTouched();
-    }
+  const invalidControls: Record<string, any> = {};
+
+  const findInvalidControls = (group: any, path = ''): void => {
+    Object.keys(group.controls || {}).forEach((key) => {
+      const control = group.get(key);
+      const currentPath = path ? `${path}.${key}` : key;
+
+      if (control instanceof FormGroup || control instanceof FormArray) {
+        findInvalidControls(control, currentPath);
+        return;
+      }
+
+      if (control && control.invalid) {
+        invalidControls[currentPath] = control.errors;
+      }
+    });
+  };
+
+  findInvalidControls(this.studentForm);
+
+  console.log('Form valid status:', this.studentForm.valid);
+  console.log('Form errors:', this.studentForm.errors);
+  console.log('Invalid controls:', invalidControls);
+
+  // Useful direct checks for the student tab:
+  console.log('Student form errors:', this.studentForm.get('Student')?.errors);
+  console.log('adm_no errors:', this.studentForm.get('Student.adm_no')?.errors);
+  console.log('first name errors:', this.studentForm.get('Student.sess_stud_first_name')?.errors);
+
+  this.studentForm.markAllAsTouched();
+}
   }
 
   onCancel() {

@@ -294,6 +294,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
   private isDropdownLoadPending = false;
   private Admission: Record<string, unknown> | null = null;
   private lastRequestedAdmId: number | null = null;
+  ActionText = signal('Save Student');
   constructor(private fb: FormBuilder) {
     this.studentForm = this.fb.group({
       Student: this.createStudentGroup(),
@@ -321,6 +322,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
     effect(() => {
       this.Admission = this.studentService.Admission();
       if (this.Admission) {
+        console.log('Admission data received:', this.Admission);
         this.patchFormFromAdmissionResponse(this.Admission);
       }
     });
@@ -348,10 +350,6 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     const studentChange = changes['studentData'];
-    if (!studentChange?.currentValue) {
-      return;
-    }
-
     if (this.isFullAdmissionPayload(studentChange.currentValue)) {
       this.studentService.Admission.set(studentChange.currentValue as Record<string, unknown>);
       return;
@@ -359,6 +357,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
 
     const admId = this.resolveAdmissionId(studentChange.currentValue);
     if (admId !== null && admId !== undefined && this.lastRequestedAdmId !== admId) {
+       this.ActionText.set('Update Student');
       this.lastRequestedAdmId = admId;
       this.studentService.studentformview(admId);
     }
@@ -715,6 +714,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private normalizeStudentPayloadDates(studentPayload: Record<string, unknown>): Record<string, unknown> {
+    console.log('Normalizing student payload dates:', studentPayload);
     return {
       ...studentPayload,
       adm_date: this.normalizeDateValue(studentPayload['adm_date']),
@@ -793,7 +793,6 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
   
-    console.log('Patching form with payload:', payload);
     const data = payload as Record<string, unknown>;
     const studentPayloadRaw = (data['student'] ?? data['Student'] ?? data) as Record<string, unknown>;
     const parentsPayload = (data['parents'] ?? data['Parents'] ?? {}) as Record<string, unknown>;
@@ -835,6 +834,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
       const currentDate = this.getCurrentDateString();
 
     return this.fb.group({
+        adm_id: [null],
         adm_branch_Id: [null],
         adm_no: ['', Validators.required],
         adm_date: [currentDate],
@@ -1145,6 +1145,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
   onSubmit(): void {
     if (this.studentForm.valid) {
       const formValue = this.studentForm.getRawValue();
+      console.log('Form submission value:', formValue);
       const studentRaw = formValue.Student ?? {};
       //const academicRaw = formValue.Academic ?? {};
       const parentsRaw = formValue.Parents ?? {};
@@ -1182,6 +1183,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
         });
 
       const model: StudentAdmissionRequestDto = {
+        adm_id: studentPayload.adm_id,
         Student: studentPayload,
         // Academic: academicPayload,
         Parents: parentsPayload,
@@ -1199,7 +1201,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
       const formData = this.toFormData(model);
       this.appendUploadedDocuments(formData, uploadDocuments);
       this.appendProfileImages(formData);
-
+  if (this.ActionText() == 'Save Student') {
       this.studentService.saveStudent(formData).subscribe(
         (response) => {
           alert('Student saved successfully');
@@ -1231,6 +1233,31 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
         },
       );
     } else {
+      console.log('Updating student with form data:', formData);
+      this.studentService.updateStudent(formData).subscribe(
+        (response) => {
+          alert('Student updated successfully');
+        },
+        (error) => {
+          if (error?.error?.errors && typeof error.error.errors === 'object') {
+            let errorMessage = 'Validation failed:\n';
+            for (const key in error.error.errors) {
+              errorMessage += `${key}: ${error.error.errors[key].join(', ')}\n`;
+            }
+            alert(errorMessage);
+            console.log('Validation errors:', errorMessage);
+            console.error('Validation errors:', error.error.errors);
+            console.log('Validation log-errors:', error.error.errors);
+          } else {
+            const details =
+              typeof error?.error === 'string'
+                ? error.error
+                : JSON.stringify(error?.error ?? error, null, 2);
+            alert('Update failed:\n' + details);
+            console.error('Update failed response:', error);
+          }
+        },
+      );
   const invalidControls: Record<string, any> = {};
 
   const findInvalidControls = (group: any, path = ''): void => {
@@ -1247,7 +1274,8 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
         invalidControls[currentPath] = control.errors;
       }
     });
-  };
+  }
+
 
   findInvalidControls(this.studentForm);
 
@@ -1262,6 +1290,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
 
   this.studentForm.markAllAsTouched();
 }
+    }
   }
 
   onCancel() {

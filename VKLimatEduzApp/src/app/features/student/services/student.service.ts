@@ -17,6 +17,10 @@ export class StudentService {
     return this.http.post(StudentApiEndpoints.saveAdmission, formData);
   }
 
+  updateStudent(formData: any) {
+    return this.http.post(StudentApiEndpoints.updateAdmission, formData);
+  }
+
 
 
   studentformview(id: number): void {

@@ -95,6 +95,7 @@ export interface StudentDocumentRequestDto {
 }
 
 export interface StudentAdmissionRequestDto {
+  adm_id?: number | string | null;
   Student: StudentDetailsDto;
   //Academic: AcademicDto;
   Parents: ParentDto;

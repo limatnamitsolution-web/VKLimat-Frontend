@@ -1056,7 +1056,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
       }
 
       if (existing === null || existing === undefined || existing === '') {
-        studentPayload[pathField] = 'N/A';
+        studentPayload[pathField] = null;
       }
     });
   }

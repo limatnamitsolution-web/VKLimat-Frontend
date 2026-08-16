@@ -68,6 +68,19 @@
                   <div class="theme-badge accent">New</div>
                 </label>
                 
+                <label class="theme-option theme-brown" [class.active]="currentTheme === 'dark-brown'">
+                  <input type="radio" name="theme" value="dark-brown" [checked]="currentTheme === 'dark-brown'"
+                         (change)="changeTheme('dark-brown')">
+                  <div class="theme-color-box">
+                    <div class="theme-preview">
+                      <div class="preview-bar"></div>
+                      <div class="preview-dot"></div>
+                    </div>
+                  </div>
+                  <span class="theme-label">Brown Dark</span>
+                  <div class="theme-badge">New</div>
+                </label>
+                
                 <label class="theme-option theme-crazy" [class.active]="currentTheme === 'crazy'">
                   <input type="radio" name="theme" value="crazy" [checked]="currentTheme === 'crazy'"
                          (change)="changeTheme('crazy')">

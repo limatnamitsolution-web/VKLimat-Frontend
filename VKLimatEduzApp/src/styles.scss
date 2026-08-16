@@ -164,6 +164,31 @@
   --shadow-3: 0 10px 15px rgba(0, 0, 0, 0.5);
 }
 
+/* Dark Brown theme - Deep brown with VS Code green accents */
+[data-theme="dark-brown"] {
+  --primary-blue: #8b5e3c; /* warm brown */
+  --secondary-blue: #6b3f2b; /* deeper brown */
+  --dark-blue: #4a2a19; /* darkest brown */
+  --light-blue: #2b1a12; /* near-surface */
+
+  --accent-gold: #a67c52; /* warm accent */
+  --success: #66d1ae; /* VS Code green-style accent */
+  --danger: #f48771;
+  --warning: #d1b67a;
+
+  --bg: #1e140f; /* very dark brown */
+  --surface: #2b1a12; /* card / surface */
+  --muted-surface: #3a261d; /* muted panels */
+  --border: #4a3328; /* panel borders */
+  --text: #e9e4df; /* off-white text */
+  --text-2: #cfc6bf;
+  --text-3: #b8a9a0;
+
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 4px 6px rgba(0, 0, 0, 0.45);
+  --shadow-3: 0 10px 15px rgba(0, 0, 0, 0.6);
+}
+
 /* Crazy theme - Rainbow */
 [data-theme="crazy"] {
   --primary-blue: #06b6d4;
@@ -2048,4 +2073,12 @@ body[data-theme="dark-color"] .theme-toggle-btn i {
 [data-theme="crazy"] .modal-footer {
   background: transparent;
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-brown .theme-label { color: #a67c52; border-color: #a67c52; }
+
+.theme-brown .theme-color-box {
+  background: linear-gradient(135deg, #2b1a12, #4a2a19);
+  border-color: #4a3328;
+  color: #66d1ae; /* green accent inside preview */
 }

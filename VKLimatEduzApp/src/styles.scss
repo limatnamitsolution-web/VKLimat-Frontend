@@ -2032,10 +2032,16 @@ body[data-theme="dark-color"] .theme-toggle-btn i {
   background: linear-gradient(135deg, rgba(131, 24, 67, 0.8), rgba(124, 45, 18, 0.8), rgba(6, 78, 59, 0.8), rgba(30, 58, 138, 0.8));
   background-size: 300% 300%;
   animation: gradientShift 10s ease infinite;
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--text);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* backdrop-filter intentionally excluded from .panel/.card: it creates a containing
+   block for position:fixed descendants, clipping popup modals to the panel bounds */
+[data-theme="crazy"] .grid-container,
+[data-theme="crazy"] .modal-content {
+  backdrop-filter: blur(10px);
 }
 
 [data-theme="crazy"] .modal-header,

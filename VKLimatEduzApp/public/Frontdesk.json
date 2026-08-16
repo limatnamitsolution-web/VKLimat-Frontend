@@ -68,9 +68,10 @@
   },
   {
     "key": "paymentHub",
-    "label": "Payment Hub",
+    "label": "Fees",
     "icon": "fas fa-money-bill-wave",
     "children": [
+
       { "key": "feesCollect", "label": "Collect Fees", "icon": "fas fa-cash-register", "route": "/fees/collection" },
       { "key": "feesTransportCollect", "label": "Collect Transport Fees", "icon": "fas fa-bus", "route": "/fees/transport-collection" },
       { "key": "feesStructureInfo", "label": "Structure Information", "icon": "fas fa-table", "route": "/fees/structure" },
@@ -82,6 +83,7 @@
       { "key": "feesChequeClear", "label": "Cheque Clear", "icon": "fas fa-check-circle", "route": "/fees/cheque-clear" },
       { "key": "feesBankDeposit", "label": "Deposit to Bank", "icon": "fas fa-university", "route": "/fees/cash-deposit" },
       { "key": "feesCertificateIssue", "label": "Issue Certificate", "icon": "fas fa-certificate", "route": "/fees/certificate" },
+       { "key": "feesMaster", "label": "Fees Master", "icon": "fas fa-certificate", "route": "/fees/fees-master" },
       {
         "key": "feesLateFine",
         "label": "Late Fine",

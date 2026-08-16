@@ -1,0 +1,33 @@
+<div class="toolbar-container">
+  <input type="text" [value]="searchTerm()" (input)="updateSearch($event)" placeholder="Search all fields..." class="input-control input-search">
+  <div class="btn-group"><button type="button" (click)="openAddView()" class="btn-primary btn-sm">Add</button><button type="button" (click)="resetSearch()" class="btn-reset btn-sm">Reset</button></div>
+</div>
+<div class="table-responsive">
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Optional Fee</th>
+      <th>Applicable Class</th>
+      <th>Amount</th>
+      <th>Selection Type</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (row of filteredRows(); track row) {
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    } @empty {
+      <tr><td colspan="6">No optional fees found.</td></tr>
+    }
+  </tbody>
+</table>
+</div>
+@if (showView()) { <app-optional-view (close)="closeView()" (saved)="closeView()" /> }

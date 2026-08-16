@@ -1,0 +1,11 @@
+<div class="modal-overlay" (click)="close.emit()"><section class="modal-content" role="dialog" aria-modal="true" aria-label="Concession View" (click)="$event.stopPropagation()">
+  <header class="modal-header"><div><h2>Concession View</h2><p>Enter concession details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
+  <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
+    <div class="form-field"><label for="concessionCode">Code</label><input id="concessionCode" name="code" [(ngModel)]="model['code']"></div>
+    <div class="form-field"><label for="concessionName">Concession Name</label><input id="concessionName" name="name" [(ngModel)]="model['name']"></div>
+    <div class="form-field"><label for="concessionType">Type</label><select id="concessionType" name="type" [(ngModel)]="model['type']"><option value="Amount">Amount</option><option value="Percentage">Percentage</option></select></div>
+    <div class="form-field"><label for="concessionValue">Value</label><input id="concessionValue" name="value" type="number" [(ngModel)]="model['value']"></div>
+    <div class="form-field"><label for="concessionMaximum">Maximum Amount</label><input id="concessionMaximum" name="maximumAmount" type="number" [(ngModel)]="model['maximumAmount']"></div>
+    <div class="form-field"><label for="concessionStatus">Status</label><select id="concessionStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+  </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>
+</section></div>

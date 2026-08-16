@@ -1,0 +1,10 @@
+<div class="modal-overlay" (click)="close.emit()"><section class="modal-content" role="dialog" aria-modal="true" aria-label="Group View" (click)="$event.stopPropagation()">
+  <header class="modal-header"><div><h2>Group View</h2><p>Enter fee group details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
+  <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
+    <div class="form-field"><label for="groupCode">Code</label><input id="groupCode" name="code" [(ngModel)]="model['code']"></div>
+    <div class="form-field"><label for="groupName">Group Name</label><input id="groupName" name="name" [(ngModel)]="model['name']"></div>
+    <div class="form-field"><label for="groupHeads">Fee Heads</label><input id="groupHeads" name="feeHeads" [(ngModel)]="model['feeHeads']"></div>
+    <div class="form-field"><label for="groupOrder">Display Order</label><input id="groupOrder" name="displayOrder" type="number" [(ngModel)]="model['displayOrder']"></div>
+    <div class="form-field"><label for="groupStatus">Status</label><select id="groupStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+  </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>
+</section></div>

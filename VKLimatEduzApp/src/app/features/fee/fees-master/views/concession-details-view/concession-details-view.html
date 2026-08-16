@@ -1,0 +1,11 @@
+<div class="modal-overlay" (click)="close.emit()"><section class="modal-content" role="dialog" aria-modal="true" aria-label="Concession Details View" (click)="$event.stopPropagation()">
+  <header class="modal-header"><div><h2>Concession Details View</h2><p>Enter concession applicability details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
+  <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
+    <div class="form-field"><label for="detailConcession">Concession</label><input id="detailConcession" name="concession" [(ngModel)]="model['concession']"></div>
+    <div class="form-field"><label for="detailYear">Academic Year</label><input id="detailYear" name="academicYear" [(ngModel)]="model['academicYear']"></div>
+    <div class="form-field"><label for="detailClass">Class</label><input id="detailClass" name="class" [(ngModel)]="model['class']"></div>
+    <div class="form-field"><label for="detailHead">Fee Head</label><input id="detailHead" name="feeHead" [(ngModel)]="model['feeHead']"></div>
+    <div class="form-field"><label for="detailValue">Applicable Value</label><input id="detailValue" name="applicableValue" type="number" [(ngModel)]="model['applicableValue']"></div>
+    <div class="form-field"><label for="detailStatus">Status</label><select id="detailStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+  </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>
+</section></div>

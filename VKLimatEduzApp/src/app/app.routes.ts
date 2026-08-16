@@ -17,11 +17,15 @@ export const routes: Routes = [
         loadChildren: () => import('./features/student/student.routes').then(m => m.StudentRoutes)
       },
       // Add other module routes here
-     
+           { 
+        path: 'fees', 
+        loadChildren: () => import('./features/fee/fee.routes').then(m => m.FeeRoutes)
+      },
       { 
         path: 'mastersConfig', 
         loadChildren: () => import('./features/mastersConfig/masters.routes').then(m => m.mastersConfigRoutes)
-      }
+      },
+
     ]
   }
 ];

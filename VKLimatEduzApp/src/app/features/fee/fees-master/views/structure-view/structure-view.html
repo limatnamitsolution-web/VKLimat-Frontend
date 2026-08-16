@@ -1,0 +1,11 @@
+<div class="modal-overlay" (click)="close.emit()"><section class="modal-content" role="dialog" aria-modal="true" aria-label="Structure View" (click)="$event.stopPropagation()">
+  <header class="modal-header"><div><h2>Structure View</h2><p>Enter fee structure details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
+  <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
+    <div class="form-field"><label for="structureName">Structure Name</label><input id="structureName" name="name" [(ngModel)]="model['name']"></div>
+    <div class="form-field"><label for="structureYear">Academic Year</label><input id="structureYear" name="academicYear" [(ngModel)]="model['academicYear']"></div>
+    <div class="form-field"><label for="structureClass">Class</label><input id="structureClass" name="class" [(ngModel)]="model['class']"></div>
+    <div class="form-field"><label for="structureGroup">Fee Group</label><input id="structureGroup" name="feeGroup" [(ngModel)]="model['feeGroup']"></div>
+    <div class="form-field"><label for="structureAmount">Total Amount</label><input id="structureAmount" name="totalAmount" type="number" [(ngModel)]="model['totalAmount']"></div>
+    <div class="form-field"><label for="structureStatus">Status</label><select id="structureStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+  </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>
+</section></div>

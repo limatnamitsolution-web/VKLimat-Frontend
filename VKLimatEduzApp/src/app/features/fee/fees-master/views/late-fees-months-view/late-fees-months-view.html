@@ -1,0 +1,11 @@
+<div class="modal-overlay" (click)="close.emit()"><section class="modal-content" role="dialog" aria-modal="true" aria-label="LateFees-Months View" (click)="$event.stopPropagation()">
+  <header class="modal-header"><div><h2>LateFees-Months View</h2><p>Enter month-wise late fee details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
+  <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
+    <div class="form-field"><label for="monthsMonth">Month</label><input id="monthsMonth" name="month" [(ngModel)]="model['month']"></div>
+    <div class="form-field"><label for="monthsDue">Due Date</label><input id="monthsDue" name="dueDate" type="date" [(ngModel)]="model['dueDate']"></div>
+    <div class="form-field"><label for="monthsGrace">Grace Date</label><input id="monthsGrace" name="graceDate" type="date" [(ngModel)]="model['graceDate']"></div>
+    <div class="form-field"><label for="monthsType">Fine Type</label><select id="monthsType" name="fineType" [(ngModel)]="model['fineType']"><option value="Amount">Amount</option><option value="Percentage">Percentage</option></select></div>
+    <div class="form-field"><label for="monthsValue">Fine Value</label><input id="monthsValue" name="fineValue" type="number" [(ngModel)]="model['fineValue']"></div>
+    <div class="form-field"><label for="monthsStatus">Status</label><select id="monthsStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+  </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>
+</section></div>

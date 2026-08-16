@@ -1,0 +1,11 @@
+<div class="modal-overlay" (click)="close.emit()"><section class="modal-content" role="dialog" aria-modal="true" aria-label="LateFine-Attendance View" (click)="$event.stopPropagation()">
+  <header class="modal-header"><div><h2>LateFine-Attendance View</h2><p>Enter attendance fine details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
+  <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
+    <div class="form-field"><label for="attendanceFrom">Attendance From %</label><input id="attendanceFrom" name="attendanceFrom" type="number" [(ngModel)]="model['attendanceFrom']"></div>
+    <div class="form-field"><label for="attendanceTo">Attendance To %</label><input id="attendanceTo" name="attendanceTo" type="number" [(ngModel)]="model['attendanceTo']"></div>
+    <div class="form-field"><label for="attendanceType">Fine Type</label><select id="attendanceType" name="fineType" [(ngModel)]="model['fineType']"><option value="Amount">Amount</option><option value="Percentage">Percentage</option></select></div>
+    <div class="form-field"><label for="attendanceValue">Fine Value</label><input id="attendanceValue" name="fineValue" type="number" [(ngModel)]="model['fineValue']"></div>
+    <div class="form-field"><label for="attendanceMonth">Applicable Month</label><input id="attendanceMonth" name="applicableMonth" [(ngModel)]="model['applicableMonth']"></div>
+    <div class="form-field"><label for="attendanceStatus">Status</label><select id="attendanceStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+  </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>
+</section></div>

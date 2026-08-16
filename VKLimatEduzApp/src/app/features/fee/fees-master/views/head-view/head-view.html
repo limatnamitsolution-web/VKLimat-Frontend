@@ -1,0 +1,20 @@
+<div class="modal-overlay" (click)="close.emit()">
+  <section class="modal-content" role="dialog" aria-modal="true" aria-label="Head View" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <div><h2>Head View</h2><p>Enter fee head details.</p></div>
+      <button type="button" class="close-btn" title="Close" aria-label="Close" (click)="close.emit()">&times;</button>
+    </header>
+    <form (ngSubmit)="submit()">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-field"><label for="headCode">Code</label><input id="headCode" name="code" [(ngModel)]="model['code']"></div>
+          <div class="form-field"><label for="headName">Fee Head Name</label><input id="headName" name="name" [(ngModel)]="model['name']"></div>
+          <div class="form-field"><label for="headCategory">Category</label><input id="headCategory" name="category" [(ngModel)]="model['category']"></div>
+          <div class="form-field"><label for="headRefundable">Refundable</label><select id="headRefundable" name="refundable" [(ngModel)]="model['refundable']"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+          <div class="form-field"><label for="headStatus">Status</label><select id="headStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+        </div>
+      </div>
+      <footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer>
+    </form>
+  </section>
+</div>

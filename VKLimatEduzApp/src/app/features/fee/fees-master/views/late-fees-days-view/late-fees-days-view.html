@@ -1,0 +1,11 @@
+<div class="modal-overlay" (click)="close.emit()"><section class="modal-content" role="dialog" aria-modal="true" aria-label="LateFees-Days View" (click)="$event.stopPropagation()">
+  <header class="modal-header"><div><h2>LateFees-Days View</h2><p>Enter day-wise late fee details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
+  <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
+    <div class="form-field"><label for="daysFrom">From Day</label><input id="daysFrom" name="fromDay" type="number" [(ngModel)]="model['fromDay']"></div>
+    <div class="form-field"><label for="daysTo">To Day</label><input id="daysTo" name="toDay" type="number" [(ngModel)]="model['toDay']"></div>
+    <div class="form-field"><label for="daysType">Fine Type</label><select id="daysType" name="fineType" [(ngModel)]="model['fineType']"><option value="Amount">Amount</option><option value="Percentage">Percentage</option></select></div>
+    <div class="form-field"><label for="daysValue">Fine Value</label><input id="daysValue" name="fineValue" type="number" [(ngModel)]="model['fineValue']"></div>
+    <div class="form-field"><label for="daysMaximum">Maximum Fine</label><input id="daysMaximum" name="maximumFine" type="number" [(ngModel)]="model['maximumFine']"></div>
+    <div class="form-field"><label for="daysStatus">Status</label><select id="daysStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+  </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>
+</section></div>

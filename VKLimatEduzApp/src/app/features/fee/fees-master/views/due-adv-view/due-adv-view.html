@@ -1,0 +1,11 @@
+<div class="modal-overlay" (click)="close.emit()"><section class="modal-content" role="dialog" aria-modal="true" aria-label="Due/Adv View" (click)="$event.stopPropagation()">
+  <header class="modal-header"><div><h2>Due/Adv View</h2><p>Enter due or advance rule details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
+  <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
+    <div class="form-field"><label for="dueType">Type</label><select id="dueType" name="type" [(ngModel)]="model['type']"><option value="Due">Due</option><option value="Advance">Advance</option></select></div>
+    <div class="form-field"><label for="dueRule">Rule Name</label><input id="dueRule" name="ruleName" [(ngModel)]="model['ruleName']"></div>
+    <div class="form-field"><label for="dueDays">Days</label><input id="dueDays" name="days" type="number" [(ngModel)]="model['days']"></div>
+    <div class="form-field"><label for="dueValue">Amount / Percentage</label><input id="dueValue" name="value" type="number" [(ngModel)]="model['value']"></div>
+    <div class="form-field"><label for="dueApplies">Applies To</label><input id="dueApplies" name="appliesTo" [(ngModel)]="model['appliesTo']"></div>
+    <div class="form-field"><label for="dueStatus">Status</label><select id="dueStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+  </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>
+</section></div>

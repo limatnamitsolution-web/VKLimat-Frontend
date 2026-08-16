@@ -1,0 +1,12 @@
+<div class="modal-overlay" (click)="close.emit()"><section class="modal-content" role="dialog" aria-modal="true" aria-label="LateFees-Stud View" (click)="$event.stopPropagation()">
+  <header class="modal-header"><div><h2>LateFees-Stud View</h2><p>Enter student late fee details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
+  <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
+    <div class="form-field"><label for="studAdmission">Admission No.</label><input id="studAdmission" name="admissionNo" [(ngModel)]="model['admissionNo']"></div>
+    <div class="form-field"><label for="studName">Student Name</label><input id="studName" name="studentName" [(ngModel)]="model['studentName']"></div>
+    <div class="form-field"><label for="studClass">Class</label><input id="studClass" name="class" [(ngModel)]="model['class']"></div>
+    <div class="form-field"><label for="studHead">Fee Head</label><input id="studHead" name="feeHead" [(ngModel)]="model['feeHead']"></div>
+    <div class="form-field"><label for="studDue">Due Amount</label><input id="studDue" name="dueAmount" type="number" [(ngModel)]="model['dueAmount']"></div>
+    <div class="form-field"><label for="studLate">Late Fee</label><input id="studLate" name="lateFee" type="number" [(ngModel)]="model['lateFee']"></div>
+    <div class="form-field"><label for="studStatus">Status</label><select id="studStatus" name="status" [(ngModel)]="model['status']"><option value="Pending">Pending</option><option value="Paid">Paid</option><option value="Waived">Waived</option></select></div>
+  </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>
+</section></div>

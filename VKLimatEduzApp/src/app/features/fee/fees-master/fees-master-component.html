@@ -1,0 +1,39 @@
+<div class="shell full-bleed">
+  <div class="layout">
+    <section class="panel">
+      <div class="panel-body">
+        <div class="tabs-container">
+          <nav class="tabs-nav" role="tablist" aria-label="Fees master sections">
+            @for (tab of tabs; track tab.key) {
+              <button
+                type="button"
+                class="tab-btn"
+                [class.active]="activeTab() === tab.key"
+                (click)="selectTab(tab.key)"
+                role="tab"
+                [attr.aria-selected]="activeTab() === tab.key">
+                {{ tab.label }}
+              </button>
+            }
+          </nav>
+
+          <div class="tab-panel" role="tabpanel">
+            @switch (activeTab()) {
+              @case ('group') { <app-group-tab /> }
+              @case ('head') { <app-head-tab /> }
+              @case ('structure') { <app-structure-tab /> }
+              @case ('optional') { <app-optional-tab /> }
+              @case ('concession') { <app-concession-tab /> }
+              @case ('concession-details') { <app-concession-details-tab /> }
+              @case ('due-adv') { <app-due-adv-tab /> }
+              @case ('late-fees-days') { <app-late-fees-days-tab /> }
+              @case ('late-fees-months') { <app-late-fees-months-tab /> }
+              @case ('late-fees-stud') { <app-late-fees-stud-tab /> }
+              @case ('late-fine-attendance') { <app-late-fine-attendance-tab /> }
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

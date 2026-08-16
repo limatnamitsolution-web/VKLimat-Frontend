@@ -1,0 +1,10 @@
+<div class="modal-overlay" (click)="close.emit()"><section class="modal-content" role="dialog" aria-modal="true" aria-label="Optional View" (click)="$event.stopPropagation()">
+  <header class="modal-header"><div><h2>Optional View</h2><p>Enter optional fee details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
+  <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
+    <div class="form-field"><label for="optionalName">Optional Fee</label><input id="optionalName" name="name" [(ngModel)]="model['name']"></div>
+    <div class="form-field"><label for="optionalClass">Applicable Class</label><input id="optionalClass" name="applicableClass" [(ngModel)]="model['applicableClass']"></div>
+    <div class="form-field"><label for="optionalAmount">Amount</label><input id="optionalAmount" name="amount" type="number" [(ngModel)]="model['amount']"></div>
+    <div class="form-field"><label for="optionalType">Selection Type</label><select id="optionalType" name="selectionType" [(ngModel)]="model['selectionType']"><option value="Optional">Optional</option><option value="Mandatory">Mandatory</option></select></div>
+    <div class="form-field"><label for="optionalStatus">Status</label><select id="optionalStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+  </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>
+</section></div>

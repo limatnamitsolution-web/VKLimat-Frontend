@@ -1,0 +1,10 @@
+.data-grid {
+  width: 100%;
+  border-collapse: collapse;
+}
+.data-grid th,
+.data-grid td {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  text-align: left;
+}

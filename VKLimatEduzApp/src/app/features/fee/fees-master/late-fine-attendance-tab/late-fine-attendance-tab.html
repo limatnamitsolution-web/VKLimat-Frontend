@@ -1,0 +1,35 @@
+<div class="toolbar-container">
+  <input type="text" [value]="searchTerm()" (input)="updateSearch($event)" placeholder="Search all fields..." class="input-control input-search">
+  <div class="btn-group"><button type="button" (click)="openAddView()" class="btn-primary btn-sm">Add</button><button type="button" (click)="resetSearch()" class="btn-reset btn-sm">Reset</button></div>
+</div>
+<div class="table-responsive">
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Attendance From %</th>
+      <th>Attendance To %</th>
+      <th>Fine Type</th>
+      <th>Fine Value</th>
+      <th>Applicable Month</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (row of displayedRows(); track row) {
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    } @empty {
+      <tr><td colspan="7">No attendance late-fine rules found.</td></tr>
+    }
+  </tbody>
+</table>
+</div>
+@if (showView()) { <app-late-fine-attendance-view (close)="closeView()" (saved)="closeView()" /> }

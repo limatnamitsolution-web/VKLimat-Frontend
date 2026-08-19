@@ -33,6 +33,7 @@ export class MastersConfigDashboardComponent implements OnInit {
   searchTerm: string = '';
   constructor() {
     this.form = this.fb.group({
+      branchId: 0,
       id:0,
       configValue: ['', Validators.required],
       configKey: ['', Validators.required],

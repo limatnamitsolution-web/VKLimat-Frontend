@@ -95,6 +95,13 @@
   --shadow-1: 0 1px 3px rgba(0, 188, 212, 0.1);
   --shadow-2: 0 4px 6px rgba(0, 188, 212, 0.1);
   --shadow-3: 0 10px 15px rgba(0, 188, 212, 0.1);
+
+  --header-surface-bg: color-mix(in srgb, var(--primary-blue) 22%, var(--surface));
+  --table-header-surface-bg: transparent;
+  --header-surface-border: color-mix(in srgb, var(--primary-blue) 28%, var(--border));
+  --header-surface-accent: color-mix(in srgb, var(--accent-gold) 55%, var(--border));
+  --header-surface-text: var(--dark-blue);
+  --header-surface-shadow: 0 2px 6px color-mix(in srgb, var(--primary-blue) 12%, transparent);
 }
 
 /* Dark theme - Dracula Inspired (Rainbow Dark) */
@@ -1939,12 +1946,15 @@ body[data-theme="dark-color"] .theme-toggle-btn i {
   padding: 4px 8px;
   text-align: left;
   vertical-align: top;
-  background: var(--primary-blue);
-  color: #fff;
-  border-bottom: 2px solid var(--border);
+  background: var(--table-header-surface-bg);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  backdrop-filter: blur(8px) saturate(120%);
+  color: var(--header-surface-text);
+  border-top: 1px solid var(--header-surface-border);
+  border-bottom: 2px solid var(--header-surface-accent);
   font-weight: 600;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  letter-spacing: 0;
+  box-shadow: var(--header-surface-shadow);
   transition: background 0.3s;
   white-space: nowrap;
 }
@@ -2032,8 +2042,7 @@ body[data-theme="dark-color"] .theme-toggle-btn i {
   box-shadow: 0 4px 12px rgba(255, 0, 204, 0.3);
 }
 
-[data-theme="crazy"] .grid-header,
-[data-theme="crazy"] .data-table thead th {
+[data-theme="crazy"] .grid-header {
   background: linear-gradient(45deg, #ff00cc, #f59e0b, #10b981);
   background-size: 200% 200%;
   animation: buttonGradient 3s ease infinite;

@@ -3,6 +3,7 @@
     <section class="panel">
       <div class="panel-body">
         <form [formGroup]="form" (ngSubmit)="addGridItem()" class="form-row">
+          <app-searchable-dropdown formControlName="branchId" [options]="branches()" placeholder="Select Branch" />
           <input type="text" formControlName="configValue" placeholder="Name" class="input-control" required />
           <input type="text" formControlName="configKey" placeholder="Code" class="input-control" required />
           <input type="text" formControlName="description" placeholder="Description" class="input-control input-wide" required />

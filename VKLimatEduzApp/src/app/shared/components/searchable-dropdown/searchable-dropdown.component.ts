@@ -6,6 +6,7 @@ import {
   Input,
   ViewChild,
   forwardRef,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -26,11 +27,11 @@ export interface SearchableDropdownOption {
     },
   ],
   template: `
-    <div class="searchable-dropdown" [class.open]="isOpen" [class.disabled]="disabled">
+    <div class="searchable-dropdown" [class.open]="isOpen" [class.disabled]="disabled()">
       <button
         type="button"
         class="dropdown-trigger"
-        [disabled]="disabled"
+        [disabled]="disabled()"
         [attr.aria-expanded]="isOpen"
         aria-haspopup="listbox"
         (click)="toggle()"
@@ -54,7 +55,7 @@ export interface SearchableDropdownOption {
               (keydown)="onSearchKeydown($event)">
           </div>
           <div class="options" role="listbox">
-            @if (allowClear && value !== null && value !== undefined && value !== '') {
+            @if (allowClear && value() !== null && value() !== undefined && value() !== '') {
               <button type="button" class="option clear-option" (click)="selectValue(null)">
                 {{ placeholder }}
               </button>
@@ -65,8 +66,8 @@ export interface SearchableDropdownOption {
                 class="option"
                 role="option"
                 [class.active]="index === activeIndex"
-                [class.selected]="option.id === value"
-                [attr.aria-selected]="option.id === value"
+                [class.selected]="option.id === value()"
+                [attr.aria-selected]="option.id === value()"
                 (mouseenter)="activeIndex = index"
                 (click)="selectOption(option)">
                 {{ option.name }}
@@ -258,15 +259,15 @@ export class SearchableDropdownComponent implements ControlValueAccessor {
   }
 
   get selectedOption(): SearchableDropdownOption | undefined {
-    return this._options.find(option => option.id === this.value);
+    return this._options.find(option => option.id === this.value());
   }
 
   filteredOptions: SearchableDropdownOption[] = [];
   searchTerm = '';
   activeIndex = 0;
   isOpen = false;
-  disabled = false;
-  value: number | string | null = null;
+  disabled = signal(false);
+  value = signal<number | string | null>(null);
 
   private _options: SearchableDropdownOption[] = [];
   private onChange: (value: number | string | null) => void = () => undefined;
@@ -275,7 +276,7 @@ export class SearchableDropdownComponent implements ControlValueAccessor {
   constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
 
   writeValue(value: number | string | null): void {
-    this.value = value;
+    this.value.set(value);
   }
 
   registerOnChange(fn: (value: number | string | null) => void): void {
@@ -287,14 +288,14 @@ export class SearchableDropdownComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    this.disabled.set(isDisabled);
     if (isDisabled) {
       this.close();
     }
   }
 
   toggle(): void {
-    if (this.disabled) {
+    if (this.disabled()) {
       return;
     }
     this.isOpen ? this.close() : this.open();
@@ -304,7 +305,7 @@ export class SearchableDropdownComponent implements ControlValueAccessor {
     this.isOpen = true;
     this.searchTerm = '';
     this.applyFilter();
-    this.activeIndex = Math.max(0, this.filteredOptions.findIndex(option => option.id === this.value));
+    this.activeIndex = Math.max(0, this.filteredOptions.findIndex(option => option.id === this.value()));
     setTimeout(() => this.searchInput?.nativeElement.focus());
   }
 
@@ -325,7 +326,7 @@ export class SearchableDropdownComponent implements ControlValueAccessor {
   }
 
   selectValue(value: number | string | null): void {
-    this.value = value;
+    this.value.set(value);
     this.onChange(value);
     this.close();
   }

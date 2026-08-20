@@ -8,11 +8,12 @@ import { ReactiveFormsModule, FormGroup, FormBuilder, Validators, FormsModule } 
 import { MenuLabelService } from '../../shared/services/menu-label.service';
 import { EncryptionService } from '../../shared/services/encryption.service';
 import { MasterConfigsDWN } from '../../shared/services/master-configs-dwn';
+import { SearchableDropdownComponent, SearchableDropdownOption } from '../../shared/components/searchable-dropdown/searchable-dropdown.component';
 
 
 @Component({
   selector: 'app-masters-config-dashboard-component',
-  imports: [CommonModule, DataGridComponent, ReactiveFormsModule,FormsModule],
+  imports: [CommonModule, DataGridComponent, ReactiveFormsModule, FormsModule, SearchableDropdownComponent],
   templateUrl: './masters-config-dashboard-component.html',
   styleUrl: './masters-config-dashboard-component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -29,11 +30,13 @@ export class MastersConfigDashboardComponent implements OnInit {
   editIndex: number | null = null;
   keyParam: string = '';
   private encryptionService = inject(EncryptionService);
+  private masterConfigsDWN = inject(MasterConfigsDWN);
+  branches = signal<SearchableDropdownOption[]>([]);
   // Single search property for all fields
   searchTerm: string = '';
   constructor() {
     this.form = this.fb.group({
-      branchId: 0,
+      branchId: ['', Validators.required],
       id:0,
       configValue: ['', Validators.required],
       configKey: ['', Validators.required],
@@ -52,12 +55,25 @@ export class MastersConfigDashboardComponent implements OnInit {
       if (result) {
         this.form.setValue({
           id: result.id,
+          branchId: result.branchId,
           configValue: result.configValue,
           configKey: result.configKey,
           description: result.description,
           configuration: result.configuration
         });
       }
+    });
+    effect(() => {
+      const options = this.masterConfigsDWN.masterConfigDwnList();
+      if (!Array.isArray(options)) {
+        return;
+      }
+
+      this.branches.set(
+        options
+          .filter(option => option.type?.toLowerCase() === 'branch')
+          .map(option => ({ id: option.id, name: option.name }))
+      );
     });
   }
 
@@ -122,12 +138,13 @@ export class MastersConfigDashboardComponent implements OnInit {
     resetForm() {
       this.form.reset();
           let key =   this.encryptionService.decrypt( this.keyParam);
-      this.form.patchValue({ id: 0 , configValue: '', configKey: '', description: '', configuration: key });
+      this.form.patchValue({ branchId: '', id: 0 , configValue: '', configKey: '', description: '', configuration: key });
       this.editIndex = null;
       
     }
 
   ngOnInit() {
+    this.masterConfigsDWN.fetchMasterConfigDWN('Branch');
     this.route.paramMap.subscribe(params => {
       this.keyParam = params.get('key') || 'ClassGroup';
       let key = this.encryptionService.decrypt(this.keyParam);      

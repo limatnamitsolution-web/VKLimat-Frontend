@@ -6,6 +6,11 @@
         <app-sidebar></app-sidebar>
         
         <main class="content-container">
+          <div class="page-context-bar">
+            <div class="page-context">
+              <h1>{{ pageName() }}</h1>
+            </div>
+          </div>
           <router-outlet></router-outlet>
         </main>
       </div>

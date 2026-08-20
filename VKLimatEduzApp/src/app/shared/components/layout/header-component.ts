@@ -1,9 +1,7 @@
 // app/layout/header.component.ts
-import { Component, OnInit, OnDestroy, HostListener, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ChangeDetectionStrategy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ThemeService } from '../../services/theme.service';
-import { MenuLabelService } from '../../services/menu-label.service';
-import { ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ModuleSwitcherComponent } from "../module-switcher/module-switcher.component";
 import { AppStateService } from '../../../core/services/app-state.service';
@@ -23,15 +21,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isProfileMenuOpen = false;
   currentTheme: string = 'light';
   private themeSubscription!: Subscription;
-  selectedMenuLabel: string = '';
-  selectedLabel=signal<string>('');
   readonly userFullName = computed(() => this.getFullUserName());
   readonly userInitials = computed(() => this.getUserInitials(this.userFullName()));
+  readonly schoolName = computed(() => this.appStateService.userState().academicName?.trim() || 'School');
 
   constructor(
     private themeService: ThemeService,
-    public menuLabelService: MenuLabelService,
-    private cdr: ChangeDetectorRef,
     private appStateService: AppStateService,
     private router: Router
   ) {}
@@ -40,10 +35,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.themeSubscription = this.themeService.currentTheme$.subscribe(theme => {
       this.currentTheme = theme;
     });
-    // Use signal for menu label
-    // this.selectedLabel.set(this.menuLabelService.label$().key);
-    // console.log('Menu label signal:', this.selectedLabel());
-
   }
 
   ngOnDestroy() {

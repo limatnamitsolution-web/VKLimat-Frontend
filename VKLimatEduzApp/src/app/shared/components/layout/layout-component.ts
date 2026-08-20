@@ -1,11 +1,11 @@
 // app/layout/layout.component.ts
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./header-component";
 import { SidebarComponent } from "./sidebar-component";
 import { LoaderComponent } from '../loader/loader.component';
-import { AppStateService } from '../../../core/services/app-state.service';
+import { MenuLabelService } from '../../services/menu-label.service';
 
 
 
@@ -17,7 +17,8 @@ import { AppStateService } from '../../../core/services/app-state.service';
   styleUrls: ['./layout-component.scss']
 })
 export class LayoutComponent implements OnInit {
-  private appState = inject(AppStateService);
+  private menuLabelService = inject(MenuLabelService);
+  readonly pageName = computed(() => this.menuLabelService.label$().key?.trim() || 'Dashboard');
 
   ngOnInit() {
     // Initialize global state here (e.g., from API or LocalStorage)

@@ -24,6 +24,7 @@ import {
   StudentDocumentRequestDto,
   TransportDto,
 } from '../../../models/student-admission.model';
+import { SearchableDropdownComponent } from '../../../shared/components/searchable-dropdown/searchable-dropdown.component';
 
 interface DropdownOption {
   id: number | string;
@@ -98,7 +99,7 @@ interface ProfileImageState {
 @Component({
   selector: 'app-student-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SearchableDropdownComponent],
   templateUrl: './student-detail-component.html',
   styleUrls: ['./student-detail-component.scss'],
 })

@@ -54,14 +54,26 @@ export class AdmissionComponent implements OnInit {
 
   // Filtering logic for search
   applyFilters(): void {
-    const term = this.searchTerm().toLowerCase();
+    const term = this.searchTerm().trim().toLowerCase();
     const allData = this.gridData();
+    const displayedColumns = [
+      'adm_no',
+      'adm_date',
+      'adm_dob',
+      'name',
+      'class',
+      'Section',
+      'sess_father_name',
+      'sess_father_mobile_no',
+      'sess_mother_name',
+      'sess_mother_mobile_no',
+    ];
+
     this.filteredGridData.set(
-      allData.filter((item: any) =>
-        String(item.name ?? '').toLowerCase().includes(term) ||
-        String(item.adm_no ?? '').toLowerCase().includes(term) ||
-        String(item.class ?? '').toLowerCase().includes(term) ||
-        String(item.sess_father_name ?? '').toLowerCase().includes(term)
+      allData.filter((item: any, index: number) =>
+        String(index + 1).includes(term) || displayedColumns.some(column =>
+          String(item[column] ?? '').toLowerCase().includes(term)
+        )
       )
     );
   }

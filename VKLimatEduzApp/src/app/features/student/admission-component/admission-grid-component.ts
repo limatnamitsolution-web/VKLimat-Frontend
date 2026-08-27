@@ -44,19 +44,26 @@ export class AdmissionGridComponent implements OnInit, OnChanges {
     //console.log(`Filtering data: ${JSON.stringify(result)},searchText: ${JSON.stringify(this.searchText)}, sortColumn: ${JSON.stringify(this.sortColumn)}, sortDirection: ${JSON.stringify(this.sortDirection)}`);
     // Apply search filter
     if (this.searchText) {
-      const searchLower = this.searchText.toLowerCase();
-      result = result.filter(row =>
-        (row.admNo || '').toLowerCase().includes(searchLower) ||
-        (row.adm_date || '').toLowerCase().includes(searchLower) ||
-        (row.adm_dob || '').toLowerCase().includes(searchLower) ||
-        (row.name || '').toLowerCase().includes(searchLower) ||
-        (row.class || '').toLowerCase().includes(searchLower) ||
-        (row.section || '').toLowerCase().includes(searchLower) ||
-        (row.sess_father_name || '').toLowerCase().includes(searchLower) ||
-        (row.sess_mother_name || '').toLowerCase().includes(searchLower) ||
-        (row.f_MobileNo || '').toLowerCase().includes(searchLower) ||
-        (row.m_MobileNo || '').toLowerCase().includes(searchLower)
-      );
+      const searchLower = this.searchText.trim().toLowerCase();
+      const displayedColumns = [
+        'adm_no',
+        'adm_date',
+        'adm_dob',
+        'name',
+        'class',
+        'Section',
+        'sess_father_name',
+        'sess_father_mobile_no',
+        'sess_mother_name',
+        'sess_mother_mobile_no',
+      ];
+
+      result = result.filter(row => {
+        const rowNumber = this.data.indexOf(row) + 1;
+        return String(rowNumber).includes(searchLower) || displayedColumns.some(column =>
+          String(row[column] ?? '').toLowerCase().includes(searchLower)
+        );
+      });
     }
 
     // Apply sorting

@@ -1946,15 +1946,15 @@ body[data-theme="dark-color"] .theme-toggle-btn i {
   padding: 4px 8px;
   text-align: left;
   vertical-align: top;
-  background: var(--table-header-surface-bg);
+  background: transparent;
   -webkit-backdrop-filter: blur(8px) saturate(120%);
   backdrop-filter: blur(8px) saturate(120%);
-  color: var(--header-surface-text);
-  border-top: 1px solid var(--header-surface-border);
-  border-bottom: 2px solid var(--header-surface-accent);
+  color: var(--text);
+  border-top: 1px solid var(--border);
+  border-bottom: 2px solid var(--border);
   font-weight: 600;
   letter-spacing: 0;
-  box-shadow: var(--header-surface-shadow);
+  box-shadow: var(--shadow-1);
   transition: background 0.3s;
   white-space: nowrap;
 }

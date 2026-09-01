@@ -1,8 +1,6 @@
 // app/layout/sidebar.component.ts
-import { ChangeDetectionStrategy, Component, HostListener, OnInit, effect, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, OnInit, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { EncryptionService } from '../../services/encryption.service';
 import { MenuLabelService } from '../../services/menu-label.service';
@@ -21,70 +19,66 @@ export class SidebarComponent implements OnInit {
   get menuItems(): MenuItem[] {
     return this.loadingMenuItemService.getMenuItems();
   }
-  isCollapsed = false;
-  activeMenu: string = 'overview';
-  activeSubMenu: string = '';
-  expandedMenus: { [key: string]: boolean } = {
+  readonly isCollapsed = signal(false);
+  readonly activeMenu = signal('overview');
+  readonly activeSubMenu = signal('');
+  readonly expandedMenus = signal<Record<string, boolean>>({
     'students': false,
     'id-cards': false,
     'library': false,
     'transport': false
-  };
-  selectedLabel: string = '';
-  labelChanged: ((label: string) => void) | null = null;
+  });
+  readonly selectedLabel = signal('');
 
   constructor(
-    private http: HttpClient,
     private router: Router,
     private encryptionService: EncryptionService,
     private menuLabelService: MenuLabelService,
-    private loadingMenuItemService: LoadingMenuItemService,
-    private cdr: ChangeDetectorRef
+    private loadingMenuItemService: LoadingMenuItemService
   ) {
     effect(() => {
       const items = this.loadingMenuItemService.menuItems();
       if (items && items.length) {
-        items.forEach(item => {
+        this.expandedMenus.update(current => {
+          const expanded = { ...current };
+          items.forEach(item => {
           if (item.children && item.children.length) {
-            if (!(item.key in this.expandedMenus)) {
-              this.expandedMenus[item.key] = false;
+              expanded[item.key] ??= false;
             }
-          }
+          });
+          return expanded;
         });
-        this.cdr.markForCheck();
       }
     });
   }
   // If label$ is consumed, use signal: this.menuLabelService.label$()
   // Call this method to navigate to dashboard with encrypted key
-  child: MenuItem | undefined;
-  main: MenuItem | undefined;
   navigateToDashboard(menuKey: string) {
     const encryptedKey = this.encryptionService.encrypt(menuKey);
     // Find label for main or submenu
     let label = '';
-     this.main = this.menuItems.find(item => item.key === menuKey);
-    if (this.main) {
-      label = this.main.label;     
+    const main = this.menuItems.find(item => item.key === menuKey);
+    let child: MenuItem | undefined;
+    if (main) {
+      label = main.label;
     } else {
       for (const item of this.menuItems) {
-         this.child = item.children?.find(c => c.key === menuKey);
-        
-        if (this.child) {
-          label = this.child.label;
+        child = item.children?.find(candidate => candidate.key === menuKey);
+        if (child) {
+          label = child.label;
           break;
         }
       }
     }
-    this.selectedLabel = label;
-    this.menuLabelService.setLabel({ key: this.main?.label||this.child?.label||'' });
-    console.log(this.main?.route,this.child?.route);
-    if(this.child?.route?.includes('dashboard') || this.main?.route?.includes('dashboard'))
+    this.selectedLabel.set(label);
+    this.menuLabelService.setLabel({ key: main?.label || child?.label || '' });
+    console.log(main?.route, child?.route);
+    if(child?.route?.includes('dashboard') || main?.route?.includes('dashboard'))
     this.router.navigate(['/mastersConfig/dashboard', encryptedKey]);
-    else if(this.child?.route)
-    this.router.navigate([this.child.route]);
-    else if(this.main?.route)
-    this.router.navigate([this.main.route]);
+    else if(child?.route)
+    this.router.navigate([child.route]);
+    else if(main?.route)
+    this.router.navigate([main.route]);
   }
 
   async ngOnInit(): Promise<void> {
@@ -93,52 +87,56 @@ export class SidebarComponent implements OnInit {
   }
 
   toggleSidebar() {
-    this.isCollapsed = !this.isCollapsed;
+    this.isCollapsed.update(collapsed => !collapsed);
   }
 
   toggleSubMenu(menuKey: string) {
     // Accordion behavior: collapse all other menus
-    Object.keys(this.expandedMenus).forEach(key => {
-      this.expandedMenus[key] = (key === menuKey) ? !this.expandedMenus[key] : false;
+    this.expandedMenus.update(current => {
+      const expanded: Record<string, boolean> = {};
+      Object.keys(current).forEach(key => {
+        expanded[key] = key === menuKey ? !current[key] : false;
+      });
+      return expanded;
     });
   }
 
   setActiveMenu(menu: string) {
-    this.activeMenu = menu;
-    this.activeSubMenu = '';
+    this.activeMenu.set(menu);
+    this.activeSubMenu.set('');
     const found = this.menuItems.find(item => item.key === menu);
     if (found) {
-      this.selectedLabel = found.label;
+      this.selectedLabel.set(found.label);
       this.menuLabelService.setLabel(found);
     }
   }
 
   setActiveSubMenu(parentMenu: string, subMenu: string) {
-    this.activeMenu = parentMenu;
-    this.activeSubMenu = subMenu;
+    this.activeMenu.set(parentMenu);
+    this.activeSubMenu.set(subMenu);
     const parent = this.menuItems.find(item => item.key === parentMenu);
     const child = parent?.children?.find(c => c.key === subMenu);
     if (child) {
-      this.selectedLabel = child.label;
+      this.selectedLabel.set(child.label);
       this.menuLabelService.setLabel(child);
     }
   }
 
   isSubMenuActive(parentMenu: string, subMenuLabel: string): boolean {
-    return this.activeMenu === parentMenu && this.activeSubMenu === subMenuLabel;
+    return this.activeMenu() === parentMenu && this.activeSubMenu() === subMenuLabel;
   }
 
   @HostListener('mouseenter')
   onMouseEnter() {
-    if (this.isCollapsed) {
-      this.isCollapsed = false;
+    if (this.isCollapsed()) {
+      this.isCollapsed.set(false);
     }
   }
 
   @HostListener('mouseleave')
   onMouseLeave() {
-    if (!this.isCollapsed) {
-      this.isCollapsed = true;
+    if (!this.isCollapsed()) {
+      this.isCollapsed.set(true);
     }
   }
 }

@@ -348,7 +348,7 @@
       },
       {
         "key": "feesMaster",
-        "label": "Fees Master",
+        "label": "Fees Configuration",
         "icon": "fas fa-certificate",
         "route": "/fees/fees-master",
         "isBranch": false

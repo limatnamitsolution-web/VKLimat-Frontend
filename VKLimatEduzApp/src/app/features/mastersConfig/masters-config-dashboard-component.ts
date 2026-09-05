@@ -41,7 +41,9 @@ export class MastersConfigDashboardComponent implements OnInit {
       configValue: ['', Validators.required],
       configKey: ['', Validators.required],
       description: ['', Validators.required],
-      configuration: ['', Validators.required]
+      configuration: ['', Validators.required],
+      sortOrder: [0],
+      isActive: [true]
     });
     effect(() => {
       const data = this.mastersConfig.masterConfigList();
@@ -59,7 +61,9 @@ export class MastersConfigDashboardComponent implements OnInit {
           configValue: result.configValue,
           configKey: result.configKey,
           description: result.description,
-          configuration: result.configuration
+          configuration: result.configuration,
+          sortOrder: result.sortOrder ?? 0,
+          isActive: result.isActive ?? true
         });
       }
     });
@@ -86,7 +90,9 @@ export class MastersConfigDashboardComponent implements OnInit {
         (item.configValue || '').toLowerCase().includes(term) ||
         (item.configKey || '').toLowerCase().includes(term) ||
         (item.description || '').toLowerCase().includes(term) ||
-        (item.configuration || '').toLowerCase().includes(term)
+        (item.configuration || '').toLowerCase().includes(term) ||
+        (item.sortOrder !== undefined && item.sortOrder !== null ? String(item.sortOrder).toLowerCase().includes(term) : false) ||
+        (item.isActive !== undefined && item.isActive !== null ? (item.isActive ? 'true' : 'false').includes(term) : false)
       )
     );
   }
@@ -138,7 +144,7 @@ export class MastersConfigDashboardComponent implements OnInit {
     resetForm() {
       this.form.reset();
           let key =   this.encryptionService.decrypt( this.keyParam);
-      this.form.patchValue({ branchId: '', id: 0 , configValue: '', configKey: '', description: '', configuration: key });
+        this.form.patchValue({ branchId: '', id: 0 , configValue: '', configKey: '', description: '', configuration: key, sortOrder: 0, isActive: true });
       this.editIndex = null;
       
     }

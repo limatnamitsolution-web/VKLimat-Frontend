@@ -7,6 +7,10 @@
           <input type="text" formControlName="configValue" placeholder="Name" class="input-control" required />
           <input type="text" formControlName="configKey" placeholder="Code" class="input-control" required />
           <input type="text" formControlName="description" placeholder="Description" class="input-control input-wide" required />
+          <input type="number" formControlName="sortOrder" placeholder="Sort Order" class="input-control" />
+          <label class="checkbox-inline">
+            <input type="checkbox" formControlName="isActive" /> Is Active
+          </label>
           <button type="submit" class="btn-primary btn-sm">{{ editIndex !== null ? 'Update' : 'Add' }}</button>
             <button type="button" (click)="resetForm()" class="btn-reset btn-sm">Reset</button>
         </form>

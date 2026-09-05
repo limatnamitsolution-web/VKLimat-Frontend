@@ -4,4 +4,6 @@ export interface MasterConfig {
   configKey: string;
   description: string;
   configuration: string;
+  sortOrder?: number;
+  isActive?: boolean;
 }

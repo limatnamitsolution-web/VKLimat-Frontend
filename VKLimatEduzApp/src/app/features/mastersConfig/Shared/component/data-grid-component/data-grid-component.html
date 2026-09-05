@@ -47,6 +47,20 @@
               ↕
             </i>
           </th>
+           <th class="col-status" (click)="sortData('sortOrder')">
+            Sort Order
+            <i class="sort-icon" [class.asc]="sortColumn === 'sortOrder' && sortDirection === 'asc'" 
+               [class.desc]="sortColumn === 'sortOrder' && sortDirection === 'desc'">
+              ↕
+            </i>
+          </th>
+            <th class="col-status" (click)="sortData('isActive')">
+            Status
+            <i class="sort-icon" [class.asc]="sortColumn === 'isActive' && sortDirection === 'asc'" 
+               [class.desc]="sortColumn === 'isActive' && sortDirection === 'desc'">
+              ↕
+            </i>
+          </th>
           <th class="col-actions">Actions</th>
         </tr>
       </thead>
@@ -69,6 +83,16 @@
           <td class="col-description" [title]="item.description">
             <div class="description-text">
               {{ item.description }}
+            </div>            
+          </td>
+           <td class="col-sortOrder" [title]="item.sortOrder">
+            <div class="sortOrder-text">
+              {{ item.sortOrder }}
+            </div>            
+          </td>
+             <td class="col-status" [title]="item.isActive ? 'Active' : 'Inactive'">
+            <div class="isActive-text">
+              {{ item.isActive ? 'Active' : 'Inactive' }}
             </div>
           </td>
           <td class="col-actions">

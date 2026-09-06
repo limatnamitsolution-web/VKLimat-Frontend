@@ -1,0 +1,6 @@
+<div class="toast-container" *ngIf="message() as m">
+  <div class="toast" [class.success]="m.type === 'success'" [class.error]="m.type === 'error'" [class.info]="m.type === 'info'">
+    <div class="toast-body">{{ m.text }}</div>
+    <button class="toast-close" (click)="close()">×</button>
+  </div>
+</div>

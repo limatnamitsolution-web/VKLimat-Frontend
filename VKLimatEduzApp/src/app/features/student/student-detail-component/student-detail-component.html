@@ -121,6 +121,11 @@
                 <label> Category</label>
                 <app-searchable-dropdown formControlName="sess_std_category_id" [options]="categories" placeholder="Select Category" />
               </div>
+                
+                <div class="form-field">
+                  <label>Is Active</label>
+                  <input type="checkbox" formControlName="isActive" />
+                </div>
               </div>
             </div>
             
@@ -649,6 +654,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-text" (click)="onCancel()">Cancel</button>
+        <button type="button" class="btn-reset" (click)="resetAll()">Reset</button>
         <button type="submit" class="btn-primary" >{{ActionText()}}</button>
       </div>
       </form>

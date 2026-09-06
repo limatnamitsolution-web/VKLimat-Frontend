@@ -25,6 +25,7 @@ import {
   TransportDto,
 } from '../../../models/student-admission.model';
 import { SearchableDropdownComponent } from '../../../shared/components/searchable-dropdown/searchable-dropdown.component';
+import { MessageService } from '../../../shared/services/message.service';
 
 interface DropdownOption {
   id: number | string;
@@ -291,6 +292,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
   private readonly studentService = inject(StudentService);
   private readonly masterConfigsDWN = inject(MasterConfigsDWN);
   private readonly loaderService = inject(LoaderService);
+  private readonly messageService = inject(MessageService);
   private readonly masterConfigDwnTypes = MASTER_CONFIG_DWN_TYPES;
   private isDropdownLoadPending = false;
   private Admission: Record<string, unknown> | null = null;
@@ -802,6 +804,8 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
 
     const studentPayload = this.normalizeStudentPayloadDates(studentPayloadRaw);
 
+    // Ensure isActive default exists
+    (studentPayload as Record<string, unknown>)['isActive'] = (studentPayload as Record<string, unknown>)['isActive'] ?? true;
     this.studentForm.controls['Student'].patchValue(studentPayload);
     this.studentForm.controls['Parents'].patchValue(parentsPayload);
     this.setProfileImagePreviews(studentPayloadRaw);
@@ -886,6 +890,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
         sess_roll_no: [''],
         sess_concession_id: [null],
         sess_fee_group_id: [null],
+        isActive: [true],
     });
   }
 
@@ -1205,7 +1210,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
   if (this.ActionText() == 'Save Student') {
       this.studentService.saveStudent(formData).subscribe(
         (response) => {
-          alert('Student saved successfully');
+          this.messageService.show('Student saved successfully', 'success');
           // this.save.emit(model);
           // Object.keys(this.selectedDocumentFiles).forEach(
           //   (key) => delete this.selectedDocumentFiles[Number(key)],
@@ -1219,7 +1224,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
             for (const key in error.error.errors) {
               errorMessage += `${key}: ${error.error.errors[key].join(', ')}\n`;
             }
-            alert(errorMessage);
+            this.messageService.show(errorMessage, 'error', 5000);
             console.log('Validation errors:', errorMessage);
             console.error('Validation errors:', error.error.errors);
             console.log('Validation log-errors:', error.error.errors);
@@ -1228,7 +1233,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
               typeof error?.error === 'string'
                 ? error.error
                 : JSON.stringify(error?.error ?? error, null, 2);
-            alert('Save failed:\n' + details);
+            this.messageService.show('Save failed: ' + details, 'error', 0);
             console.error('Save failed response:', error);
           }
         },
@@ -1237,7 +1242,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
       console.log('Updating student with form data:', formData);
       this.studentService.updateStudent(formData).subscribe(
         (response) => {
-          alert('Student updated successfully');
+          this.messageService.show('Student updated successfully', 'success',9000);
         },
         (error) => {
           if (error?.error?.errors && typeof error.error.errors === 'object') {
@@ -1245,7 +1250,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
             for (const key in error.error.errors) {
               errorMessage += `${key}: ${error.error.errors[key].join(', ')}\n`;
             }
-            alert(errorMessage);
+            this.messageService.show(errorMessage, 'error', 5000);
             console.log('Validation errors:', errorMessage);
             console.error('Validation errors:', error.error.errors);
             console.log('Validation log-errors:', error.error.errors);
@@ -1254,7 +1259,7 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
               typeof error?.error === 'string'
                 ? error.error
                 : JSON.stringify(error?.error ?? error, null, 2);
-            alert('Update failed:\n' + details);
+            this.messageService.show('Update failed: ' + details, 'error', 0);
             console.error('Update failed response:', error);
           }
         },
@@ -1301,5 +1306,22 @@ export class StudentDetailComponent implements OnInit, OnChanges, OnDestroy {
     this.clearDocumentPreviews();
     this.clearProfileImages();
     this.close.emit();
+  }
+
+  resetAll(): void {
+    // Clear selected files
+    Object.keys(this.selectedDocumentFiles).forEach((key) => delete this.selectedDocumentFiles[Number(key)]);
+    // Clear previews and profile images
+    this.clearDocumentPreviews();
+    this.clearProfileImages();
+
+    // Reset the form and set sensible defaults
+    this.studentForm.reset();
+    const currentDate = this.getCurrentDateString();
+    this.studentForm.controls['Student'].patchValue({ adm_date: currentDate, adm_doj: currentDate, isActive: true });
+    this.studentForm.setControl('Documents', this.createDocumentUploadGroup(this.documentTypes()));
+    this.studentForm.markAsPristine();
+    this.studentForm.markAsUntouched();
+    this.ActionText.set('Save Student');
   }
 }

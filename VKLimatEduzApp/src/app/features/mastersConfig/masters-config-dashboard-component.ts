@@ -9,7 +9,7 @@ import { MenuLabelService } from '../../shared/services/menu-label.service';
 import { EncryptionService } from '../../shared/services/encryption.service';
 import { MasterConfigsDWN } from '../../shared/services/master-configs-dwn';
 import { SearchableDropdownComponent, SearchableDropdownOption } from '../../shared/components/searchable-dropdown/searchable-dropdown.component';
-
+import { MessageService } from '../../shared/services/message.service';
 
 @Component({
   selector: 'app-masters-config-dashboard-component',
@@ -22,6 +22,7 @@ import { SearchableDropdownComponent, SearchableDropdownOption } from '../../sha
 export class MastersConfigDashboardComponent implements OnInit {
   private mastersConfig = inject(MastersConfig);
   private route = inject(ActivatedRoute);
+  private messageService = inject(MessageService);
   gridData = signal<MasterConfig[]>([]);
   filteredGridData = signal<MasterConfig[]>([]);
   gridTitle: string = 'Master Configuration';
@@ -116,11 +117,13 @@ export class MastersConfigDashboardComponent implements OnInit {
     if(this.editIndex === null) {
     this.mastersConfig.createMasterConfig(config).subscribe({
       next: (res) => {
+        this.messageService.show('Master config created successfully', 'success', 9000);
         // Optionally refresh grid data or show success
         this.mastersConfig.fetchMasterConfig( this.keyParam);
         
       },
       error: (err) => {
+        this.messageService.show('Master config creation failed', 'error', 9000);
         // Optionally show error
         console.error('Create failed', err);
       }
@@ -128,13 +131,15 @@ export class MastersConfigDashboardComponent implements OnInit {
   } else {
     this.mastersConfig.updateMasterConfig(config).subscribe({
       next: (res) => {
+        this.messageService.show('Master config updated successfully', 'success', 9000);
         // Optionally refresh grid data or show success
         this.mastersConfig.fetchMasterConfig( this.keyParam);
         
       },
       error: (err) => {
         // Optionally show error
-        console.error('Create failed', err);
+        this.messageService.show('Master config update failed', 'error', 9000);
+        console.error('Update failed', err);
       }
     });
   }
@@ -142,11 +147,14 @@ export class MastersConfigDashboardComponent implements OnInit {
 }
 
     resetForm() {
-      this.form.reset();
-          let key =   this.encryptionService.decrypt( this.keyParam);
-        this.form.patchValue({ branchId: '', id: 0 , configValue: '', configKey: '', description: '', configuration: key, sortOrder: 0, isActive: true });
-      this.editIndex = null;
-      
+        this.form.reset();
+        let key = this.encryptionService.decrypt(this.keyParam);
+        this.form.patchValue({ branchId: '', id: 0, configValue: '', configKey: '', description: '', configuration: key, sortOrder: 0, isActive: true });
+        this.editIndex = null;
+        this.searchTerm = '';
+        this.form.markAsPristine();
+        this.form.markAsUntouched();
+        this.applyFilters();
     }
 
   ngOnInit() {

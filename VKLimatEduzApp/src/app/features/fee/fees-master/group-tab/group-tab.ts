@@ -1,5 +1,6 @@
 import { Component, inject, effect } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
+import { /* no form imports for group tab */ } from '@angular/forms';
 import { createFeeGridTabState } from '../fee-grid-tab';
 import { GroupView } from '../views/group-view/group-view';
 import { DataGridComponent } from '../../../../features/mastersConfig/Shared/component/data-grid-component/data-grid-component';
@@ -32,6 +33,7 @@ export class GroupTab {
   readonly closeView = this.state.closeView;
 
   constructor() {
+    // sync master config list into tab rows
     effect(() => {
       const list = this.mastersConfig.masterConfigList();
       this.state.rows.set(Array.isArray(list) ? [...list] : []);
@@ -56,6 +58,8 @@ export class GroupTab {
       this.mastersConfig.fetchMasterConfig('feeGroup');
     }
   }
+
+  
 
   onSaved(model: Record<string, any>) {
     if (!model) return;

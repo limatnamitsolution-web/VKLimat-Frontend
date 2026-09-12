@@ -7,7 +7,7 @@
   <thead>
     <tr>
       <th>Code</th>
-      <th>Fee Head Name</th>
+      <th>Fee Component</th>
       <th>Category</th>
       <th>Refundable</th>
       <th>Status</th>
@@ -25,9 +25,9 @@
         <td></td>
       </tr>
     } @empty {
-      <tr><td colspan="6">No fee heads found.</td></tr>
+      <tr><td colspan="6">No Fee Component found.</td></tr>
     }
   </tbody>
 </table>
 </div>
-@if (showView()) { <app-head-view (close)="closeView()" (saved)="closeView()" /> }
+@if (showView()) { <app-feeComp-view (close)="closeView()" (saved)="closeView()" /> }

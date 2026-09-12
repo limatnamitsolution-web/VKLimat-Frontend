@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { ChangeDetectionStrategy } from '@angular/core';
 import { createFeeGridTabState } from '../fee-grid-tab';
 import { LateFeesDaysView } from '../views/late-fees-days-view/late-fees-days-view';
+import { MenuLabelService } from '../../../../shared/services/menu-label.service';
 
 @Component({
   selector: 'app-late-fees-days-tab',
@@ -13,6 +14,7 @@ import { LateFeesDaysView } from '../views/late-fees-days-view/late-fees-days-vi
 })
 export class LateFeesDaysTab {
   private readonly state = createFeeGridTabState();
+  private readonly menuLabelService = inject(MenuLabelService);
   readonly searchTerm = this.state.searchTerm;
   readonly showView = this.state.showView;
   readonly filteredRows = this.state.filteredRows;
@@ -20,4 +22,5 @@ export class LateFeesDaysTab {
   readonly resetSearch = this.state.resetSearch;
   readonly openAddView = this.state.openAddView;
   readonly closeView = this.state.closeView;
+  constructor() { this.menuLabelService.setLabel({ key: 'Late Fees (Days)' }); }
 }

@@ -7,7 +7,7 @@ export class LateFeesStudView extends FeeMasterView {
   readonly title = 'LateFees-Stud View';
   readonly fields = [
     { key: 'admissionNo', label: 'Admission No.' }, { key: 'studentName', label: 'Student Name' }, { key: 'class', label: 'Class' },
-    { key: 'feeHead', label: 'Fee Head' }, { key: 'dueAmount', label: 'Due Amount', type: 'number' as const },
+    { key: 'feeComp', label: 'Fee Component' }, { key: 'dueAmount', label: 'Due Amount', type: 'number' as const },
     { key: 'lateFee', label: 'Late Fee', type: 'number' as const },
     { key: 'status', label: 'Status', type: 'select' as const, options: ['Pending', 'Paid', 'Waived'] }
   ];

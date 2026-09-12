@@ -6,7 +6,7 @@ import { FeeMasterView } from '../fee-master-view';
 export class GroupView extends FeeMasterView {
   readonly title = 'Group View';
   readonly fields = [
-    { key: 'code', label: 'Code' }, { key: 'name', label: 'Group Name' }, { key: 'feeHeads', label: 'Fee Heads' },
+    { key: 'code', label: 'Code' }, { key: 'name', label: 'Group Name' }, { key: 'feeComps', label: 'Fee Component' },
     { key: 'displayOrder', label: 'Display Order', type: 'number' as const },
     { key: 'status', label: 'Status', type: 'select' as const, options: ['Active', 'Inactive'] }
   ];

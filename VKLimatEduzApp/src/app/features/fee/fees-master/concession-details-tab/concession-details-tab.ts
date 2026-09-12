@@ -1,7 +1,8 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, inject } from '@angular/core';
 
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ConcessionDetailsView } from '../views/concession-details-view/concession-details-view';
+import { MenuLabelService } from '../../../../shared/services/menu-label.service';
 
 @Component({
   selector: 'app-concession-details-tab',
@@ -11,6 +12,8 @@ import { ConcessionDetailsView } from '../views/concession-details-view/concessi
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConcessionDetailsTab {
+  private readonly menuLabelService = inject(MenuLabelService);
+  constructor() { this.menuLabelService.setLabel({ key: 'Concession Details' }); }
   readonly searchTerm = signal('');
   readonly showView = signal(false);
   readonly rows = signal<Record<string, unknown>[]>([]);

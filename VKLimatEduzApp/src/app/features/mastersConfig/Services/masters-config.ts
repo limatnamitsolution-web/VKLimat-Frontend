@@ -61,4 +61,8 @@ export class MastersConfig {
   updateMasterConfig(config: any) {
     return this.http.put(MastersConfigApiEndpoints.update, config);
   }
+
+  deleteMasterConfig(id: number) {
+    return this.http.delete(MastersConfigApiEndpoints.byId(id));
+  }
 }

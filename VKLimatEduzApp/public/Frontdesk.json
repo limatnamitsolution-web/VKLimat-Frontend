@@ -291,10 +291,10 @@
         "isBranch": false
       },
       {
-        "key": "feesCategoryHead",
-        "label": "Category Head",
+        "key": "feesCategoryFeeComp",
+        "label": "Category Fee Component",
         "icon": "fas fa-list",
-        "route": "/fees/head",
+        "route": "/fees/fee-component",
         "isBranch": false
       },
       {

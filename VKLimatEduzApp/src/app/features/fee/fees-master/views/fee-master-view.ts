@@ -1,4 +1,4 @@
-import { Directive, output } from '@angular/core';
+import { Directive, output, Input } from '@angular/core';
 
 export interface FeeMasterField {
   key: string;
@@ -14,7 +14,8 @@ export abstract class FeeMasterView {
 
   readonly close = output<void>();
   readonly saved = output<Record<string, string | number>>();
-  readonly model: Record<string, string | number> = {};
+  @Input()
+  model: Record<string, string | number> = {};
 
   submit(): void {
     this.saved.emit({ ...this.model });

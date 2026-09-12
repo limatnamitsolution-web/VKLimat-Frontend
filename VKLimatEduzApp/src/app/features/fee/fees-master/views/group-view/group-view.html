@@ -3,7 +3,7 @@
   <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
     <div class="form-field"><label for="groupCode">Code</label><input id="groupCode" name="code" [(ngModel)]="model['code']"></div>
     <div class="form-field"><label for="groupName">Group Name</label><input id="groupName" name="name" [(ngModel)]="model['name']"></div>
-    <div class="form-field"><label for="groupHeads">Fee Heads</label><input id="groupHeads" name="feeHeads" [(ngModel)]="model['feeHeads']"></div>
+    <div class="form-field"><label for="groupHeads">Fee Component</label><input id="groupHeads" name="feeComps" [(ngModel)]="model['feeComps']"></div>
     <div class="form-field"><label for="groupOrder">Display Order</label><input id="groupOrder" name="displayOrder" type="number" [(ngModel)]="model['displayOrder']"></div>
     <div class="form-field"><label for="groupStatus">Status</label><select id="groupStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
   </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>

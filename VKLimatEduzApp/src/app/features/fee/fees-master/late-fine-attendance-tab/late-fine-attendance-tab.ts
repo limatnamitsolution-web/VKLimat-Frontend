@@ -1,6 +1,7 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, inject } from '@angular/core';
 
 import { ChangeDetectionStrategy } from '@angular/core';
+import { MenuLabelService } from '../../../../shared/services/menu-label.service';
 import { LateFineAttendanceView } from '../views/late-fine-attendance-view/late-fine-attendance-view';
 
 @Component({
@@ -11,6 +12,8 @@ import { LateFineAttendanceView } from '../views/late-fine-attendance-view/late-
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LateFineAttendanceTab {
+  private readonly menuLabelService = inject(MenuLabelService);
+  constructor() { this.menuLabelService.setLabel({ key: 'Late Fine Attendance' }); }
   readonly searchTerm = signal('');
   readonly showView = signal(false);
   readonly rows = signal<Record<string, unknown>[]>([]);

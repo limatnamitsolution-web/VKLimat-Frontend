@@ -4,7 +4,7 @@
     <div class="form-field"><label for="detailConcession">Concession</label><input id="detailConcession" name="concession" [(ngModel)]="model['concession']"></div>
     <div class="form-field"><label for="detailYear">Academic Year</label><input id="detailYear" name="academicYear" [(ngModel)]="model['academicYear']"></div>
     <div class="form-field"><label for="detailClass">Class</label><input id="detailClass" name="class" [(ngModel)]="model['class']"></div>
-    <div class="form-field"><label for="detailHead">Fee Head</label><input id="detailHead" name="feeHead" [(ngModel)]="model['feeHead']"></div>
+    <div class="form-field"><label for="detailHead">Fee Component</label><input id="detailHead" name="feeComp" [(ngModel)]="model['feeComp']"></div>
     <div class="form-field"><label for="detailValue">Applicable Value</label><input id="detailValue" name="applicableValue" type="number" [(ngModel)]="model['applicableValue']"></div>
     <div class="form-field"><label for="detailStatus">Status</label><select id="detailStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
   </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>

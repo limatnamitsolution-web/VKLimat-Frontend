@@ -6,7 +6,7 @@ import { FeeMasterView } from '../fee-master-view';
 export class ConcessionView extends FeeMasterView {
   readonly title = 'Concession View';
   readonly fields = [
-    { key: 'code', label: 'Code' }, { key: 'name', label: 'Concession Name' }, { key: 'description', label: 'Fee Component' },
+    { key: 'code', label: 'Code' }, { key: 'name', label: 'Concession Name' }, { key: 'description', label: 'Concession description' },
     { key: 'displayOrder', label: 'Display Order', type: 'number' as const },
     { key: 'status', label: 'Status', type: 'select' as const, options: ['Active', 'Inactive'] }
   ];

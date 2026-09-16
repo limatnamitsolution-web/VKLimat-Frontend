@@ -3,7 +3,7 @@
   <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
     <div class="form-field"><label for="concessionCode">Code</label><input id="concessionCode" name="code" [(ngModel)]="model['code']"></div>
     <div class="form-field"><label for="concessionName">Concession Name</label><input id="concessionName" name="name" [(ngModel)]="model['name']"></div>
-    <div class="form-field"><label for="concessionFeeComps">Fee Component</label><input id="concessionFeeComps" name="feeComps" [(ngModel)]="model['feeComps']"></div>
+    <div class="form-field"><label for="concessionFeeComps">Concession description</label><input id="concessionFeeComps" name="feeComps" [(ngModel)]="model['description']"></div>
     <div class="form-field"><label for="concessionOrder">Display Order</label><input id="concessionOrder" name="displayOrder" type="number" [(ngModel)]="model['displayOrder']"></div>
     <div class="form-field"><label for="concessionStatus">Status</label><select id="concessionStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
   </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>

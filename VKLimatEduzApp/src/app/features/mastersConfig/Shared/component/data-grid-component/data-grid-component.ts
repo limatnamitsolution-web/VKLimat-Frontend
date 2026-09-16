@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 
 import { MasterConfig } from '../../../models/MasterConfig.model';
 import { Console } from 'console';
+import { inject } from '@angular/core';
+import { MastersConfig } from '../../../Services/masters-config';
 
 @Component({
   selector: 'app-data-grid',
@@ -12,10 +14,11 @@ import { Console } from 'console';
   styleUrl: './data-grid-component.scss'
 })
 export class DataGridComponent {
+  private readonly mastersConfig = inject(MastersConfig);
   @Input() data: MasterConfig[] = [];
   @Input() title: string = 'Data Grid';
   @Input() hideHeader: boolean = false;
-  @Output() modify = new EventEmitter<MasterConfig>();
+  // `modify` removed: consumers should read `MastersConfig.masterConfig()` signal directly
   @Output() delete = new EventEmitter<MasterConfig>();
   @Output() view = new EventEmitter<MasterConfig>();
 
@@ -36,6 +39,8 @@ export class DataGridComponent {
   ngOnInit() {
     this.filterData();
   }
+
+  // No constructor required; component triggers fetch in `onModify` and parents consume the signal
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data']) {
@@ -157,9 +162,12 @@ export class DataGridComponent {
 
   // Event handlers with confirmation
   onModify(item: MasterConfig) {
-   // console.log('Modify item:', item);
+    console.log('Modify item:', item);
     this.selectedItem = item;
-    this.modify.emit(item);
+    // fetch full item from API via MastersConfig service so parent views can react to the fetched signal
+    if (item && item.id) {
+      this.mastersConfig.fetchMasterConfigGet(item.id);      
+    }
   }
 
   onDelete(item: MasterConfig) {

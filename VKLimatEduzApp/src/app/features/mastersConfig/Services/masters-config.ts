@@ -49,7 +49,8 @@ export class MastersConfig {
         this.masterConfig.set(item);
       },
       error: err => {
-        this.masterConfig.set([]); // fallback to empty array or sensible default
+        console.error('API error for masterConfig (byId):', err);
+        this.masterConfig.set(null); // ensure signal is null on error
       }
     });
   }

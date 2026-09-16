@@ -3,6 +3,6 @@
   <div class="btn-group"><button type="button" (click)="openAddView()" class="btn-primary btn-sm">Add</button><button type="button" (click)="resetSearch()" class="btn-reset btn-sm">Reset</button></div>
 </div>
 <div class="table-responsive">
-  <app-data-grid [data]="filteredRows()" [title]="'Fee Groups'" [hideHeader]="true" (modify)="onModify($event)" (delete)="onDelete($event)" (view)="onView($event)"></app-data-grid>
+  <app-data-grid [data]="filteredRows()" [title]="'Fee Groups'" [hideHeader]="true" (delete)="onDelete($event)" (view)="onView($event)"></app-data-grid>
 </div>
 @if (showView()) { <app-group-view [model]="editModel" (close)="closeView()" (saved)="onSaved($event)" /> }

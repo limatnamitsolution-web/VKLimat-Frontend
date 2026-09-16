@@ -43,8 +43,18 @@ export class ConcessionTab {
 
     effect(() => {
       const selected = this.mastersConfig.masterConfig();
-      if (selected) {
-        this.editModel = { ...selected };
+      if (selected) {    
+        const mapped: Record<string, any> = {
+          id: selected.id ?? 0,
+          branchId: selected.branchId ?? selected.branchId,
+          code: selected.configKey ?? selected['code'] ?? '',
+          description: selected['description'] ?? '',
+          name: selected.configValue ?? selected['name'] ?? '',
+          displayOrder: selected.sortOrder ?? selected.displayOrder ?? 0,
+          status: selected.isActive ? 'Active' : 'Inactive'
+        };
+        console.log('Mapped concession:', mapped);
+        this.editModel = mapped;
         this.openAddView();
       }
     });

@@ -41,8 +41,18 @@ export class GroupTab {
 
     effect(() => {
       const selected = this.mastersConfig.masterConfig();
-      if (selected) {
-        this.editModel = { ...selected };
+      if (selected) {         
+        const mapped: Record<string, any> = {
+          id: selected.id ?? 0,
+          branchId: selected.branchId ?? selected.branchId,
+          code: selected.configKey ?? selected['code'] ?? '',
+          name: selected.configValue ?? selected['name'] ?? '',
+           description: selected['description'] ?? '',
+          displayOrder: selected.sortOrder ?? selected.displayOrder ?? 0,
+          status: selected.isActive ? 'Active' : 'Inactive'
+        };
+        console.log('Mapped fee group:', mapped);
+        this.editModel = mapped;
         this.openAddView();
       }
     });

@@ -50,10 +50,10 @@ export class GroupTab {
            description: selected['description'] ?? '',
           displayOrder: selected.sortOrder ?? selected.displayOrder ?? 0,
           status: selected.isActive ? 'Active' : 'Inactive'
-        };
-        console.log('Mapped fee group:', mapped);
+        };     
         this.editModel = mapped;
         this.openAddView();
+        this.mastersConfig.masterConfig.set(null);
       }
     });
 

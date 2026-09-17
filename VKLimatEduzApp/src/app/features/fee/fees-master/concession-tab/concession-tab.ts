@@ -56,6 +56,7 @@ export class ConcessionTab {
         console.log('Mapped concession:', mapped);
         this.editModel = mapped;
         this.openAddView();
+        this.mastersConfig.masterConfig.set(null);
       }
     });
 

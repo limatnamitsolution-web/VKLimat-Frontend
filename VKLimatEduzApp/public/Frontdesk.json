@@ -354,6 +354,13 @@
         "isBranch": false
       },
       {
+        "key": "feesLateFineConfig",
+        "label": "Late Fine Configuration",
+        "icon": "fas fa-clock",
+        "route": "/latefine",
+        "isBranch": false
+      },
+      {
         "key": "feesLateFine",
         "label": "Late Fine",
         "icon": "fas fa-clock",

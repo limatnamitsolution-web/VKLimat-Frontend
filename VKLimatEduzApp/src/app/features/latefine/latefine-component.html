@@ -3,7 +3,7 @@
     <section class="panel">
       <div class="panel-body">
         <div class="tabs-container">
-          <nav class="tabs-nav" role="tablist" aria-label="Fees master sections">
+          <nav class="tabs-nav" role="tablist" aria-label="Late fine sections">
             @for (tab of tabs; track tab.key) {
               <button
                 type="button"
@@ -19,13 +19,10 @@
 
           <div class="tab-panel" role="tabpanel">
             @switch (activeTab()) {
-              @case ('group') { <app-group-tab /> }
-              @case ('fee-comp') { <app-feeComp-tab /> }
-              @case ('feeplan') { <app-feeplan-tab /> }
-              @case ('optional') { <app-optional-tab /> }
-              @case ('concession') { <app-concession-tab /> }
-              @case ('concession-details') { <app-concession-details-tab /> }
-              @case ('due-adv') { <app-due-adv-tab /> }
+              @case ('late-fees-days') { <app-late-fees-days-tab /> }
+              @case ('late-fees-months') { <app-late-fees-months-tab /> }
+              @case ('late-fees-stud') { <app-late-fees-stud-tab /> }
+              @case ('late-fine-attendance') { <app-late-fine-attendance-tab /> }
             }
           </div>
         </div>

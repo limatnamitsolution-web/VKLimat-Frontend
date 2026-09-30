@@ -1,6 +1,6 @@
 <div class="toolbar-container">
   <input type="text" [value]="searchTerm()" (input)="updateSearch($event)" placeholder="Search all fields..." class="input-control input-search">
-  <div class="btn-group"><button type="button" (click)="openAddView()" class="btn-primary btn-sm">Add</button><button type="button" (click)="resetSearch()" class="btn-reset btn-sm">Reset</button></div>
+  <div class="btn-group"><button type="button" (click)="openAdd()" class="btn-primary btn-sm">Add</button><button type="button" (click)="resetSearch()" class="btn-reset btn-sm">Reset</button></div>
 </div>
 <div class="table-responsive">
 <table class="data-table">
@@ -32,4 +32,57 @@
   </tbody>
 </table>
 </div>
-@if (showView()) { <app-feeplan-view (close)="closeView()" (saved)="closeView()" /> }
+@if (showView()) {
+  <div class="modal-overlay" (click)="cancelModel()">
+    <div class="modal-content modern-modal small-modal" role="dialog" aria-modal="true" aria-label="Feeplan View" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="header-content">
+          <h2>Feeplan View</h2>
+          <p>Enter fee plan details.</p>
+        </div>
+        <button type="button" class="close-btn" aria-label="Close" (click)="cancelModel()">&times;</button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="saveModel()" class="form-layout">
+        <div class="modal-body">
+          <div class="grid-2">
+            <div class="form-field"><label for="fpBranch">Branch</label><select id="fpBranch" formControlName="BranchId"><option value="">Select</option><option value="1">Branch 1</option><option value="2">Branch 2</option></select></div>
+            <div class="form-field"><label for="fpFY">FY</label><input id="fpFY" type="text" formControlName="FY"></div>
+
+            <div class="form-field"><label for="fpGroup">Fee Group</label><select id="fpGroup" formControlName="FeeGroupId"><option value="">Select</option></select></div>
+            <div class="form-field"><label for="fpComp">Fee Component</label><select id="fpComp" formControlName="FeeCompId"><option value="">Select</option></select></div>
+
+            <div class="form-field"><label for="fpFees">Fees</label><input id="fpFees" type="number" formControlName="Fees"></div>
+            <div class="form-field"><label for="fpOrder">OrderId</label><input id="fpOrder" type="number" formControlName="OrderId"></div>
+
+            <div class="form-field"><label for="fpTaken">FeeCompTaken</label><select id="fpTaken" formControlName="FeeCompTaken"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fpOpt">FeeCompOpt</label><select id="fpOpt" formControlName="FeeCompOpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+
+            <div class="form-field"><label for="fpRefund">FeeCompRefundable</label><select id="fpRefund" formControlName="FeeCompRefundable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fpDisp">DispFeeRecpt</label><select id="fpDisp" formControlName="DispFeeRecpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+
+            <div class="form-field"><label for="fpEditable">FeeCompEditable</label><select id="fpEditable" formControlName="FeeCompEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fpConcEditable">FeeConcEditable</label><select id="fpConcEditable" formControlName="FeeConcEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="section-title">Month</h3>
+            <div class="monthIds-grid" formArrayName="months">
+              @for (month of monthsList; track $index) {
+                <div class="month-item">
+                  <label [for]="'fp-month-'+$index">{{ month.label }}</label>
+                  <input type="checkbox" [formControlName]="$index" [id]="'fp-month-'+$index">
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-text" (click)="cancelModel()">Cancel</button>
+          <button type="submit" class="btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

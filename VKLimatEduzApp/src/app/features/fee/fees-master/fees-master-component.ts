@@ -5,10 +5,6 @@ import { ConcessionTab } from './concession-tab/concession-tab';
 import { DueAdvTab } from './due-adv-tab/due-adv-tab';
 import { GroupTab } from './group-tab/group-tab';
 import { FeeCompTab } from './feeComp-tab/feeComp-tab';
-import { LateFeesDaysTab } from './late-fees-days-tab/late-fees-days-tab';
-import { LateFeesMonthsTab } from './late-fees-months-tab/late-fees-months-tab';
-import { LateFeesStudTab } from './late-fees-stud-tab/late-fees-stud-tab';
-import { LateFineAttendanceTab } from './late-fine-attendance-tab/late-fine-attendance-tab';
 import { OptionalTab } from './optional-tab/optional-tab';
 import { FeeplanTab } from './structure-tab/structure-tab';
 
@@ -26,11 +22,7 @@ interface TabItem {
     OptionalTab,
     ConcessionTab,
     ConcessionDetailsTab,
-    DueAdvTab,
-    LateFeesDaysTab,
-    LateFeesMonthsTab,
-    LateFeesStudTab,
-    LateFineAttendanceTab
+    DueAdvTab
   ],
   templateUrl: './fees-master-component.html',
   styleUrl: './fees-master-component.scss',
@@ -44,11 +36,7 @@ export class FeesMasterComponent {
     { label: 'Optional', key: 'optional' },
     { label: 'Concession', key: 'concession' },
     { label: 'Concession Details', key: 'concession-details' },
-    { label: 'Due/Adv', key: 'due-adv' },
-    { label: 'LateFees-Days', key: 'late-fees-days' },
-    { label: 'LateFees-Months', key: 'late-fees-months' },
-    { label: 'LateFees-Stud', key: 'late-fees-stud' },
-    { label: 'LateFine-Attendance', key: 'late-fine-attendance' }
+    { label: 'Due/Adv', key: 'due-adv' }
   ];
 
   readonly activeTab = signal('fee-comp');

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FeeMasterView } from '../fee-master-view';
+import { FeeMasterView } from '../../../fee/fees-master/views/fee-master-view';
 
-@Component({ selector: 'app-late-fees-days-view', imports: [FormsModule], templateUrl: './late-fees-days-view.html', styleUrl: '../fee-master-view.scss', changeDetection: ChangeDetectionStrategy.OnPush })
+@Component({ selector: 'app-late-fees-days-view', imports: [FormsModule], templateUrl: './late-fees-days-view.html', styleUrl: '../../../fee/fees-master/views/fee-master-view.scss', changeDetection: ChangeDetectionStrategy.OnPush })
 export class LateFeesDaysView extends FeeMasterView {
   readonly title = 'LateFees-Days View';
   readonly fields = [

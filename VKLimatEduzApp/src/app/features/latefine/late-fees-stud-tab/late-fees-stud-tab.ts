@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 
 import { ChangeDetectionStrategy } from '@angular/core';
-import { createFeeGridTabState } from '../fee-grid-tab';
+import { createFeeGridTabState } from '../../fee/fees-master/fee-grid-tab';
 import { LateFeesStudView } from '../views/late-fees-stud-view/late-fees-stud-view';
-import { MenuLabelService } from '../../../../shared/services/menu-label.service';
+import { MenuLabelService } from '../../../shared/services/menu-label.service';
 
 @Component({
   selector: 'app-late-fees-stud-tab',

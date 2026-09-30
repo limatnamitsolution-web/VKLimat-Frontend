@@ -1,7 +1,7 @@
 import { Component, computed, signal, inject } from '@angular/core';
 
 import { ChangeDetectionStrategy } from '@angular/core';
-import { MenuLabelService } from '../../../../shared/services/menu-label.service';
+import { MenuLabelService } from '../../../shared/services/menu-label.service';
 import { LateFineAttendanceView } from '../views/late-fine-attendance-view/late-fine-attendance-view';
 
 @Component({

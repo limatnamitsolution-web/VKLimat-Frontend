@@ -25,7 +25,6 @@ export class FeeCompTab {
   readonly closeView = this.state.closeView;
 
   readonly form: FormGroup = this.fb.group({
-    Id: [''],
     BranchId: [''],
     FeeCompCode: [''],
     FeeComp: [''],
@@ -44,7 +43,6 @@ export class FeeCompTab {
 
   openAdd(): void {
     this.form.reset({
-      Id: '',
       BranchId: '',
       FeeCompCode: '',
       FeeComp: '',

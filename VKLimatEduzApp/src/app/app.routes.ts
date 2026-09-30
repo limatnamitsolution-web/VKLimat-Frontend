@@ -25,6 +25,10 @@ export const routes: Routes = [
         path: 'mastersConfig', 
         loadChildren: () => import('./features/mastersConfig/masters.routes').then(m => m.mastersConfigRoutes)
       },
+      { 
+        path: 'latefine', 
+        loadChildren: () => import('./features/latefine/latefine.routes').then(m => m.LatefineRoutes)
+      },
 
     ]
   }

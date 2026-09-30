@@ -1,10 +1,10 @@
-<div class="modal-overlay" (click)="close.emit()"><section class="modal-content" role="dialog" aria-modal="true" aria-label="Concession View" (click)="$event.stopPropagation()">
-  <header class="modal-header"><div><h2>Concession View</h2><p>Enter concession details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
-  <form (ngSubmit)="submit()"><div class="modal-body"><div class="form-grid">
+<div class="modal-overlay" (click)="close.emit()"><section class="modal-content modern-modal small-modal" role="dialog" aria-modal="true" aria-label="Concession View" (click)="$event.stopPropagation()">
+  <header class="modal-header"><div class="header-content"><h2>Concession View</h2><p>Enter concession details.</p></div><button type="button" class="close-btn" aria-label="Close" (click)="close.emit()">&times;</button></header>
+  <form (ngSubmit)="submit()" class="form-layout"><div class="modal-body"><div class="grid-2">
     <div class="form-field"><label for="concessionCode">Code</label><input id="concessionCode" name="code" [(ngModel)]="model['code']"></div>
     <div class="form-field"><label for="concessionName">Concession Name</label><input id="concessionName" name="name" [(ngModel)]="model['name']"></div>
     <div class="form-field"><label for="concessionFeeComps">Concession description</label><input id="concessionFeeComps" name="feeComps" [(ngModel)]="model['description']"></div>
     <div class="form-field"><label for="concessionOrder">Display Order</label><input id="concessionOrder" name="displayOrder" type="number" [(ngModel)]="model['displayOrder']"></div>
     <div class="form-field"><label for="concessionStatus">Status</label><select id="concessionStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
-  </div></div><footer class="modal-footer"><button type="button" class="btn-reset btn-sm" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary btn-sm">Save</button></footer></form>
+  </div></div><footer class="modal-footer"><button type="button" class="btn-text" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary">Save</button></footer></form>
 </section></div>

@@ -1,6 +1,6 @@
 <div class="toolbar-container">
   <input type="text" [value]="searchTerm()" (input)="updateSearch($event)" placeholder="Search all fields..." class="input-control input-search">
-  <div class="btn-group"><button type="button" (click)="openAddView()" class="btn-primary btn-sm">Add</button><button type="button" (click)="resetSearch()" class="btn-reset btn-sm">Reset</button></div>
+  <div class="btn-group"><button type="button" (click)="openAdd()" class="btn-primary btn-sm">Add</button><button type="button" (click)="resetSearch()" class="btn-reset btn-sm">Reset</button></div>
 </div>
 <div class="table-responsive">
 <table class="data-table">
@@ -30,4 +30,44 @@
   </tbody>
 </table>
 </div>
-@if (showView()) { <app-feeComp-view (close)="closeView()" (saved)="closeView()" /> }
+@if (showView()) {
+  <div class="modal-overlay" (click)="cancelModel()">
+    <div class="modal-content modern-modal small-modal" role="dialog" aria-modal="true" aria-label="Group View" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="header-content">
+          <h2>Group View</h2>
+          <p>Enter fee group details.</p>
+        </div>
+        <button type="button" class="close-btn" aria-label="Close" (click)="cancelModel()">&times;</button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="saveModel()" class="form-layout">
+        <div class="modal-body">
+          <div class="grid-2">
+            <div class="form-field"><label for="fcId">Id</label><input id="fcId" type="text" formControlName="Id"></div>
+            <div class="form-field"><label for="fcBranch">Branch</label><select id="fcBranch" formControlName="BranchId"><option value="">Select</option><option value="1">Branch 1</option><option value="2">Branch 2</option></select></div>
+
+            <div class="form-field"><label for="fcCode">FeeCompCode</label><input id="fcCode" type="text" formControlName="FeeCompCode"></div>
+            <div class="form-field"><label for="fcName">FeeComp</label><input id="fcName" type="text" formControlName="FeeComp"></div>
+
+            <div class="form-field"><label for="fcTaken">FeeCompTaken</label><select id="fcTaken" formControlName="FeeCompTaken"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fcOpt">FeeCompOpt</label><select id="fcOpt" formControlName="FeeCompOpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+
+            <div class="form-field"><label for="fcRefund">FeeCompRefundable</label><select id="fcRefund" formControlName="FeeCompRefundable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fcDisp">DispFeeRecpt</label><select id="fcDisp" formControlName="DispFeeRecpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+
+            <div class="form-field"><label for="fcEditable">FeeCompEditable</label><select id="fcEditable" formControlName="FeeCompEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fcConcEditable">FeeConcEditable</label><select id="fcConcEditable" formControlName="FeeConcEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+
+            <div class="form-field"><label for="fcOrder">OrderId</label><input id="fcOrder" type="text" formControlName="OrderId"></div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-text" (click)="cancelModel()">Cancel</button>
+          <button type="submit" class="btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

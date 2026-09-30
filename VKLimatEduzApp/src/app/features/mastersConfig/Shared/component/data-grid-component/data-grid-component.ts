@@ -18,7 +18,7 @@ export class DataGridComponent {
   @Input() data: MasterConfig[] = [];
   @Input() title: string = 'Data Grid';
   @Input() hideHeader: boolean = false;
-  // `modify` removed: consumers should read `MastersConfig.masterConfig()` signal directly
+  @Output() modify = new EventEmitter<MasterConfig>();
   @Output() delete = new EventEmitter<MasterConfig>();
   @Output() view = new EventEmitter<MasterConfig>();
 
@@ -162,12 +162,8 @@ export class DataGridComponent {
 
   // Event handlers with confirmation
   onModify(item: MasterConfig) {
-    console.log('Modify item:', item);
     this.selectedItem = item;
-    // fetch full item from API via MastersConfig service so parent views can react to the fetched signal
-    if (item && item.id) {
-      this.mastersConfig.fetchMasterConfigGet(item.id);      
-    }
+    this.modify.emit(item);
   }
 
   onDelete(item: MasterConfig) {

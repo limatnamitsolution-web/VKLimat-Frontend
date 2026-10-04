@@ -34,7 +34,7 @@ export class FeeCompTab {
     DispFeeRecpt: ['No'],
     FeeCompEditable: ['No'],
     FeeConcEditable: ['No'],
-    OrderId: ['']
+    OrderId: ['0']
   });
 
   constructor() {

@@ -34,9 +34,8 @@
   <div class="modal-overlay" (click)="cancelModel()">
     <div class="modal-content modern-modal small-modal" role="dialog" aria-modal="true" aria-label="Group View" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <div class="header-content">
-          <h2>Group View</h2>
-          <p>Enter fee group details.</p>
+        <div class="header-content">         
+          <p>Enter fee component details.</p>
         </div>
         <button type="button" class="close-btn" aria-label="Close" (click)="cancelModel()">&times;</button>
       </div>
@@ -46,17 +45,15 @@
           <div class="grid-2">
             <div class="form-field"><label for="fcBranch">Branch</label><select id="fcBranch" formControlName="BranchId"><option value="">Select</option><option value="1">Branch 1</option><option value="2">Branch 2</option></select></div>
 
-            <div class="form-field"><label for="fcCode">FeeCompCode</label><input id="fcCode" type="text" formControlName="FeeCompCode"></div>
-            <div class="form-field"><label for="fcName">FeeComp</label><input id="fcName" type="text" formControlName="FeeComp"></div>
+            <div class="form-field"><label for="fcCode">Code</label><input id="fcCode" type="text" formControlName="FeeCompCode"></div>
+            <div class="form-field"><label for="fcName">Component Name</label><input id="fcName" type="text" formControlName="FeeComp"></div>
+            <div class="form-field"><label for="fcTaken">Fee Taken from</label><select id="fcTaken" formControlName="FeeCompTaken"><option value="New">New Admission </option><option value="Both">Both Admission</option><option value="Old">Old Admission</option></select></div>
+            <div class="form-field"><label for="fcOpt">Is Fee Optional</label><select id="fcOpt" formControlName="FeeCompOpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fcRefund">Is Refundable</label><select id="fcRefund" formControlName="FeeCompRefundable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fcDisp">Is Displayed on Receipt</label><select id="fcDisp" formControlName="DispFeeRecpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
 
-            <div class="form-field"><label for="fcTaken">FeeCompTaken</label><select id="fcTaken" formControlName="FeeCompTaken"><option value="Yes">Yes</option><option value="No">No</option></select></div>
-            <div class="form-field"><label for="fcOpt">FeeCompOpt</label><select id="fcOpt" formControlName="FeeCompOpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
-
-            <div class="form-field"><label for="fcRefund">FeeCompRefundable</label><select id="fcRefund" formControlName="FeeCompRefundable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
-            <div class="form-field"><label for="fcDisp">DispFeeRecpt</label><select id="fcDisp" formControlName="DispFeeRecpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
-
-            <div class="form-field"><label for="fcEditable">FeeCompEditable</label><select id="fcEditable" formControlName="FeeCompEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
-            <div class="form-field"><label for="fcConcEditable">FeeConcEditable</label><select id="fcConcEditable" formControlName="FeeConcEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fcEditable">Is Editable</label><select id="fcEditable" formControlName="FeeCompEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fcConcEditable">Is Fee Conc Editable</label><select id="fcConcEditable" formControlName="FeeConcEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
 
             <div class="form-field"><label for="fcOrder">OrderId</label><input id="fcOrder" type="text" formControlName="OrderId"></div>
           </div>

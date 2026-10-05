@@ -1,21 +1,26 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { createFeeGridTabState } from '../fee-grid-tab';
+import { MasterConfigsDWN } from '../../../../shared/services/master-configs-dwn';
+import { SearchableDropdownComponent, SearchableDropdownOption } from '../../../../shared/components/searchable-dropdown/searchable-dropdown.component';
 import { MenuLabelService } from '../../../../shared/services/menu-label.service';
 
 @Component({
   selector: 'app-feeplan-tab',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SearchableDropdownComponent],
   templateUrl: './structure-tab.html',
   styleUrl: './structure-tab.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FeeplanTab {
+export class FeeplanTab implements OnInit {
   private readonly state = createFeeGridTabState();
+  private readonly masterConfigsDWN = inject(MasterConfigsDWN);
   private readonly menuLabelService = inject(MenuLabelService);
   private readonly fb = inject(FormBuilder);
+  private readonly masterConfigDwnTypes = ['Branch', 'FeeGroup', 'FeeComponent'];
+  private isDropdownLoadPending = false;
   readonly searchTerm = this.state.searchTerm;
   readonly showView = this.state.showView;
   readonly filteredRows = this.state.filteredRows;
@@ -23,6 +28,8 @@ export class FeeplanTab {
   readonly updateSearch = this.state.updateSearch;
   readonly resetSearch = this.state.resetSearch;
   readonly closeView = this.state.closeView;
+  readonly feeGroups = signal<SearchableDropdownOption[]>([]);
+  readonly feeComponents = signal<SearchableDropdownOption[]>([]);
 
   readonly monthsList = [
     { label: 'Apr', monthId: 4 }, { label: 'May', monthId: 5 }, { label: 'Jun', monthId: 6 },
@@ -53,6 +60,45 @@ export class FeeplanTab {
 
   constructor() {
     this.menuLabelService.setLabel({ key: 'Fee Plans' });
+
+    effect(() => {
+      const dwnList = this.masterConfigsDWN.masterConfigDwnList();
+      if (!this.isDropdownLoadPending || !Array.isArray(dwnList)) {
+        return;
+      }
+
+      this.bindMasterDropdowns(dwnList);
+    });
+  }
+
+  ngOnInit(): void {
+    this.isDropdownLoadPending = true;
+    this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
+  }
+
+  private bindMasterDropdowns(rawMasterItems: Record<string, unknown>[]): void {
+    const nextFeeGroups: SearchableDropdownOption[] = [];
+    const nextFeeComponents: SearchableDropdownOption[] = [];
+
+    rawMasterItems.forEach((item) => {
+      const option = {
+        id: item['id'] as number | string,
+        name: String(item['name'] ?? ''),
+      };
+      const type = String(item['type'] ?? '').toLowerCase();
+
+      if (type === 'feegroup') {
+        nextFeeGroups.push(option);
+      }
+
+      if (type === 'feecomponent') {
+        nextFeeComponents.push(option);
+      }
+    });
+
+    this.feeGroups.set(nextFeeGroups);
+    this.feeComponents.set(nextFeeComponents);
+    this.isDropdownLoadPending = false;
   }
 
   openAdd(): void {
@@ -76,11 +122,16 @@ export class FeeplanTab {
 
   saveModel(): void {
     const { months, ...rest } = this.form.getRawValue();
+
+    console.log('Rest of the form data:', rest);
+    console.log('Selected months:', months);
+
     const feeMonthIds = (months as boolean[])
       .map((selected, index) => (selected ? this.monthsList[index].monthId : null))
       .filter((id): id is number => id !== null);
     this.rows.set([...this.rows(), { ...rest, FeeMonthId: feeMonthIds }]);
-    this.state.closeView();
+
+    //this.state.closeView();
   }
 
   cancelModel(): void {

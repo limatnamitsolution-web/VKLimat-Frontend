@@ -22,7 +22,16 @@
         <td>{{ resolveValue(row, ['FeeCompTaken', 'feeCompTaken', 'description', 'category']) }}</td>
         <td>{{ resolveValue(row, ['FeeCompRefundable', 'feeCompRefundable', 'refundable']) }}</td>
         <td>{{ resolveValue(row, ['Status', 'status', 'isActive']) }}</td>
-        <td>—</td>
+        <td>
+          <div class="action-buttons">
+            <button type="button" class="btn-action btn-modify" (click)="onEdit(row)" title="Modify" aria-label="Edit fee component">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button type="button" class="btn-action btn-delete" (click)="onDelete(row)" title="Delete" aria-label="Delete fee component">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </td>
       </tr>
     } @empty {
       <tr><td colspan="6">No Fee Component found.</td></tr>
@@ -43,7 +52,15 @@
       <form [formGroup]="form" (ngSubmit)="saveModel()" class="form-layout">
         <div class="modal-body">
           <div class="grid-2">
-            <div class="form-field"><label for="fcBranch">Branch</label><select id="fcBranch" formControlName="BranchId"><option value="">Select</option><option value="1">Branch 1</option><option value="2">Branch 2</option></select></div>
+            <div class="form-field">
+              <label for="fcBranch">Branch</label>
+              <app-searchable-dropdown
+                id="fcBranch"
+                formControlName="BranchId"
+                [options]="branches()"
+                placeholder="Select Branch">
+              </app-searchable-dropdown>
+            </div>
 
             <div class="form-field"><label for="fcCode">Code</label><input id="fcCode" type="text" formControlName="FeeCompCode"></div>
             <div class="form-field"><label for="fcName">Component Name</label><input id="fcName" type="text" formControlName="FeeComp"></div>

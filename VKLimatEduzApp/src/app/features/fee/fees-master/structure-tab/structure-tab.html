@@ -49,8 +49,24 @@
             <div class="form-field"><label for="fpBranch">Branch</label><select id="fpBranch" formControlName="BranchId"><option value="">Select</option><option value="1">Branch 1</option><option value="2">Branch 2</option></select></div>
             <div class="form-field"><label for="fpFY">FY</label><input id="fpFY" type="text" formControlName="FY"></div>
 
-            <div class="form-field"><label for="fpGroup">Fee Group</label><select id="fpGroup" formControlName="FeeGroupId"><option value="">Select</option></select></div>
-            <div class="form-field"><label for="fpComp">Fee Component</label><select id="fpComp" formControlName="FeeCompId"><option value="">Select</option></select></div>
+            <div class="form-field">
+              <label for="fpGroup">Fee Group</label>
+              <app-searchable-dropdown
+                id="fpGroup"
+                formControlName="FeeGroupId"
+                [options]="feeGroups()"
+                placeholder="Select Fee Group">
+              </app-searchable-dropdown>
+            </div>
+            <div class="form-field">
+              <label for="fpComp">Fee Component</label>
+              <app-searchable-dropdown
+                id="fpComp"
+                formControlName="FeeCompId"
+                [options]="feeComponents()"
+                placeholder="Select Fee Component">
+              </app-searchable-dropdown>
+            </div>
 
             <div class="form-field"><label for="fpFees">Fees</label><input id="fpFees" type="number" formControlName="Fees"></div>
             <div class="form-field"><label for="fpOrder">OrderId</label><input id="fpOrder" type="number" formControlName="OrderId"></div>

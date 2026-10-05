@@ -15,7 +15,7 @@ import { FeeCompApiEndpoints } from './feeComp-api.endpoints';
 export class FeeCompService {
   private readonly http = inject(HttpClient);
 
-  getAllFeeComponent(): Observable<unknown> {
+ getAllFeeComponent(): Observable<unknown> {
     return this.http.get<unknown>(FeeCompApiEndpoints.getAll);
   }
 

@@ -1,8 +1,8 @@
 <div class="toolbar-container">
   <input type="text" [value]="searchTerm()" (input)="updateSearch($event)" placeholder="Search all fields..." class="input-control input-search">
-  <div class="btn-group"><button type="button" (click)="openAddView()" class="btn-primary btn-sm">Add</button><button type="button" (click)="resetSearch()" class="btn-reset btn-sm">Reset</button></div>
+  <div class="btn-group"><button type="button" (click)="openAdd()" class="btn-primary btn-sm">Add</button><button type="button" (click)="resetSearch()" class="btn-reset btn-sm">Reset</button></div>
 </div>
 <div class="table-responsive">
   <app-data-grid [data]="filteredRows()" [title]="'Concessions'" [hideHeader]="true" (modify)="onModify($event)" (delete)="onDelete($event)" (view)="onView($event)"></app-data-grid>
 </div>
-@if (showView()) { <app-concession-view [model]="editModel" (close)="closeView()" (saved)="onSaved($event)" /> }
+@if (showView()) { <app-concession-view [model]="editModel()" (close)="onClose()" (saved)="onSaved($event)" /> }

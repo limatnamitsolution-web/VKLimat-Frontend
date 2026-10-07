@@ -1,4 +1,4 @@
-import { Component, inject, effect } from '@angular/core';
+import { Component, inject, effect, signal } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { createFeeGridTabState } from '../fee-grid-tab';
 import { ConcessionView } from '../views/concession-view/concession-view';
@@ -26,7 +26,7 @@ export class ConcessionTab {
   private readonly messageService = inject(MessageService);
   private readonly fb = inject(FormBuilder);
   editIndex: number | null = null;
-  editModel: Record<string, any> = {};
+  readonly editModel = signal<Record<string, any>>(this.createBlankModel());
   readonly searchTerm = this.state.searchTerm;
   readonly showView = this.state.showView;
   readonly filteredRows = this.state.filteredRows;
@@ -54,8 +54,7 @@ export class ConcessionTab {
           displayOrder: selected.sortOrder ?? selected.displayOrder ?? 0,
           status: selected.isActive ? 'Active' : 'Inactive'
         };
-        console.log('Mapped concession:', mapped);
-        this.editModel = mapped;
+        this.editModel.set(mapped);
         this.openAddView();
         this.mastersConfig.masterConfig.set(null);
       }
@@ -76,7 +75,7 @@ export class ConcessionTab {
   }
 
   onView(item: any) {
-    this.editModel = { ...item };
+    this.editModel.set({ ...item });
     this.openAddView();
   }
 
@@ -99,7 +98,18 @@ export class ConcessionTab {
       this.mastersConfig.createMasterConfig(payload).subscribe({ next: () => { this.messageService.show('Concession created', 'success'); this.loadConcessionList(); }, error: () => this.messageService.show('Create failed', 'error') });
     }
     this.closeView();
-    this.editModel = {};
+    this.editModel.set(this.createBlankModel());
+  }
+
+  openAdd(): void {
+    this.mastersConfig.masterConfig.set(null);
+    this.editModel.set(this.createBlankModel());
+    this.openAddView();
+  }
+
+  onClose(): void {
+    this.editModel.set(this.createBlankModel());
+    this.closeView();
   }
 
   private loadConcessionList(): void {
@@ -108,5 +118,17 @@ export class ConcessionTab {
 
   private encryptedConfigurationKey(): string {
     return this.encryptionService.encrypt(this.configurationKey);
+  }
+
+  private createBlankModel(): Record<string, any> {
+    return {
+      id: 0,
+      branchId: '',
+      code: '',
+      name: '',
+      description: '',
+      displayOrder: 0,
+      status: 'Active'
+    };
   }
 }

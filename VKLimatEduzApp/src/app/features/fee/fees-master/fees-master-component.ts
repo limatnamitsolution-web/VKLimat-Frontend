@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
 import { ConcessionDetailsTab } from './concession-details-tab/concession-details-tab';
 import { ConcessionTab } from './concession-tab/concession-tab';
@@ -7,6 +7,8 @@ import { GroupTab } from './group-tab/group-tab';
 import { FeeCompTab } from './feeComp-tab/feeComp-tab';
 import { OptionalTab } from './optional-tab/optional-tab';
 import { FeeplanTab } from './structure-tab/structure-tab';
+import { MastersConfig } from '../../mastersConfig/Services/masters-config';
+import { FeePlanService } from './Service/feePlan.service';
 
 interface TabItem {
   label: string;
@@ -29,6 +31,8 @@ interface TabItem {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeesMasterComponent {
+  private readonly mastersConfig = inject(MastersConfig);
+  private readonly feePlanService = inject(FeePlanService);
   readonly tabs: TabItem[] = [
     { label: 'Group', key: 'group' },
     { label: 'FeeComp', key: 'fee-comp' },
@@ -42,6 +46,12 @@ export class FeesMasterComponent {
   readonly activeTab = signal('fee-comp');
 
   selectTab(key: string): void {
+    this.resetTabModels();
     this.activeTab.set(key);
+  }
+
+  private resetTabModels(): void {
+    this.mastersConfig.masterConfig.set(null);
+    this.feePlanService.feePlan.set(null);
   }
 }

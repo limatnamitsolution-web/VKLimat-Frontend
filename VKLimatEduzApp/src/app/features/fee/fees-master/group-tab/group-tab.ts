@@ -1,4 +1,4 @@
-import { Component, inject, effect } from '@angular/core';
+import { Component, inject, effect, signal } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { /* no form imports for group tab */ } from '@angular/forms';
 import { createFeeGridTabState } from '../fee-grid-tab';
@@ -24,7 +24,7 @@ export class GroupTab {
   private readonly encryptionService = inject(EncryptionService);
   private readonly messageService = inject(MessageService);
   private readonly menuLabelService = inject(MenuLabelService);
-  editModel: Record<string, any> = {};
+  readonly editModel = signal<Record<string, any>>(this.createBlankModel());
   readonly searchTerm = this.state.searchTerm;
   readonly showView = this.state.showView;
   readonly filteredRows = this.state.filteredRows;
@@ -52,7 +52,7 @@ export class GroupTab {
           displayOrder: selected.sortOrder ?? selected.displayOrder ?? 0,
           status: selected.isActive ? 'Active' : 'Inactive'
         };     
-        this.editModel = mapped;
+        this.editModel.set(mapped);
         this.openAddView();
         this.mastersConfig.masterConfig.set(null);
       }
@@ -96,11 +96,17 @@ export class GroupTab {
       });
     }
     this.closeView();
-    this.editModel = {};
+    this.editModel.set(this.createBlankModel());
+  }
+
+  openAdd(): void {
+    this.mastersConfig.masterConfig.set(null);
+    this.editModel.set(this.createBlankModel());
+    this.openAddView();
   }
 
   onEdit(row: any) {
-    this.editModel = { ...row };
+    this.editModel.set({ ...row });
     this.openAddView();
   }
   onModify(item: any) {
@@ -109,8 +115,13 @@ export class GroupTab {
   }
 
   onView(item: any) {
-    this.editModel = { ...item };
+    this.editModel.set({ ...item });
     this.openAddView();
+  }
+
+  onClose(): void {
+    this.editModel.set(this.createBlankModel());
+    this.closeView();
   }
 
   onDelete(item: any) {
@@ -130,5 +141,17 @@ export class GroupTab {
 
   private encryptedConfigurationKey(): string {
     return this.encryptionService.encrypt(this.configurationKey);
+  }
+
+  private createBlankModel(): Record<string, any> {
+    return {
+      id: 0,
+      branchId: '',
+      code: '',
+      name: '',
+      description: '',
+      displayOrder: 0,
+      status: 'Active'
+    };
   }
 }

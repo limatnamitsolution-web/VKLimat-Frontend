@@ -18,6 +18,7 @@ import { FormBuilder } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConcessionTab {
+  private readonly configurationKey = 'ConcCategory';
   public readonly state = createFeeGridTabState<MasterConfig>();
   private readonly menuLabelService = inject(MenuLabelService);
   private readonly mastersConfig = inject(MastersConfig);
@@ -60,17 +61,8 @@ export class ConcessionTab {
       }
     });
 
-    // initial load for concession master config
-    this.menuLabelService.setLabel({ key: 'concCategory' });
-    try {
-      const enc = this.encryptionService.encrypt('concCategory');
-      this.mastersConfig.fetchMasterConfig(enc);
-    } catch {
-      this.mastersConfig.fetchMasterConfig('concCategory');
-    }
-  }
-  refreshList() {
-    try { this.mastersConfig.fetchMasterConfig(this.encryptionService.encrypt('concCategory')); } catch { this.mastersConfig.fetchMasterConfig('concCategory'); }
+    this.menuLabelService.setLabel({ key: 'ConcCategory' });
+    this.loadConcessionList();
   }
 
   onModify(item: any) {
@@ -80,7 +72,7 @@ export class ConcessionTab {
 
   onDelete(item: any) {
     if (!item || !item.id) return;
-    this.mastersConfig.deleteMasterConfig(item.id).subscribe({ next: () => { this.messageService.show('Concession deleted', 'success'); this.refreshList(); }, error: () => this.messageService.show('Delete failed', 'error') });
+    this.mastersConfig.deleteMasterConfig(item.id).subscribe({ next: () => { this.messageService.show('Concession deleted', 'success'); this.loadConcessionList(); }, error: () => this.messageService.show('Delete failed', 'error') });
   }
 
   onView(item: any) {
@@ -95,18 +87,26 @@ export class ConcessionTab {
       branchId: model['branchId'] ?? 0,
       configValue: model['name'] ?? model['configValue'],
       configKey: model['code'] ?? model['configKey'],
-      description: JSON.stringify({ type: model['type'], value: model['value'], maximumAmount: model['maximumAmount'] }),
-      configuration: (() => { try { return this.encryptionService.encrypt('concCategory'); } catch { return 'concCategory'; } })(),
+      description: String(model['description'] ?? ''),
+      configuration: this.configurationKey,
       sortOrder: model['sortOrder'] ?? 0,
       isActive: model['status'] === 'Active'
     };
 
     if (payload.id && Number(payload.id) > 0) {
-      this.mastersConfig.updateMasterConfig(payload).subscribe({ next: () => { this.messageService.show('Concession updated', 'success'); this.refreshList(); }, error: () => this.messageService.show('Update failed', 'error') });
+      this.mastersConfig.updateMasterConfig(payload).subscribe({ next: () => { this.messageService.show('Concession updated', 'success'); this.loadConcessionList(); }, error: () => this.messageService.show('Update failed', 'error') });
     } else {
-      this.mastersConfig.createMasterConfig(payload).subscribe({ next: () => { this.messageService.show('Concession created', 'success'); this.refreshList(); }, error: () => this.messageService.show('Create failed', 'error') });
+      this.mastersConfig.createMasterConfig(payload).subscribe({ next: () => { this.messageService.show('Concession created', 'success'); this.loadConcessionList(); }, error: () => this.messageService.show('Create failed', 'error') });
     }
     this.closeView();
     this.editModel = {};
+  }
+
+  private loadConcessionList(): void {
+    this.mastersConfig.fetchMasterConfig(this.encryptedConfigurationKey());
+  }
+
+  private encryptedConfigurationKey(): string {
+    return this.encryptionService.encrypt(this.configurationKey);
   }
 }

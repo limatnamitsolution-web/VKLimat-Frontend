@@ -18,6 +18,7 @@ import { MenuLabelService } from '../../../../shared/services/menu-label.service
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GroupTab {
+  private readonly configurationKey = 'feeGroup';
   public readonly state = createFeeGridTabState<MasterConfig>();
   private readonly mastersConfig = inject(MastersConfig);
   private readonly encryptionService = inject(EncryptionService);
@@ -60,27 +61,28 @@ export class GroupTab {
     // initial load for fee group master config
     // set page context title to Fee Groups so it appears in the page-context-bar
     this.menuLabelService.setLabel({ key: 'Fee Groups' });
-    try {
-      const enc = this.encryptionService.encrypt('feeGroup');
-      this.mastersConfig.fetchMasterConfig(enc);
-    } catch (e) {
-      // fallback: try raw key if encryption not available
-      this.mastersConfig.fetchMasterConfig('feeGroup');
-    }
+    this.loadGroupList();
   }
 
   
 
   onSaved(model: Record<string, any>) {
     if (!model) return;
-    const payload = { ...model };
+    const payload: Record<string, any> = {
+      id: model['id'] ?? 0,
+      branchId: model['branchId'] ?? 0,
+      configValue: model['name'] ?? model['configValue'] ?? '',
+      configKey: model['code'] ?? model['configKey'] ?? '',
+      description: String(model['description'] ?? ''),
+      configuration: this.configurationKey,
+      sortOrder: model['displayOrder'] ?? model['sortOrder'] ?? 0,
+      isActive: model['status'] === 'Active'
+    };
     if (payload['id'] && Number(payload['id']) > 0) {
       this.mastersConfig.updateMasterConfig(payload).subscribe({
         next: () => {
           this.messageService.show('Fee group updated', 'success');
-          try {
-            this.mastersConfig.fetchMasterConfig(this.encryptionService.encrypt('feeGroup'));
-          } catch { this.mastersConfig.fetchMasterConfig('feeGroup'); }
+          this.loadGroupList();
         },
         error: () => this.messageService.show('Update failed', 'error')
       });
@@ -88,9 +90,7 @@ export class GroupTab {
       this.mastersConfig.createMasterConfig(payload).subscribe({
         next: () => {
           this.messageService.show('Fee group created', 'success');
-          try {
-            this.mastersConfig.fetchMasterConfig(this.encryptionService.encrypt('feeGroup'));
-          } catch { this.mastersConfig.fetchMasterConfig('feeGroup'); }
+          this.loadGroupList();
         },
         error: () => this.messageService.show('Create failed', 'error')
       });
@@ -118,12 +118,17 @@ export class GroupTab {
     this.mastersConfig.deleteMasterConfig(item.id).subscribe({
       next: () => {
         this.messageService.show('Fee group deleted', 'success');
-        try {
-          this.mastersConfig.fetchMasterConfig(this.encryptionService.encrypt('feeGroup'));
-        } catch { this.mastersConfig.fetchMasterConfig('feeGroup'); }
+        this.loadGroupList();
       },
       error: () => this.messageService.show('Delete failed', 'error')
     });
   }
-}
 
+  private loadGroupList(): void {
+    this.mastersConfig.fetchMasterConfig(this.encryptedConfigurationKey());
+  }
+
+  private encryptedConfigurationKey(): string {
+    return this.encryptionService.encrypt(this.configurationKey);
+  }
+}

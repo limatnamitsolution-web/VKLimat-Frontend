@@ -18,13 +18,22 @@
   <tbody>
     @for (row of filteredRows(); track row) {
       <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>{{ resolveStringValue(row, ['id']) }}</td>
+        <td>{{ resolveStringValue(row, ['fy', 'FY']) }}</td>
+        <td>{{ resolveStringValue(row, ['feeCompId', 'FeeCompId', 'className', 'ClassName']) }}</td>
+        <td>{{ resolveStringValue(row, ['feeGroupId', 'FeeGroupId', 'feeGroupName', 'FeeGroupName']) }}</td>
+        <td>{{ resolveStringValue(row, ['fees', 'Fees', 'totalAmount', 'TotalAmount']) }}</td>
+        <td>{{ resolveStatusText(row) }}</td>
+        <td>
+          <div class="action-buttons">
+            <button type="button" class="btn-action btn-modify" (click)="onEdit(row)" title="Modify" aria-label="Edit fee plan">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button type="button" class="btn-action btn-delete" (click)="onDelete(row)" title="Delete" aria-label="Delete fee plan">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </td>
       </tr>
     } @empty {
       <tr><td colspan="7">No feeplans found.</td></tr>
@@ -46,8 +55,15 @@
       <form [formGroup]="form" (ngSubmit)="saveModel()" class="form-layout">
         <div class="modal-body">
           <div class="grid-2">
-            <div class="form-field"><label for="fpBranch">Branch</label><select id="fpBranch" formControlName="BranchId"><option value="">Select</option><option value="1">Branch 1</option><option value="2">Branch 2</option></select></div>
-            <div class="form-field"><label for="fpFY">FY</label><input id="fpFY" type="text" formControlName="FY"></div>
+            <div class="form-field">
+              <label for="fpBranch">Branch</label>
+              <app-searchable-dropdown
+                id="fpBranch"
+                formControlName="BranchId"
+                [options]="branches()"
+                placeholder="Select Branch">
+              </app-searchable-dropdown>
+            </div>
 
             <div class="form-field">
               <label for="fpGroup">Fee Group</label>
@@ -69,16 +85,21 @@
             </div>
 
             <div class="form-field"><label for="fpFees">Fees</label><input id="fpFees" type="number" formControlName="Fees"></div>
-            <div class="form-field"><label for="fpOrder">OrderId</label><input id="fpOrder" type="number" formControlName="OrderId"></div>
 
-            <div class="form-field"><label for="fpTaken">FeeCompTaken</label><select id="fpTaken" formControlName="FeeCompTaken"><option value="Yes">Yes</option><option value="No">No</option></select></div>
-            <div class="form-field"><label for="fpOpt">FeeCompOpt</label><select id="fpOpt" formControlName="FeeCompOpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fpTaken">Fee Taken</label><select id="fpTaken" formControlName="FeeCompTaken"><option value="New">New Admission </option><option value="Both">Both Admission</option><option value="Old">Old Admission</option></select></div>
+            <div class="form-field"><label for="fpOpt">Fee Optional</label><select id="fpOpt" formControlName="FeeCompOpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
 
-            <div class="form-field"><label for="fpRefund">FeeCompRefundable</label><select id="fpRefund" formControlName="FeeCompRefundable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
-            <div class="form-field"><label for="fpDisp">DispFeeRecpt</label><select id="fpDisp" formControlName="DispFeeRecpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fpRefund">Fee Refundable</label><select id="fpRefund" formControlName="FeeCompRefundable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fpDisp">Display Fee Receipt</label><select id="fpDisp" formControlName="DispFeeRecpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
 
-            <div class="form-field"><label for="fpEditable">FeeCompEditable</label><select id="fpEditable" formControlName="FeeCompEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
-            <div class="form-field"><label for="fpConcEditable">FeeConcEditable</label><select id="fpConcEditable" formControlName="FeeConcEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fpEditable">Fee Editable</label><select id="fpEditable" formControlName="FeeCompEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fpConcEditable">Fee Concession Editable</label><select id="fpConcEditable" formControlName="FeeConcEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+
+            <div class="form-field"><label for="fpOrder">Order</label><input id="fpOrder" type="number" formControlName="OrderId"></div>
+            <div class="form-field">
+              <label for="fpActive">Is Active</label>
+              <input id="fpActive" type="checkbox" formControlName="IsActive">
+            </div>
           </div>
 
           <div class="form-section">

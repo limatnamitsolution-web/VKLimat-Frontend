@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ConcessionDetailsTab } from './concession-details-tab/concession-details-tab';
 import { ConcessionTab } from './concession-tab/concession-tab';
@@ -31,6 +32,8 @@ interface TabItem {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeesMasterComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly mastersConfig = inject(MastersConfig);
   private readonly feePlanService = inject(FeePlanService);
   readonly tabs: TabItem[] = [
@@ -38,20 +41,31 @@ export class FeesMasterComponent {
     { label: 'FeeComp', key: 'fee-comp' },
     { label: 'Feeplan', key: 'feeplan' },
     { label: 'Optional', key: 'optional' },
+    { label: 'Concession Type', key: 'concessionType' },
     { label: 'Concession', key: 'concession' },
-    { label: 'Concession Details', key: 'concession-details' },
     { label: 'Due/Adv', key: 'due-adv' }
   ];
 
-  readonly activeTab = signal('fee-comp');
+  readonly activeTab = signal(this.readInitialTab());
 
   selectTab(key: string): void {
     this.resetTabModels();
     this.activeTab.set(key);
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: key },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
   }
 
   private resetTabModels(): void {
     this.mastersConfig.masterConfig.set(null);
     this.feePlanService.feePlan.set(null);
+  }
+
+  private readInitialTab(): string {
+    const tab = this.route.snapshot.queryParamMap.get('tab');
+    return this.tabs.some(item => item.key === tab) ? tab as string : 'group';
   }
 }

@@ -78,7 +78,8 @@ export class FeeplanTab implements OnInit {
 
     effect(() => {
       const list = this.feePlanService.feePlanList();      
-      this.rows.set(Array.isArray(list) ? [...list] : []);      
+      this.rows.set(Array.isArray(list) ? [...list] : []);     
+      console.log('Updated rows:', this.rows());
     });
 
     effect(() => {

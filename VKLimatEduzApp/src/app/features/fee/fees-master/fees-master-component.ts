@@ -3,10 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ConcessionDetailsTab } from './concession-details-tab/concession-details-tab';
 import { ConcessionTab } from './concession-tab/concession-tab';
-import { DueAdvTab } from './due-adv-tab/due-adv-tab';
 import { GroupTab } from './group-tab/group-tab';
 import { FeeCompTab } from './feeComp-tab/feeComp-tab';
-import { OptionalTab } from './optional-tab/optional-tab';
 import { FeeplanTab } from './structure-tab/structure-tab';
 import { MastersConfig } from '../../mastersConfig/Services/masters-config';
 import { FeePlanService } from './Service/feePlan.service';
@@ -22,10 +20,8 @@ interface TabItem {
     FeeCompTab,
     GroupTab,
     FeeplanTab,
-    OptionalTab,
     ConcessionTab,
-    ConcessionDetailsTab,
-    DueAdvTab
+    ConcessionDetailsTab
   ],
   templateUrl: './fees-master-component.html',
   styleUrl: './fees-master-component.scss',
@@ -40,10 +36,8 @@ export class FeesMasterComponent {
     { label: 'Group', key: 'group' },
     { label: 'FeeComp', key: 'fee-comp' },
     { label: 'Feeplan', key: 'feeplan' },
-    { label: 'Optional', key: 'optional' },
     { label: 'Concession Type', key: 'concessionType' },
-    { label: 'Concession', key: 'concession' },
-    { label: 'Due/Adv', key: 'due-adv' }
+    { label: 'Concession', key: 'concession' }
   ];
 
   readonly activeTab = signal(this.readInitialTab());

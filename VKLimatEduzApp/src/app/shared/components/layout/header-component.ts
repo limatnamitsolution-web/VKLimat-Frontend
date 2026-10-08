@@ -27,7 +27,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { id: 'dark', name: 'Purple Dark', className: 'theme-dark', badge: 'Popular' },
     { id: 'color', name: 'Amber Light', className: 'theme-color' },
     { id: 'pink', name: 'Pink Bloom', className: 'theme-pink' },
-    { id: 'dark-color', name: 'VS Code Green Dark', className: 'theme-dark-color', badge: 'New', badgeClass: 'accent' },
+    { id: 'dark-color', name: 'Green Dark', className: 'theme-dark-color', badge: 'New', badgeClass: 'accent' },
+    { id: 'dark-blue', name: 'Blue Dark', className: 'theme-dark-blue', badge: 'New', badgeClass: 'accent' },
     { id: 'dark-brown', name: 'Brown Dark', className: 'theme-brown', badge: 'New' },
     { id: 'crazy', name: 'Gradient Dark', className: 'theme-crazy', badge: 'Fun', badgeClass: 'warning' }
   ];

@@ -196,6 +196,31 @@
   --shadow-3: 0 10px 15px rgba(0, 0, 0, 0.5);
 }
 
+/* Dark Blue theme - VS Code-inspired blue palette */
+[data-theme="dark-blue"] {
+  --primary-blue: #4da3ff;
+  --secondary-blue: #3182ce;
+  --dark-blue: #1d5fa7;
+  --light-blue: #153b68;
+
+  --accent-gold: #8cc8ff;
+  --success: #4da3ff;
+  --danger: #f48771;
+  --warning: #d1b67a;
+
+  --bg: #0b1b30;
+  --surface: #102844;
+  --muted-surface: #173656;
+  --border: #28527b;
+  --text: #e4f1ff;
+  --text-2: #c1d9f2;
+  --text-3: #92b7dc;
+
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-3: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
 /* Burgundy dark theme */
 [data-theme="dark-brown"] {
   --primary-blue: #800020;
@@ -586,6 +611,7 @@ body[data-theme="dark-color"] .theme-toggle-btn i {
 .theme-color .theme-label { color: #f59e0b; border-color: #f59e0b; }
 .theme-pink .theme-label { color: #c02662; border-color: #c02662; }
 .theme-dark-color .theme-label { color: #89d185; border-color: #89d185; }
+.theme-dark-blue .theme-label { color: #4da3ff; border-color: #4da3ff; }
 .theme-crazy .theme-label { 
   background: linear-gradient(45deg, #06b6d4, #8b5cf6);
   background-clip: text;
@@ -675,6 +701,12 @@ body[data-theme="dark-color"] .theme-toggle-btn i {
   background: linear-gradient(135deg, #1e1e1e, #2d2d30);
   border-color: #3e3e42;
   color: #89d185;
+}
+
+.theme-dark-blue .theme-color-box {
+  background: linear-gradient(135deg, #102844, #1769c2);
+  border-color: #28527b;
+  color: #8cc8ff;
 }
 
 .theme-crazy .theme-color-box {

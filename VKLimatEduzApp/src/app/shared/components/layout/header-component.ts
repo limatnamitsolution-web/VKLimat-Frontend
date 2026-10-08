@@ -16,6 +16,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./header-component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+  readonly themes: {
+    id: string;
+    name: string;
+    className: string;
+    badge?: string;
+    badgeClass?: string;
+  }[] = [
+    { id: 'light', name: 'Blue Light', className: 'theme-light', badge: 'Default' },
+    { id: 'dark', name: 'Purple Dark', className: 'theme-dark', badge: 'Popular' },
+    { id: 'color', name: 'Amber Light', className: 'theme-color' },
+    { id: 'pink', name: 'Pink Bloom', className: 'theme-pink' },
+    { id: 'dark-color', name: 'VS Code Green Dark', className: 'theme-dark-color', badge: 'New', badgeClass: 'accent' },
+    { id: 'dark-brown', name: 'Brown Dark', className: 'theme-brown', badge: 'New' },
+    { id: 'crazy', name: 'Gradient Dark', className: 'theme-crazy', badge: 'Fun', badgeClass: 'warning' }
+  ];
   isThemeSwitcherOpen = false;
   isModuleSwitcherOpen = false;
   isProfileMenuOpen = false;

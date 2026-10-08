@@ -146,6 +146,31 @@
   --text-3: #92400e; /* Amber 800 */
 }
 
+/* Pink theme */
+[data-theme="pink"] {
+  --primary-blue: #e87997;
+  --secondary-blue: #f3a6b8;
+  --dark-blue: #b54767;
+  --light-blue: #fce4ec;
+
+  --accent-gold: #c02662;
+  --success: #2f9e72;
+  --danger: #d9475c;
+  --warning: #d97732;
+
+  --bg: #fff4f7;
+  --surface: #fffafb;
+  --muted-surface: #fce4ec;
+  --border: #f3b6c8;
+  --text: #4a1727;
+  --text-2: #78354a;
+  --text-3: #a75c72;
+
+  --shadow-1: 0 1px 3px rgba(190, 61, 102, 0.1);
+  --shadow-2: 0 4px 6px rgba(190, 61, 102, 0.12);
+  --shadow-3: 0 10px 15px rgba(190, 61, 102, 0.14);
+}
+
 /* Dark Color theme - VS Code Green Dark */
 [data-theme="dark-color"] {
   --primary-blue: #66d1ae;
@@ -559,6 +584,7 @@ body[data-theme="dark-color"] .theme-toggle-btn i {
 .theme-light .theme-label { color: #00bcd4; border-color: #00bcd4; }
 .theme-dark .theme-label { color: #bd93f9; border-color: #bd93f9; }
 .theme-color .theme-label { color: #f59e0b; border-color: #f59e0b; }
+.theme-pink .theme-label { color: #c02662; border-color: #c02662; }
 .theme-dark-color .theme-label { color: #89d185; border-color: #89d185; }
 .theme-crazy .theme-label { 
   background: linear-gradient(45deg, #06b6d4, #8b5cf6);
@@ -637,6 +663,12 @@ body[data-theme="dark-color"] .theme-toggle-btn i {
   background: linear-gradient(135deg, #ffffff, #fef7ed);
   border-color: #fed7aa;
   color: #92400e;
+}
+
+.theme-pink .theme-color-box {
+  background: linear-gradient(135deg, #fffafb, #e87997);
+  border-color: #f3b6c8;
+  color: #c02662;
 }
 
 .theme-dark-color .theme-color-box {

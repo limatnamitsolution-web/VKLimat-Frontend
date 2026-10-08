@@ -18,81 +18,22 @@
             </button>
             <div class="theme-switcher" [class.active]="isThemeSwitcherOpen">
               <div class="theme-options">
-                <label class="theme-option theme-light" [class.active]="currentTheme === 'light'">
-                  <input type="radio" name="theme" value="light" [checked]="currentTheme === 'light'" 
-                         (change)="changeTheme('light')">
+                <label *ngFor="let theme of themes"
+                       class="theme-option"
+                       [ngClass]="theme.className"
+                       [class.active]="currentTheme === theme.id">
+                  <input type="radio" name="theme" [value]="theme.id" [checked]="currentTheme === theme.id"
+                         (change)="changeTheme(theme.id)">
                   <div class="theme-color-box">
                     <div class="theme-preview">
                       <div class="preview-bar"></div>
                       <div class="preview-dot"></div>
                     </div>
                   </div>
-                  <span class="theme-label">Blue Light</span>
-                  <div class="theme-badge">Default</div>
-                </label>
-                
-                <label class="theme-option theme-dark" [class.active]="currentTheme === 'dark'">
-                  <input type="radio" name="theme" value="dark" [checked]="currentTheme === 'dark'"
-                         (change)="changeTheme('dark')">
-                  <div class="theme-color-box">
-                    <div class="theme-preview">
-                      <div class="preview-bar"></div>
-                      <div class="preview-dot"></div>
-                    </div>
+                  <span class="theme-label">{{ theme.name }}</span>
+                  <div *ngIf="theme.badge" class="theme-badge" [ngClass]="theme.badgeClass">
+                    {{ theme.badge }}
                   </div>
-                  <span class="theme-label">Purple Dark</span>
-                  <div class="theme-badge">Popular</div>
-                </label>
-                
-                <label class="theme-option theme-color" [class.active]="currentTheme === 'color'">
-                  <input type="radio" name="theme" value="color" [checked]="currentTheme === 'color'"
-                         (change)="changeTheme('color')">
-                  <div class="theme-color-box">
-                    <div class="theme-preview">
-                      <div class="preview-bar"></div>
-                      <div class="preview-dot"></div>
-                    </div>
-                  </div>
-                  <span class="theme-label">Amber Light</span>
-                </label>
-                
-                <label class="theme-option theme-dark-color" [class.active]="currentTheme === 'dark-color'">
-                  <input type="radio" name="theme" value="dark-color" [checked]="currentTheme === 'dark-color'"
-                         (change)="changeTheme('dark-color')">
-                  <div class="theme-color-box">
-                    <div class="theme-preview">
-                      <div class="preview-bar"></div>
-                      <div class="preview-dot"></div>
-                    </div>
-                  </div>
-                  <span class="theme-label">VS Code Green Dark</span>
-                  <div class="theme-badge accent">New</div>
-                </label>
-                
-                <label class="theme-option theme-brown" [class.active]="currentTheme === 'dark-brown'">
-                  <input type="radio" name="theme" value="dark-brown" [checked]="currentTheme === 'dark-brown'"
-                         (change)="changeTheme('dark-brown')">
-                  <div class="theme-color-box">
-                    <div class="theme-preview">
-                      <div class="preview-bar"></div>
-                      <div class="preview-dot"></div>
-                    </div>
-                  </div>
-                  <span class="theme-label">Brown Dark</span>
-                  <div class="theme-badge">New</div>
-                </label>
-                
-                <label class="theme-option theme-crazy" [class.active]="currentTheme === 'crazy'">
-                  <input type="radio" name="theme" value="crazy" [checked]="currentTheme === 'crazy'"
-                         (change)="changeTheme('crazy')">
-                  <div class="theme-color-box">
-                    <div class="theme-preview">
-                      <div class="preview-bar"></div>
-                      <div class="preview-dot"></div>
-                    </div>
-                  </div>
-                  <span class="theme-label">Gradient Dark</span>
-                  <div class="theme-badge warning">Fun</div>
                 </label>
               </div>
             </div>

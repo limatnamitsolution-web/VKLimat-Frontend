@@ -171,25 +171,25 @@
   --shadow-3: 0 10px 15px rgba(0, 0, 0, 0.5);
 }
 
-/* Dark Brown theme - Deep brown with VS Code green accents */
+/* Burgundy dark theme */
 [data-theme="dark-brown"] {
-  --primary-blue: #8b5e3c; /* warm brown */
-  --secondary-blue: #6b3f2b; /* deeper brown */
-  --dark-blue: #4a2a19; /* darkest brown */
-  --light-blue: #2b1a12; /* near-surface */
+  --primary-blue: #800020;
+  --secondary-blue: #a33b52;
+  --dark-blue: #5b1027;
+  --light-blue: #32101d;
 
-  --accent-gold: #a67c52; /* warm accent */
-  --success: #66d1ae; /* VS Code green-style accent */
+  --accent-gold: #a2cf88;
+  --success: #66d1ae;
   --danger: #f48771;
   --warning: #d1b67a;
 
-  --bg: #1e140f; /* very dark brown */
-  --surface: #2b1a12; /* card / surface */
-  --muted-surface: #3a261d; /* muted panels */
-  --border: #4a3328; /* panel borders */
-  --text: #e9e4df; /* off-white text */
+  --bg: #160b10;
+  --surface: #241018;
+  --muted-surface: #351722;
+  --border: #4b2b3a;
+  --text: #f0e6e9;
   --text-2: #cfc6bf;
-  --text-3: #b8a9a0;
+  --text-3: #b99aa4;
 
   --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.35);
   --shadow-2: 0 4px 6px rgba(0, 0, 0, 0.45);
@@ -2087,10 +2087,10 @@ body[data-theme="dark-color"] .theme-toggle-btn i {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-.theme-brown .theme-label { color: #a67c52; border-color: #a67c52; }
+.theme-burgundy .theme-label { color: #c45b73; border-color: #c45b73; }
 
-.theme-brown .theme-color-box {
-  background: linear-gradient(135deg, #2b1a12, #4a2a19);
-  border-color: #4a3328;
-  color: #66d1ae; /* green accent inside preview */
+.theme-burgundy .theme-color-box {
+  background: linear-gradient(135deg, #32101d, #800020);
+  border-color: #4b2b3a;
+  color: #a2cf88;
 }

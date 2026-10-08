@@ -4,11 +4,22 @@
    - Common variables, button, and layout rules are provided by global `src/styles.scss`.
 */
 
+.data-grid {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-grid th,
+.data-grid td {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
 :host {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
 }
-
 

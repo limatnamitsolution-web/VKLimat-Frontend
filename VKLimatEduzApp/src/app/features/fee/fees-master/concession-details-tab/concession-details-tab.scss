@@ -6,7 +6,7 @@
 .data-table th,
 .data-table td {
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   text-align: left;
   vertical-align: top;
 }

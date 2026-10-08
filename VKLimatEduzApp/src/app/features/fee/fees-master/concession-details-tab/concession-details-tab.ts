@@ -31,9 +31,19 @@ export class ConcessionDetailsTab implements OnInit {
   readonly searchTerm = this.state.searchTerm;
   readonly showView = this.state.showView;
   readonly filteredRows = this.state.filteredRows;
+  readonly paginatedRows = this.state.paginatedRows;
+  readonly currentPage = this.state.currentPage;
+  readonly totalPages = this.state.totalPages;
+  readonly startEntry = this.state.startEntry;
+  readonly endEntry = this.state.endEntry;
+  readonly pageSize = this.state.pageSize;
+  readonly pageSizeOptions = this.state.pageSizeOptions;
   readonly rows = this.state.rows;
   readonly updateSearch = this.state.updateSearch;
   readonly resetSearch = this.state.resetSearch;
+  readonly previousPage = this.state.previousPage;
+  readonly nextPage = this.state.nextPage;
+  readonly changePageSize = this.state.changePageSize;
   readonly closeView = this.state.closeView;
 
   readonly branches = signal<DropdownOption[]>([]);
@@ -67,6 +77,7 @@ export class ConcessionDetailsTab implements OnInit {
     effect(() => {
       const list = this.feeConcessionService.feeConcessionList();
       this.rows.set(Array.isArray(list) ? [...list] : []);
+      this.state.resetPagination();
       console.log('Filtered Rows:', this.rows());
     });
 

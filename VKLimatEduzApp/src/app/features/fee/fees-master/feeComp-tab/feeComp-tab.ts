@@ -29,9 +29,19 @@ export class FeeCompTab implements OnInit {
   readonly searchTerm = this.state.searchTerm;
   readonly showView = this.state.showView;
   readonly filteredRows = this.state.filteredRows;
+  readonly paginatedRows = this.state.paginatedRows;
+  readonly currentPage = this.state.currentPage;
+  readonly totalPages = this.state.totalPages;
+  readonly startEntry = this.state.startEntry;
+  readonly endEntry = this.state.endEntry;
+  readonly pageSize = this.state.pageSize;
+  readonly pageSizeOptions = this.state.pageSizeOptions;
   readonly rows = this.state.rows;
   readonly updateSearch = this.state.updateSearch;
   readonly resetSearch = this.state.resetSearch;
+  readonly previousPage = this.state.previousPage;
+  readonly nextPage = this.state.nextPage;
+  readonly changePageSize = this.state.changePageSize;
   readonly closeView = this.state.closeView;
 
   readonly form: FormGroup = this.fb.group({
@@ -186,10 +196,12 @@ export class FeeCompTab implements OnInit {
     this.feeCompService.getAllFeeComponent().subscribe({
       next: (response) => {
         this.rows.set(this.unwrapRows(response));
+        this.state.resetPagination();
       },
       error: (error) => {
         console.error('Failed to load fee components:', error);
         this.rows.set([]);
+        this.state.resetPagination();
         this.messageService.show('Failed to load fee components', 'error');
       }
     });

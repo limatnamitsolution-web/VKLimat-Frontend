@@ -24,12 +24,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     badgeClass?: string;
   }[] = [
     { id: 'light', name: 'Blue Light', className: 'theme-light', badge: 'Default' },
-    { id: 'dark', name: 'Purple Dark', className: 'theme-dark', badge: 'Popular' },
-    { id: 'color', name: 'Amber Light', className: 'theme-color' },
-    { id: 'pink', name: 'Pink Bloom', className: 'theme-pink' },
-    { id: 'dark-color', name: 'Green Dark', className: 'theme-dark-color', badge: 'New', badgeClass: 'accent' },
     { id: 'dark-blue', name: 'Blue Dark', className: 'theme-dark-blue', badge: 'New', badgeClass: 'accent' },
-    { id: 'dark-brown', name: 'Brown Dark', className: 'theme-brown', badge: 'New' },
+    { id: 'pink', name: 'Pink Bloom', className: 'theme-pink' },
+    { id: 'dark-brown', name: 'Burgundy Dark', className: 'theme-brown', badge: 'New' },
+    { id: 'color', name: 'Amber Light', className: 'theme-color' },
+    { id: 'dark', name: 'Purple Dark', className: 'theme-dark', badge: 'Popular' },        
+    { id: 'dark-color', name: 'Green Dark', className: 'theme-dark-color', badge: 'New', badgeClass: 'accent' },
     { id: 'crazy', name: 'Gradient Dark', className: 'theme-crazy', badge: 'Fun', badgeClass: 'warning' }
   ];
   isThemeSwitcherOpen = false;

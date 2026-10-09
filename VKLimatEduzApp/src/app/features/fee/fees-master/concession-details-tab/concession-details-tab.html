@@ -10,15 +10,15 @@
   <table class="data-table">
     <thead>
       <tr>
-        <th>Branch</th>
-        <th>FY</th>
-        <th>Fee Group</th>
-        <th>Fee Component</th>
-        <th>Fixed Amount</th>
-        <th>Percentage</th>
-        <th>Editable</th>
-        <th>Order</th>
-        <th>Status</th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('branch', ['branchName', 'BranchName', 'branch', 'Branch'])" [attr.aria-label]="'Sort branch ' + sortIndicator('branch')">Branch <span aria-hidden="true">{{ sortIndicator('branch') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('fy', ['FY', 'fy'])" [attr.aria-label]="'Sort financial year ' + sortIndicator('fy')">FY <span aria-hidden="true">{{ sortIndicator('fy') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('feeGroup', ['feeConcGroup', 'FeeConcGroup', 'feeGroup', 'FeeGroup'])" [attr.aria-label]="'Sort fee group ' + sortIndicator('feeGroup')">Fee Group <span aria-hidden="true">{{ sortIndicator('feeGroup') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('feeComponent', ['feeComp', 'FeeComp'])" [attr.aria-label]="'Sort fee component ' + sortIndicator('feeComponent')">Fee Component <span aria-hidden="true">{{ sortIndicator('feeComponent') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('fixedAmount', ['feeConcFxdAmt', 'FeeConcFxdAmt', 'fixedAmount'])" [attr.aria-label]="'Sort fixed amount ' + sortIndicator('fixedAmount')">Fixed Amount <span aria-hidden="true">{{ sortIndicator('fixedAmount') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('percentage', ['feeConcPer', 'FeeConcPer', 'percentage'])" [attr.aria-label]="'Sort percentage ' + sortIndicator('percentage')">Percentage <span aria-hidden="true">{{ sortIndicator('percentage') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('editable', ['feeConcEditable', 'FeeConcEditable'])" [attr.aria-label]="'Sort editable ' + sortIndicator('editable')">Editable <span aria-hidden="true">{{ sortIndicator('editable') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('order', ['orderId', 'OrderId'])" [attr.aria-label]="'Sort order ' + sortIndicator('order')">Order <span aria-hidden="true">{{ sortIndicator('order') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('status', ['status', 'Status', 'isActive', 'IsActive'])" [attr.aria-label]="'Sort status ' + sortIndicator('status')">Status <span aria-hidden="true">{{ sortIndicator('status') }}</span></button></th>
         <th>Actions</th>
       </tr>
     </thead>

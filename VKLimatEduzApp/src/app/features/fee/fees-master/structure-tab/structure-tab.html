@@ -6,13 +6,13 @@
 <table class="data-table">
   <thead>
     <tr>
-      <th>Fee plan</th>
-      <th>Year</th>
-      <th>Fee Group</th>
-      <th>Fee component</th>
-      <th>Fee</th>
-      <th>Fee Months</th>
-      <th>Status</th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('feePlan', ['id', 'Id', 'feePlanId', 'FeePlanId'])" [attr.aria-label]="'Sort fee plan ' + sortIndicator('feePlan')">Fee plan <span aria-hidden="true">{{ sortIndicator('feePlan') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('year', ['fy', 'FY'])" [attr.aria-label]="'Sort year ' + sortIndicator('year')">Year <span aria-hidden="true">{{ sortIndicator('year') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('feeGroup', ['feeGroup', 'FeeGroup'])" [attr.aria-label]="'Sort fee group ' + sortIndicator('feeGroup')">Fee Group <span aria-hidden="true">{{ sortIndicator('feeGroup') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('feeComponent', ['feeComp', 'FeeComp'])" [attr.aria-label]="'Sort fee component ' + sortIndicator('feeComponent')">Fee component <span aria-hidden="true">{{ sortIndicator('feeComponent') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('fees', ['fees', 'Fees'])" [attr.aria-label]="'Sort fee ' + sortIndicator('fees')">Fee <span aria-hidden="true">{{ sortIndicator('fees') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('feeMonths', ['FeeMonthIds', 'feeMonthIds'])" [attr.aria-label]="'Sort fee months ' + sortIndicator('feeMonths')">Fee Months <span aria-hidden="true">{{ sortIndicator('feeMonths') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('status', ['status', 'Status', 'isActive', 'IsActive'])" [attr.aria-label]="'Sort status ' + sortIndicator('status')">Status <span aria-hidden="true">{{ sortIndicator('status') }}</span></button></th>
       <th>Actions</th>
     </tr>
   </thead>

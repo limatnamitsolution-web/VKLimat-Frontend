@@ -42,6 +42,10 @@ export class FeeplanTab implements OnInit {
   readonly previousPage = this.state.previousPage;
   readonly nextPage = this.state.nextPage;
   readonly changePageSize = this.state.changePageSize;
+  readonly sortColumn = this.state.sortColumn;
+  readonly sortDirection = this.state.sortDirection;
+  readonly sortBy = this.state.sortBy;
+  readonly sortIndicator = this.state.sortIndicator;
   readonly closeView = this.state.closeView;
   readonly branches = signal<SearchableDropdownOption[]>([]);
   readonly feeGroups = signal<SearchableDropdownOption[]>([]);

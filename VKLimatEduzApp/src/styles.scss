@@ -2025,6 +2025,28 @@ body[data-theme="dark-color"] .theme-toggle-btn i {
   white-space: nowrap;
 }
 
+.table-sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.table-sort-button span {
+  color: var(--primary-blue);
+  font-size: 0.9em;
+}
+
+.table-sort-button:focus-visible {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
 .data-table td {
   padding: 4px 8px;
   text-align: left;

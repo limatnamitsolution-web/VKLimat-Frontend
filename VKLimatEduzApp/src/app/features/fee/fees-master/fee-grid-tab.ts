@@ -6,11 +6,48 @@ export function createFeeGridTabState<T extends object = Record<string, unknown>
   const rows = signal<T[]>([]);
   const pageSize = signal(10);
   const currentPage = signal(1);
-  const filteredRows = computed(() => {
+  const sortColumn = signal<string | null>(null);
+  const sortDirection = signal<'asc' | 'desc'>('asc');
+  const sortKeys = signal<string[]>([]);
+  const searchedRows = computed(() => {
     const term = searchTerm().trim().toLowerCase();
     return term
       ? rows().filter(row => Object.values(row).some(value => String(value ?? '').toLowerCase().includes(term)))
       : rows();
+  });
+  const filteredRows = computed(() => {
+    const column = sortColumn();
+    const keys = sortKeys();
+    if (!column || keys.length === 0) {
+      return searchedRows();
+    }
+
+    const direction = sortDirection() === 'asc' ? 1 : -1;
+    const valueFor = (row: T): unknown => {
+      const record = row as Record<string, unknown>;
+      for (const key of keys) {
+        if (record[key] !== undefined && record[key] !== null && record[key] !== '') {
+          return record[key];
+        }
+      }
+
+      return '';
+    };
+    const compareValues = (left: unknown, right: unknown): number => {
+      if (typeof left === 'boolean' && typeof right === 'boolean') {
+        return Number(left) - Number(right);
+      }
+
+      const leftNumber = typeof left === 'number' ? left : (typeof left === 'string' && left.trim() ? Number(left) : Number.NaN);
+      const rightNumber = typeof right === 'number' ? right : (typeof right === 'string' && right.trim() ? Number(right) : Number.NaN);
+      if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber)) {
+        return leftNumber - rightNumber;
+      }
+
+      return String(left ?? '').localeCompare(String(right ?? ''), undefined, { numeric: true, sensitivity: 'base' });
+    };
+
+    return [...searchedRows()].sort((left, right) => direction * compareValues(valueFor(left), valueFor(right)));
   });
   const totalPages = computed(() => Math.ceil(filteredRows().length / pageSize()));
   const displayPage = computed(() => Math.max(1, Math.min(currentPage(), totalPages() || 1)));
@@ -49,6 +86,19 @@ export function createFeeGridTabState<T extends object = Record<string, unknown>
     startEntry,
     endEntry,
     pageSizeOptions,
+    sortColumn,
+    sortDirection,
+    sortBy: (column: string, keys: string[]) => {
+      if (sortColumn() === column) {
+        sortDirection.update(direction => direction === 'asc' ? 'desc' : 'asc');
+      } else {
+        sortColumn.set(column);
+        sortKeys.set(keys);
+        sortDirection.set('asc');
+      }
+      currentPage.set(1);
+    },
+    sortIndicator: (column: string) => sortColumn() !== column ? '↕' : sortDirection() === 'asc' ? '↑' : '↓',
     updateSearch: (event: Event) => {
       searchTerm.set((event.target as HTMLInputElement).value);
       pageSize.set(10);

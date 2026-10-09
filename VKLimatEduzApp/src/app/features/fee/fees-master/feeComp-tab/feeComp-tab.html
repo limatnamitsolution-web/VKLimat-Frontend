@@ -6,11 +6,11 @@
 <table class="data-table">
   <thead>
     <tr>
-      <th>Code</th>
-      <th>Fee Component</th>
-      <th>Category</th>
-      <th>Refundable</th>
-      <th>Status</th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('code', ['FeeCompCode', 'feeCompCode', 'code'])" [attr.aria-label]="'Sort code ' + sortIndicator('code')">Code <span aria-hidden="true">{{ sortIndicator('code') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('feeComponent', ['FeeComp', 'feeComp', 'name'])" [attr.aria-label]="'Sort fee component ' + sortIndicator('feeComponent')">Fee Component <span aria-hidden="true">{{ sortIndicator('feeComponent') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('category', ['FeeCompTaken', 'feeCompTaken', 'description', 'category'])" [attr.aria-label]="'Sort category ' + sortIndicator('category')">Category <span aria-hidden="true">{{ sortIndicator('category') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('refundable', ['FeeCompRefundable', 'feeCompRefundable', 'refundable'])" [attr.aria-label]="'Sort refundable ' + sortIndicator('refundable')">Refundable <span aria-hidden="true">{{ sortIndicator('refundable') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('status', ['Status', 'status', 'isActive'])" [attr.aria-label]="'Sort status ' + sortIndicator('status')">Status <span aria-hidden="true">{{ sortIndicator('status') }}</span></button></th>
       <th>Actions</th>
     </tr>
   </thead>

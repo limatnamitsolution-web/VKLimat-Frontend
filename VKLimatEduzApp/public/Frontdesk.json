@@ -354,13 +354,6 @@
         "isBranch": false
       },
       {
-        "key": "feesLateFineConfig",
-        "label": "Late Fine Configuration",
-        "icon": "fas fa-clock",
-        "route": "/latefine",
-        "isBranch": false
-      },
-      {
         "key": "feesLateFine",
         "label": "Late Fine",
         "icon": "fas fa-clock",
@@ -425,6 +418,42 @@
         "label": "Attendance Fine",
         "icon": "fas fa-calendar-times",
         "route": "/fees/attendance-fine",
+        "isBranch": false
+      }
+    ]
+  },
+  {
+    "key": "masterSettingPanel",
+    "label": "Master setting Panel",
+    "icon": "fas fa-cogs",
+    "isBranch": false,
+    "children": [
+      {
+        "key": "branchSetting",
+        "label": "Branch Setting",
+        "icon": "fas fa-code-branch",
+        "route": "/MasterSettings/BranchSetting",
+        "isBranch": false
+      },
+      {
+        "key": "financialSetting",
+        "label": "Financial Setting",
+        "icon": "fas fa-wallet",
+        "route": "/MasterSettings/FinancialSetting",
+        "isBranch": false
+      },
+      {
+        "key": "transportSetting",
+        "label": "Transport Setting",
+        "icon": "fas fa-bus",
+        "route": "/MasterSettings/TransportSetting",
+        "isBranch": false
+      },
+      {
+        "key": "templatePrintSetting",
+        "label": "Template Print Setting",
+        "icon": "fas fa-print",
+        "route": "/MasterSettings/TemplatePrintSetting",
         "isBranch": false
       }
     ]

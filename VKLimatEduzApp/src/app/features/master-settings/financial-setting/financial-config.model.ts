@@ -17,10 +17,10 @@ export interface FinancialConfig {
   LFFeeDays: number | null;
   LFFeePerMonth: number | null;
   LFFeeMonths: number | null;
-  TranMode?: string | null;
-  TranType: string | null;
-  TranFeeType: string | null;
-  TranFxdFullPrc?: number | null;
+  TransMode?: string | null;
+  TransType: string | null;
+  TransFeeType: string | null;
+  TransFxdFullPrc?: number | null;
   TransFxdPkpPrc?: number | null;
   TransFxdDrpPrc?: number | null;
   IsActive: boolean;

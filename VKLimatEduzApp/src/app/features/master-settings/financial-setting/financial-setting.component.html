@@ -39,8 +39,8 @@
                     <td>{{ display(row, ['BranchName', 'branchName', 'BranchID', 'branchId']) }}</td>
                     <td>{{ display(row, ['FY', 'fy']) }}</td>
                     <td>{{ display(row, ['FeeType', 'feeType']) }}</td>
-                    <td>{{ display(row, ['TranMode', 'tranMode', 'TransportMode', 'transportMode']) }}</td>
-                    <td>{{ display(row, ['TranType', 'tranType']) }}</td>
+                    <td>{{ display(row, ['TransMode', 'TransMode', 'TransportMode', 'transportMode']) }}</td>
+                    <td>{{ display(row, ['TransType', 'TransType']) }}</td>
                     <td>{{ display(row, ['IsActive', 'isActive']) }}</td>
                     <td>
                       <button
@@ -158,7 +158,7 @@
                   <select formControlName="FeeType">
                     <option value="">Select fee type</option>
                     @for (type of feeTypes; track type.id) {
-                      <option [value]="type.id">{{ type.name }}</option>
+                      <option [value]="type.name">{{ type.name }}</option>
                     }
                   </select>
                 </div>
@@ -190,7 +190,7 @@
                   <label>Late Fee Type</label>
                   <select formControlName="LFFeeType" (change)="onLateFeeTypeChange()">
                     @for (type of lateFeeTypes; track type.id) {
-                      <option [value]="type.id">{{ type.name }}</option>
+                      <option [value]="type.name">{{ type.name }}</option>
                     }
                   </select>
                 </div>
@@ -257,35 +257,35 @@
               <div class="grid-3">
                 <div class="form-field">
                   <label>Transport Mode</label>
-                  <select formControlName="TranMode">
+                  <select formControlName="TransMode">
                     @for (mode of transportModes; track mode.id) {
-                      <option [value]="mode.id">{{ mode.name }}</option>
+                      <option [value]="mode.name">{{ mode.name }}</option>
                     }
                   </select>
                 </div>
                 <div class="form-field">
                   <label>Transport Type</label>
-                  <select formControlName="TranType" (change)="onTransportTypeChange()">
+                  <select formControlName="TransType" (change)="onTransportTypeChange()">
                     @for (type of transportTypes; track type.id) {
-                      <option [value]="type.id">{{ type.name }}</option>
+                      <option [value]="type.name">{{ type.name }}</option>
                     }
                   </select>
                 </div>
                 <div class="form-field">
                   <label>Transport Fee Type</label>
-                  <select formControlName="TranFeeType">
+                  <select formControlName="TransFeeType">
                     <option [ngValue]="null">Select fee type</option>
                     @for (type of transportFeeTypes; track type.id) {
-                      <option [value]="type.id">{{ type.name }}</option>
+                      <option [value]="type.name">{{ type.name }}</option>
                     }
                   </select>
                 </div>
 
-                @switch (form.controls.TranType.value?.toLowerCase()) {
+                @switch (form.controls.TransType.value?.toLowerCase()) {
                   @case ('both') {
                     <div class="form-field">
                       <label>Fixed Full Price</label>
-                      <input type="number" min="0" step="1" formControlName="TranFxdFullPrc" placeholder="Enter fixed full price">
+                      <input type="number" min="0" step="1" formControlName="TransFxdFullPrc" placeholder="Enter fixed full price">
                     </div>
                   }
                   @case ('pickup') {

@@ -39,12 +39,12 @@ export interface MasterDropdownData {
 
 const MASTER_CONFIG_DWN_TYPES: string[] = [
   'Branch',
-  'FeeType',
-  'LateFeeType',
-  'TransportMode',
+  'FeeTypes',
+  'LateFeeTypes',
   'TransportModes',
+  'TransportTypes',
   'PickDrop',
-  'TranFeeType'
+  'TransFeeType'
 ];
 
 @Component({
@@ -124,9 +124,9 @@ export class FinancialSettingComponent implements OnInit {
         this.display(row, ['ID', 'Id', 'id']),
         this.display(row, ['FY', 'fy']),
         this.display(row, ['FeeType', 'feeType']),
-        this.display(row, ['TranMode', 'tranMode', 'TransportMode', 'transportMode']),
-        this.display(row, ['TranType', 'tranType']),
-        this.display(row, ['TranFeeType', 'tranFeeType']),
+        this.display(row, ['TransMode', 'TransMode', 'TransportMode', 'transportMode']),
+        this.display(row, ['TransType', 'TransType']),
+        this.display(row, ['TransFeeType', 'TransFeeType']),
         this.display(row, ['IsActive', 'isActive'])
       ].some(value => value.toLowerCase().includes(term))
     );
@@ -158,10 +158,10 @@ export class FinancialSettingComponent implements OnInit {
     LFFeeDays: [null as number | null, Validators.min(0)],
     LFFeePerMonth: [null as number | null, Validators.min(0)],
     LFFeeMonths: [null as number | null, Validators.min(0)],
-    TranMode: ['School' as string | null],
-    TranType: ['Both' as string | null],
-    TranFeeType: [null as string | null],
-    TranFxdFullPrc: [null as number | null, Validators.min(0)],
+    TransMode: ['School' as string | null],
+    TransType: ['Both' as string | null],
+    TransFeeType: [null as string | null],
+    TransFxdFullPrc: [null as number | null, Validators.min(0)],
     TransFxdPkpPrc: [null as number | null, Validators.min(0)],
     TransFxdDrpPrc: [null as number | null, Validators.min(0)],
     IsActive: [true, Validators.required]
@@ -215,23 +215,19 @@ export class FinancialSettingComponent implements OnInit {
           case 'branch':
             next.branches.push(option);
             break;
-          case 'feetype':
-          case 'feefrequency':
+          case 'feetypes':
             next.feeTypes.push(option);
             break;
           case 'latefeetype':
             next.lateFeeTypes.push(option);
             break;
-          case 'transportmode':
           case 'transportmodes':
             next.transportModes.push(option);
             break;
-          case 'pickdrop':
-          case 'transporttype':
           case 'transporttypes':
             next.transportTypes.push(option);
             break;
-          case 'tranfeetype':
+          case 'TransFeeType':
             next.transportFeeTypes.push(option);
             break;
           default:
@@ -291,10 +287,10 @@ export class FinancialSettingComponent implements OnInit {
       LFFeeDays: null,
       LFFeePerMonth: null,
       LFFeeMonths: null,
-      TranMode: 'School',
-      TranType: 'Both',
-      TranFeeType: null,
-      TranFxdFullPrc: null,
+      TransMode: 'School',
+      TransType: 'Both',
+      TransFeeType: null,
+      TransFxdFullPrc: null,
       TransFxdPkpPrc: null,
       TransFxdDrpPrc: null,
       IsActive: true
@@ -382,9 +378,9 @@ export class FinancialSettingComponent implements OnInit {
   }
 
   onTransportTypeChange(): void {
-    const rawType = (this.form.controls.TranType.value ?? '').toLowerCase();
+    const rawType = (this.form.controls.TransType.value ?? '').toLowerCase();
     if (rawType !== 'both') {
-      this.form.controls.TranFxdFullPrc.setValue(null);
+      this.form.controls.TransFxdFullPrc.setValue(null);
     }
     if (rawType !== 'pickup') {
       this.form.controls.TransFxdPkpPrc.setValue(null);
@@ -453,8 +449,8 @@ export class FinancialSettingComponent implements OnInit {
     };
     const activeLateFeeField = fieldForType[lateFeeType ?? ''];
 
-    const tranType = value.TranType ?? '';
-    const normalizedTranType = tranType.toLowerCase();
+    const TransType = value.TransType ?? '';
+    const normalizedTransType = TransType.toLowerCase();
 
     return {
       ID: value.ID ?? 0,
@@ -475,12 +471,12 @@ export class FinancialSettingComponent implements OnInit {
       LFFeeDays: activeLateFeeField === 'LFFeeDays' ? this.toInteger(value.LFFeeDays) : null,
       LFFeePerMonth: activeLateFeeField === 'LFFeePerMonth' ? this.toInteger(value.LFFeePerMonth) : null,
       LFFeeMonths: activeLateFeeField === 'LFFeeMonths' ? this.toInteger(value.LFFeeMonths) : null,
-      TranMode: value.TranMode ?? null,
-      TranType: value.TranType ?? null,
-      TranFeeType: value.TranFeeType ?? null,
-      TranFxdFullPrc: normalizedTranType === 'both' ? this.toInteger(value.TranFxdFullPrc) : null,
-      TransFxdPkpPrc: normalizedTranType === 'pickup' ? this.toInteger(value.TransFxdPkpPrc) : null,
-      TransFxdDrpPrc: normalizedTranType === 'drop' ? this.toInteger(value.TransFxdDrpPrc) : null,
+      TransMode: value.TransMode ?? null,
+      TransType: value.TransType ?? null,
+      TransFeeType: value.TransFeeType ?? null,
+      TransFxdFullPrc: normalizedTransType === 'both' ? this.toInteger(value.TransFxdFullPrc) : null,
+      TransFxdPkpPrc: normalizedTransType === 'pickup' ? this.toInteger(value.TransFxdPkpPrc) : null,
+      TransFxdDrpPrc: normalizedTransType === 'drop' ? this.toInteger(value.TransFxdDrpPrc) : null,
       IsActive: Boolean(value.IsActive)
     };
   }
@@ -488,10 +484,10 @@ export class FinancialSettingComponent implements OnInit {
   private patchForm(row: ApiRecord): void {
     const id = this.readValue(row, ['ID', 'Id', 'id']);
     const branchId = this.readValue(row, ['BranchID', 'branchID', 'branchId']);
-    const rawTranMode = this.readValue(row, ['TranMode', 'tranMode', 'TransportMode', 'transportMode']) as string | null;
-    const matchedTranMode = this.transportModes.find(m => String(m.id).toLowerCase() === (rawTranMode ?? '').toLowerCase() || m.name.toLowerCase() === (rawTranMode ?? '').toLowerCase())?.id ?? rawTranMode ?? 'School';
-    const rawTranType = this.readValue(row, ['TranType', 'tranType']) as string | null;
-    const matchedTranType = this.transportTypes.find(t => String(t.id).toLowerCase() === (rawTranType ?? '').toLowerCase() || t.name.toLowerCase() === (rawTranType ?? '').toLowerCase())?.id ?? rawTranType ?? 'Both';
+    const rawTransMode = this.readValue(row, ['TransMode', 'TransMode', 'TransportMode', 'transportMode']) as string | null;
+    const matchedTransMode = this.transportModes.find(m => String(m.id).toLowerCase() === (rawTransMode ?? '').toLowerCase() || m.name.toLowerCase() === (rawTransMode ?? '').toLowerCase())?.id ?? rawTransMode ?? 'School';
+    const rawTransType = this.readValue(row, ['TransType', 'TransType']) as string | null;
+    const matchedTransType = this.transportTypes.find(t => String(t.id).toLowerCase() === (rawTransType ?? '').toLowerCase() || t.name.toLowerCase() === (rawTransType ?? '').toLowerCase())?.id ?? rawTransType ?? 'Both';
 
     this.form.patchValue({
       ID: typeof id === 'number' || typeof id === 'string' ? id : 0,
@@ -512,10 +508,10 @@ export class FinancialSettingComponent implements OnInit {
       LFFeeDays: this.toInteger(this.readValue(row, ['LFFeeDays', 'lfFeeDays'])),
       LFFeePerMonth: this.toInteger(this.readValue(row, ['LFFeePerMonth', 'lfFeePerMonth'])),
       LFFeeMonths: this.toInteger(this.readValue(row, ['LFFeeMonths', 'lfFeeMonths'])),
-      TranMode: matchedTranMode != null ? String(matchedTranMode) : 'School',
-      TranType: matchedTranType != null ? String(matchedTranType) : 'Both',
-      TranFeeType: this.readValue(row, ['TranFeeType', 'tranFeeType']) as string | null,
-      TranFxdFullPrc: this.toInteger(this.readValue(row, ['TranFxdFullPrc', 'tranFxdFullPrc'])),
+      TransMode: matchedTransMode != null ? String(matchedTransMode) : 'School',
+      TransType: matchedTransType != null ? String(matchedTransType) : 'Both',
+      TransFeeType: this.readValue(row, ['TransFeeType', 'TransFeeType']) as string | null,
+      TransFxdFullPrc: this.toInteger(this.readValue(row, ['TransFxdFullPrc', 'TransFxdFullPrc'])),
       TransFxdPkpPrc: this.toInteger(this.readValue(row, ['TransFxdPkpPrc', 'transFxdPkpPrc'])),
       TransFxdDrpPrc: this.toInteger(this.readValue(row, ['TransFxdDrpPrc', 'transFxdDrpPrc'])),
       IsActive: this.toBoolean(this.readValue(row, ['IsActive', 'isActive']))

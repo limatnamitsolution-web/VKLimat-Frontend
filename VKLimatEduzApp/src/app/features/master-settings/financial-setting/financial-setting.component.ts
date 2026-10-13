@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { AppStateService } from '../../../core/services/app-state.service';
-import { SearchableDropdownComponent, SearchableDropdownOption } from '../../../shared/components/searchable-dropdown/searchable-dropdown.component';
+import { SearchableDropdownComponent } from '../../../shared/components/searchable-dropdown/searchable-dropdown.component';
 import { MasterConfigsDWN } from '../../../shared/services/master-configs-dwn';
 import { MenuLabelService } from '../../../shared/services/menu-label.service';
 import { MessageService } from '../../../shared/services/message.service';
@@ -13,40 +13,38 @@ import { FinancialConfig } from './financial-config.model';
 type TabKey = 'fees' | 'transport';
 type ApiRecord = Record<string, unknown>;
 
-const DEFAULT_FEE_TYPES: SearchableDropdownOption[] = [
-  { id: 'Monthly', name: 'Monthly' },
-  { id: 'BI-Monthly', name: 'BI-Monthly' },
-  { id: 'Quarterly', name: 'Quarterly' },
-  { id: 'Yearly', name: 'Yearly' }
-];
+export interface DropdownOption {
+  id: number | string;
+  parentId?: number | string;
+  name: string;
+  description?: string;
+}
 
-const DEFAULT_TRANSPORT_MODES: SearchableDropdownOption[] = [
-  { id: 'School', name: 'School' },
-  { id: 'Own', name: 'Own' }
-];
+export interface RawMasterItem {
+  id: number | string;
+  parentId: number | string;
+  name: string;
+  type: string;
+  description?: string;
+}
 
-const DEFAULT_TRANSPORT_TYPES: SearchableDropdownOption[] = [
-  { id: 'Both', name: 'Both' },
-  { id: 'Pickup', name: 'Pickup' },
-  { id: 'Drop', name: 'Drop' }
-];
+export interface MasterDropdownData {
+  branches: DropdownOption[];
+  feeTypes: DropdownOption[];
+  lateFeeTypes: DropdownOption[];
+  transportModes: DropdownOption[];
+  transportTypes: DropdownOption[];
+  transportFeeTypes: DropdownOption[];
+}
 
-const DEFAULT_LATE_FEE_TYPES: SearchableDropdownOption[] = [
-  { id: 'Fixed', name: 'Fixed' },
-  { id: 'PerDay', name: 'PerDay' },
-  { id: 'Days', name: 'Days' },
-  { id: 'PerMonth', name: 'PerMonth' },
-  { id: 'Months', name: 'Months' }
-];
-
-const MASTER_CONFIG_TYPES = [
+const MASTER_CONFIG_DWN_TYPES: string[] = [
   'Branch',
+  'FeeType',
+  'LateFeeType',
   'TransportMode',
   'TransportModes',
   'PickDrop',
-  'FeeType',
-  'TranFeeType',
-  'LateFeeType'
+  'TranFeeType'
 ];
 
 @Component({
@@ -64,14 +62,38 @@ export class FinancialSettingComponent implements OnInit {
   private readonly masterConfigsDWN = inject(MasterConfigsDWN);
   private readonly configService = inject(FinancialConfigService);
   private readonly messageService = inject(MessageService);
+  private readonly masterConfigDwnTypes = MASTER_CONFIG_DWN_TYPES;
+  private isDropdownLoadPending = false;
 
-  readonly branches = signal<SearchableDropdownOption[]>([]);
-  readonly feeTypes = signal<SearchableDropdownOption[]>(DEFAULT_FEE_TYPES);
-  readonly transportModes = signal<SearchableDropdownOption[]>(DEFAULT_TRANSPORT_MODES);
-  readonly transportTypes = signal<SearchableDropdownOption[]>(DEFAULT_TRANSPORT_TYPES);
-  readonly transportFeeTypes = signal<SearchableDropdownOption[]>(DEFAULT_FEE_TYPES);
-  readonly lateFeeTypes = signal<SearchableDropdownOption[]>(DEFAULT_LATE_FEE_TYPES);
-  readonly dueDays: SearchableDropdownOption[] = Array.from({ length: 28 }, (_, index) => ({
+  readonly masterData = signal<MasterDropdownData>({
+    branches: [],
+    feeTypes: [],
+    lateFeeTypes: [],
+    transportModes: [],
+    transportTypes: [],
+    transportFeeTypes: []
+  });
+
+  get branches(): DropdownOption[] {
+    return this.masterData().branches;
+  }
+  get feeTypes(): DropdownOption[] {
+    return this.masterData().feeTypes;
+  }
+  get lateFeeTypes(): DropdownOption[] {
+    return this.masterData().lateFeeTypes;
+  }
+  get transportModes(): DropdownOption[] {
+    return this.masterData().transportModes;
+  }
+  get transportTypes(): DropdownOption[] {
+    return this.masterData().transportTypes;
+  }
+  get transportFeeTypes(): DropdownOption[] {
+    return this.masterData().transportFeeTypes;
+  }
+
+  readonly dueDays: DropdownOption[] = Array.from({ length: 28 }, (_, index) => ({
     id: index + 1,
     name: String(index + 1)
   }));
@@ -149,77 +171,82 @@ export class FinancialSettingComponent implements OnInit {
     inject(MenuLabelService).setLabel({ key: 'Financial Setting' });
 
     effect(() => {
-      const options = this.masterConfigsDWN.masterConfigDwnList();
-      if (!Array.isArray(options)) {
+      const dwnList = this.masterConfigsDWN.masterConfigDwnList();
+      if (!this.isDropdownLoadPending || !Array.isArray(dwnList)) {
         return;
       }
-
-      this.bindMasterDropdowns(options as Record<string, unknown>[]);
+   console.log("dwnList", dwnList);
+      this.bindMasterDropdowns(dwnList as RawMasterItem[]);
     });
   }
 
   ngOnInit(): void {
-    this.masterConfigsDWN.fetchMasterConfigDWN(MASTER_CONFIG_TYPES.join(','));
+    this.isDropdownLoadPending = true;
+    this.masterConfigsDWN.fetchMasterConfigDWN(this.masterConfigDwnTypes.toString());
     this.loadConfigs();
   }
 
-  private bindMasterDropdowns(rawMasterItems: Record<string, unknown>[]): void {
-    const nextBranches: SearchableDropdownOption[] = [];
-    const nextFeeTypes: SearchableDropdownOption[] = [];
-    const nextTransportModes: SearchableDropdownOption[] = [];
-    const nextTransportTypes: SearchableDropdownOption[] = [];
-    const nextLateFeeTypes: SearchableDropdownOption[] = [];
+  private bindMasterDropdowns(rawMasterItems: RawMasterItem[]): void {
+    try {
+      const current = this.masterData();
+      const next: MasterDropdownData = {
+        branches: [...current.branches],
+        feeTypes: [...current.feeTypes],
+        lateFeeTypes: [...current.lateFeeTypes],
+        transportModes: [...current.transportModes],
+        transportTypes: [...current.transportTypes],
+        transportFeeTypes: [...current.transportFeeTypes]
+      };
 
-    for (const record of rawMasterItems) {
-      const type = String(record['type'] ?? '').trim().toLowerCase();
-      if (!type) {
-        continue;
+      for (const record of rawMasterItems) {
+        const type = record.type ? record.type.trim().toLowerCase() : '';
+        if (!type) {
+          continue;
+        }
+
+        const option: DropdownOption = {
+          id: record.id,
+          name: record.name,
+          parentId: record.parentId,
+          description: record.description ?? ''
+        };
+
+        switch (type) {
+          case 'branch':
+            next.branches.push(option);
+            break;
+          case 'feetype':
+          case 'feefrequency':
+            next.feeTypes.push(option);
+            break;
+          case 'latefeetype':
+            next.lateFeeTypes.push(option);
+            break;
+          case 'transportmode':
+          case 'transportmodes':
+            next.transportModes.push(option);
+            break;
+          case 'pickdrop':
+          case 'transporttype':
+          case 'transporttypes':
+            next.transportTypes.push(option);
+            break;
+          case 'tranfeetype':
+            next.transportFeeTypes.push(option);
+            break;
+          default:
+            break;
+        }
       }
 
-      const id = (record['id'] ?? record['Id']) as number | string;
-      const name = String(record['name'] ?? record['Name'] ?? id);
-      const option: SearchableDropdownOption = { id, name };
-
-      switch (type) {
-        case 'branch':
-          nextBranches.push(option);
-          break;
-        case 'feetype':
-        case 'feefrequency':
-          nextFeeTypes.push(option);
-          break;
-        case 'transportmode':
-        case 'transportmodes':
-          nextTransportModes.push(option);
-          break;
-        case 'pickdrop':
-        case 'transporttype':
-        case 'transporttypes':
-          nextTransportTypes.push(option);
-          break;
-        case 'latefeetype':
-          nextLateFeeTypes.push(option);
-          break;
-        default:
-          break;
+      // If backend did not provide distinct transport fee types, fall back to feeTypes
+      if (next.transportFeeTypes.length === 0 && next.feeTypes.length > 0) {
+        next.transportFeeTypes = [...next.feeTypes];
       }
-    }
 
-    if (nextBranches.length > 0) {
-      this.branches.set(nextBranches);
-    }
-    if (nextFeeTypes.length > 0) {
-      this.feeTypes.set(nextFeeTypes);
-      this.transportFeeTypes.set(nextFeeTypes);
-    }
-    if (nextTransportModes.length > 0) {
-      this.transportModes.set(nextTransportModes);
-    }
-    if (nextTransportTypes.length > 0) {
-      this.transportTypes.set(nextTransportTypes);
-    }
-    if (nextLateFeeTypes.length > 0) {
-      this.lateFeeTypes.set(nextLateFeeTypes);
+      this.masterData.set(next);
+    } finally {
+      this.isDropdownLoadPending = false;
     }
   }
 
@@ -462,9 +489,9 @@ export class FinancialSettingComponent implements OnInit {
     const id = this.readValue(row, ['ID', 'Id', 'id']);
     const branchId = this.readValue(row, ['BranchID', 'branchID', 'branchId']);
     const rawTranMode = this.readValue(row, ['TranMode', 'tranMode', 'TransportMode', 'transportMode']) as string | null;
-    const matchedTranMode = this.transportModes().find(m => String(m.id).toLowerCase() === (rawTranMode ?? '').toLowerCase() || m.name.toLowerCase() === (rawTranMode ?? '').toLowerCase())?.id ?? rawTranMode ?? 'School';
+    const matchedTranMode = this.transportModes.find(m => String(m.id).toLowerCase() === (rawTranMode ?? '').toLowerCase() || m.name.toLowerCase() === (rawTranMode ?? '').toLowerCase())?.id ?? rawTranMode ?? 'School';
     const rawTranType = this.readValue(row, ['TranType', 'tranType']) as string | null;
-    const matchedTranType = this.transportTypes().find(t => String(t.id).toLowerCase() === (rawTranType ?? '').toLowerCase() || t.name.toLowerCase() === (rawTranType ?? '').toLowerCase())?.id ?? rawTranType ?? 'Both';
+    const matchedTranType = this.transportTypes.find(t => String(t.id).toLowerCase() === (rawTranType ?? '').toLowerCase() || t.name.toLowerCase() === (rawTranType ?? '').toLowerCase())?.id ?? rawTranType ?? 'Both';
 
     this.form.patchValue({
       ID: typeof id === 'number' || typeof id === 'string' ? id : 0,

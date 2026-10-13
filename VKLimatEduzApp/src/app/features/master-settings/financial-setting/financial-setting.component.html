@@ -149,7 +149,7 @@
                   <label>Branch</label>
                   <app-searchable-dropdown
                     formControlName="BranchID"
-                    [options]="branches()"
+                    [options]="branches"
                     placeholder="Select Branch">
                   </app-searchable-dropdown>
                 </div>
@@ -157,7 +157,7 @@
                   <label>Fee Type <span class="required">*</span></label>
                   <select formControlName="FeeType">
                     <option value="">Select fee type</option>
-                    @for (type of feeTypes(); track type.id) {
+                    @for (type of feeTypes; track type.id) {
                       <option [value]="type.id">{{ type.name }}</option>
                     }
                   </select>
@@ -189,7 +189,7 @@
                 <div class="form-field">
                   <label>Late Fee Type</label>
                   <select formControlName="LFFeeType" (change)="onLateFeeTypeChange()">
-                    @for (type of lateFeeTypes(); track type.id) {
+                    @for (type of lateFeeTypes; track type.id) {
                       <option [value]="type.id">{{ type.name }}</option>
                     }
                   </select>
@@ -258,7 +258,7 @@
                 <div class="form-field">
                   <label>Transport Mode</label>
                   <select formControlName="TranMode">
-                    @for (mode of transportModes(); track mode.id) {
+                    @for (mode of transportModes; track mode.id) {
                       <option [value]="mode.id">{{ mode.name }}</option>
                     }
                   </select>
@@ -266,7 +266,7 @@
                 <div class="form-field">
                   <label>Transport Type</label>
                   <select formControlName="TranType" (change)="onTransportTypeChange()">
-                    @for (type of transportTypes(); track type.id) {
+                    @for (type of transportTypes; track type.id) {
                       <option [value]="type.id">{{ type.name }}</option>
                     }
                   </select>
@@ -275,7 +275,7 @@
                   <label>Transport Fee Type</label>
                   <select formControlName="TranFeeType">
                     <option [ngValue]="null">Select fee type</option>
-                    @for (type of transportFeeTypes(); track type.id) {
+                    @for (type of transportFeeTypes; track type.id) {
                       <option [value]="type.id">{{ type.name }}</option>
                     }
                   </select>

@@ -25,6 +25,16 @@ export const routes: Routes = [
         path: 'mastersConfig', 
         loadChildren: () => import('./features/mastersConfig/masters.routes').then(m => m.mastersConfigRoutes)
       },
+      {
+        path: 'MasterSettings',
+        children: [
+          {
+            path: 'FinancialSetting',
+            loadComponent: () => import('./features/master-settings/financial-setting/financial-setting.component')
+              .then(m => m.FinancialSettingComponent)
+          }
+        ]
+      },
     ]
   }
 ];

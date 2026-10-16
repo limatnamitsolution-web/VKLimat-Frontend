@@ -18,10 +18,15 @@ export class FinancialConfigService {
   }
 
   save(config: FinancialConfig): Observable<unknown> {
-    return this.http.post<unknown>(FinancialConfigApiEndpoints.save, config);
+    return this.http.post<unknown>(FinancialConfigApiEndpoints.save, this.toApiPayload(config));
   }
 
   update(config: FinancialConfig): Observable<unknown> {
-    return this.http.put<unknown>(FinancialConfigApiEndpoints.update, config);
+    return this.http.put<unknown>(FinancialConfigApiEndpoints.update, this.toApiPayload(config));
+  }
+
+  private toApiPayload(config: FinancialConfig): Omit<FinancialConfig, 'LFFeeDays'> & { LFFeeDay: number | null } {
+    const { LFFeeDays, ...payload } = config;
+    return { ...payload, LFFeeDay: LFFeeDays };
   }
 }

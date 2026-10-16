@@ -39,7 +39,7 @@ export interface MasterDropdownData {
 
 const MASTER_CONFIG_DWN_TYPES: string[] = [
   'Branch',
-  'FeeTypes',
+  'FeeType',
   'LateFeeTypes',
   'TransportModes',
   'TransportTypes',
@@ -124,9 +124,9 @@ export class FinancialSettingComponent implements OnInit {
         this.display(row, ['ID', 'Id', 'id']),
         this.display(row, ['FY', 'fy']),
         this.display(row, ['FeeType', 'feeType']),
-        this.display(row, ['TransMode', 'TransMode', 'TransportMode', 'transportMode']),
-        this.display(row, ['TransType', 'TransType']),
-        this.display(row, ['TransFeeType', 'TransFeeType']),
+        this.display(row, ['TransMode', 'transMode', 'TransportMode', 'transportMode']),
+        this.display(row, ['TransType', 'transType']),
+        this.display(row, ['TransFeeType', 'transFeeType']),
         this.display(row, ['IsActive', 'isActive'])
       ].some(value => value.toLowerCase().includes(term))
     );
@@ -215,10 +215,10 @@ export class FinancialSettingComponent implements OnInit {
           case 'branch':
             next.branches.push(option);
             break;
-          case 'feetypes':
+          case 'feetype':
             next.feeTypes.push(option);
             break;
-          case 'latefeetype':
+          case 'latefeetypes':
             next.lateFeeTypes.push(option);
             break;
           case 'transportmodes':
@@ -227,7 +227,7 @@ export class FinancialSettingComponent implements OnInit {
           case 'transporttypes':
             next.transportTypes.push(option);
             break;
-          case 'TransFeeType':
+          case 'transfeetype':
             next.transportFeeTypes.push(option);
             break;
           default:
@@ -254,6 +254,7 @@ export class FinancialSettingComponent implements OnInit {
     this.loading.set(true);
     this.configService.getAll().subscribe({
       next: response => {
+        console.log('Raw response:', response);
         const rows = this.unwrapRows(response);
         this.configs.set(rows);
         this.currentPage.set(1);
@@ -339,6 +340,7 @@ export class FinancialSettingComponent implements OnInit {
     this.loading.set(true);
     this.configService.getById(String(id)).subscribe({
       next: response => {
+        console.log('Unwrapped config:', this.unwrapObject(response));
         const config = this.unwrapObject(response);
         if (!config) {
           this.messageService.show('The selected configuration was not returned by the server.', 'error');
@@ -398,6 +400,7 @@ export class FinancialSettingComponent implements OnInit {
     }
 
     const config = this.buildPayload();
+    console.log('config',config)
     if (config.BranchID === '' || config.FY.trim() === '') {
       this.messageService.show('A current branch and financial year are required.', 'error');
       return;
@@ -484,10 +487,14 @@ export class FinancialSettingComponent implements OnInit {
   private patchForm(row: ApiRecord): void {
     const id = this.readValue(row, ['ID', 'Id', 'id']);
     const branchId = this.readValue(row, ['BranchID', 'branchID', 'branchId']);
-    const rawTransMode = this.readValue(row, ['TransMode', 'TransMode', 'TransportMode', 'transportMode']) as string | null;
-    const matchedTransMode = this.transportModes.find(m => String(m.id).toLowerCase() === (rawTransMode ?? '').toLowerCase() || m.name.toLowerCase() === (rawTransMode ?? '').toLowerCase())?.id ?? rawTransMode ?? 'School';
-    const rawTransType = this.readValue(row, ['TransType', 'TransType']) as string | null;
-    const matchedTransType = this.transportTypes.find(t => String(t.id).toLowerCase() === (rawTransType ?? '').toLowerCase() || t.name.toLowerCase() === (rawTransType ?? '').toLowerCase())?.id ?? rawTransType ?? 'Both';
+    const matchedTransMode = this.resolveOptionName(
+      this.transportModes,
+      this.readValue(row, ['TransMode', 'transMode', 'TransportMode', 'transportMode'])
+    ) ?? 'School';
+    const matchedTransType = this.resolveOptionName(
+      this.transportTypes,
+      this.readValue(row, ['TransType', 'transType'])
+    ) ?? 'Both';
 
     this.form.patchValue({
       ID: typeof id === 'number' || typeof id === 'string' ? id : 0,
@@ -505,17 +512,31 @@ export class FinancialSettingComponent implements OnInit {
       LFFeeFrom: this.toInteger(this.readValue(row, ['LFFeeFrom', 'lfFeeFrom'])),
       LFFeeFixed: this.toInteger(this.readValue(row, ['LFFeeFixed', 'lfFeeFixed'])),
       LFFeePerDay: this.toInteger(this.readValue(row, ['LFFeePerDay', 'lfFeePerDay'])),
-      LFFeeDays: this.toInteger(this.readValue(row, ['LFFeeDays', 'lfFeeDays'])),
+      LFFeeDays: this.toInteger(this.readValue(row, ['LFFeeDay', 'lfFeeDay', 'LFFeeDays'])),
       LFFeePerMonth: this.toInteger(this.readValue(row, ['LFFeePerMonth', 'lfFeePerMonth'])),
       LFFeeMonths: this.toInteger(this.readValue(row, ['LFFeeMonths', 'lfFeeMonths'])),
-      TransMode: matchedTransMode != null ? String(matchedTransMode) : 'School',
-      TransType: matchedTransType != null ? String(matchedTransType) : 'Both',
-      TransFeeType: this.readValue(row, ['TransFeeType', 'TransFeeType']) as string | null,
-      TransFxdFullPrc: this.toInteger(this.readValue(row, ['TransFxdFullPrc', 'TransFxdFullPrc'])),
+      TransMode: matchedTransMode,
+      TransType: matchedTransType,
+      TransFeeType: this.resolveOptionName(
+        this.transportFeeTypes,
+        this.readValue(row, ['TransFeeType', 'transFeeType'])
+      ),
+      TransFxdFullPrc: this.toInteger(this.readValue(row, ['TransFxdFullPrc', 'transFxdFullPrc'])),
       TransFxdPkpPrc: this.toInteger(this.readValue(row, ['TransFxdPkpPrc', 'transFxdPkpPrc'])),
       TransFxdDrpPrc: this.toInteger(this.readValue(row, ['TransFxdDrpPrc', 'transFxdDrpPrc'])),
       IsActive: this.toBoolean(this.readValue(row, ['IsActive', 'isActive']))
     });
+  }
+
+  private resolveOptionName(options: DropdownOption[], value: unknown): string | null {
+    if (value === null || value === undefined) {
+      return null;
+    }
+    const text = String(value);
+    const normalized = text.toLowerCase();
+    return options.find(option =>
+      String(option.id).toLowerCase() === normalized || option.name.toLowerCase() === normalized
+    )?.name ?? text;
   }
 
   private unwrapRows(response: unknown): ApiRecord[] {

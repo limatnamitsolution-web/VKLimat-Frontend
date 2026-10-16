@@ -14,7 +14,7 @@ export interface FinancialConfig {
   LFFeeFrom: number | null;
   LFFeeFixed: number | null;
   LFFeePerDay: number | null;
-  LFFeeDays: number | null;
+  LFFeeDays: number | null; // Serialized as LFFeeDay by the API service.
   LFFeePerMonth: number | null;
   LFFeeMonths: number | null;
   TransMode?: string | null;

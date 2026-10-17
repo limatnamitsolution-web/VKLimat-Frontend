@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
+  EventEmitter,
   HostListener,
   Input,
+  Output,
   ViewChild,
   forwardRef,
   signal,
@@ -27,7 +29,7 @@ export interface SearchableDropdownOption {
     },
   ],
   template: `
-    <div class="searchable-dropdown" [class.open]="isOpen" [class.disabled]="disabled()">
+    <div class="searchable-dropdown" [class.open]="isOpen" [class.opens-upward]="opensUpward" [class.disabled]="disabled()">
       <button
         type="button"
         class="dropdown-trigger"
@@ -54,7 +56,7 @@ export interface SearchableDropdownOption {
               (input)="filterOptions($event)"
               (keydown)="onSearchKeydown($event)">
           </div>
-          <div class="options" role="listbox">
+          <div class="options" [class.scrollable]="scrollable" role="listbox">
             @if (allowClear && value() !== null && value() !== undefined && value() !== '') {
               <button type="button" class="option clear-option" (click)="selectValue(null)">
                 {{ placeholder }}
@@ -148,6 +150,11 @@ export interface SearchableDropdownOption {
       box-shadow: var(--shadow-3);
     }
 
+    .opens-upward .dropdown-panel {
+      top: auto;
+      bottom: calc(100% + 4px);
+    }
+
     .search-box {
       position: relative;
       padding: 6px;
@@ -195,9 +202,13 @@ export interface SearchableDropdownOption {
     }
 
     .options {
-      max-height: 190px;
-      overflow-y: auto;
       padding: 4px;
+    }
+
+    .options.scrollable {
+      max-height: min(190px, 35vh);
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
 
     .option {
@@ -251,6 +262,8 @@ export class SearchableDropdownComponent implements ControlValueAccessor {
   @Input() placeholder = 'Select';
   @Input() searchPlaceholder = 'Search...';
   @Input() allowClear = true;
+  @Input() scrollable = true;
+  @Output() openChange = new EventEmitter<boolean>();
 
   @Input()
   set options(options: SearchableDropdownOption[] | null | undefined) {
@@ -266,6 +279,7 @@ export class SearchableDropdownComponent implements ControlValueAccessor {
   searchTerm = '';
   activeIndex = 0;
   isOpen = false;
+  opensUpward = false;
   disabled = signal(false);
   value = signal<number | string | null>(null);
 
@@ -303,14 +317,29 @@ export class SearchableDropdownComponent implements ControlValueAccessor {
 
   open(): void {
     this.isOpen = true;
+    this.opensUpward = false;
+    this.openChange.emit(true);
     this.searchTerm = '';
     this.applyFilter();
     this.activeIndex = Math.max(0, this.filteredOptions.findIndex(option => option.id === this.value()));
-    setTimeout(() => this.searchInput?.nativeElement.focus());
+    setTimeout(() => {
+      this.searchInput?.nativeElement.focus();
+      const root = this.elementRef.nativeElement.getBoundingClientRect();
+      const panel = this.elementRef.nativeElement.querySelector('.dropdown-panel')?.getBoundingClientRect();
+      if (!panel) {
+        return;
+      }
+
+      const spaceBelow = window.innerHeight - root.bottom;
+      const spaceAbove = root.top;
+      this.opensUpward = panel.height > spaceBelow && spaceAbove > spaceBelow;
+    });
   }
 
   close(): void {
     this.isOpen = false;
+    this.opensUpward = false;
+    this.openChange.emit(false);
     this.searchTerm = '';
     this.onTouched();
   }

@@ -24,16 +24,17 @@ export class MasterConfigsDWN {
         this.http.post(MastersConfigCommonApiEndpoints.DwnAll, {
           configuration_en: this.encryptionService.encrypt(configuration),
           branchid_en: this.encryptionService.encrypt(safebranchid)
-        }).subscribe({
-          next: response => {
-            const list = this.unwrapResponse<any[]>(response);
-            this.masterConfigDwnList.set(Array.isArray(list) ? list : []);
-          },
-          error: err => {
-            console.error('API error for masterConfigList:', err);
-            this.masterConfigDwnList.set([]); // fallback to empty array or sensible default
-          }
-        });
+          }).subscribe({
+            next: response => {
+              console.log('API response for masterConfigDWN:', response);
+              const list = this.unwrapResponse<any[]>(response);
+              this.masterConfigDwnList.set(Array.isArray(list) ? list : []);
+            },
+            error: err => {
+              console.error('API error for masterConfigList:', err);
+              this.masterConfigDwnList.set([]); // fallback to empty array or sensible default
+            }
+          });
       }
 
 }

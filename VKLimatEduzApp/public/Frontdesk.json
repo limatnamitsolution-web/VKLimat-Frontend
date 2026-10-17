@@ -443,6 +443,13 @@
         "isBranch": false
       },
       {
+        "key": "lateFineConfiguration",
+        "label": "Late Fine Configuration",
+        "icon": "fas fa-clock",
+        "route": "/MasterSettings/LateFineConfiguration",
+        "isBranch": false
+      },
+      {
         "key": "transportSetting",
         "label": "Transport Setting",
         "icon": "fas fa-bus",

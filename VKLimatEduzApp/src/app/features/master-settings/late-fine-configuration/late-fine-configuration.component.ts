@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { createFeeGridTabState } from '../../fee/fees-master/fee-grid-tab';
 import { LateFineConfigurationService } from './late-fine-configuration.service';
@@ -62,6 +63,10 @@ export class LateFineConfigurationComponent implements OnInit {
   constructor() {
     this.menuLabelService.setLabel({ key: 'Late Fine Configuration' });
 
+    this.form.controls['LFFeeTypeId'].valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(value => this.applyFeeIntervalForType(value));
+
     effect(() => {
       const dwnList = this.masterConfigsDWN.masterConfigDwnList();
       if (!Array.isArray(dwnList)) {
@@ -97,6 +102,7 @@ export class LateFineConfigurationComponent implements OnInit {
 
     this.branches.set(nextBranches);
     this.lateFeeTypes.set(nextLateFeeTypes);
+    this.applyFeeIntervalForType(this.form.controls['LFFeeTypeId'].value);
   }
 
   resolveValue(row: Record<string, unknown>, keys: string[]): string {
@@ -119,6 +125,22 @@ export class LateFineConfigurationComponent implements OnInit {
 
   private lookup(options: SearchableDropdownOption[], id: string): string {
     return String(options.find(o => String(o.id) === id)?.name ?? id);
+  }
+
+  private applyFeeIntervalForType(value: unknown): void {
+    const selectedType = this.lateFeeTypes().find(option => String(option.id) === String(value));
+    const typeName = String(selectedType?.name ?? '').toLowerCase().replace(/[\s_-]/g, '');
+    const intervalControl = this.form.controls['LFFeeInterval'];
+
+    if (typeName.includes('fixed')) {
+      intervalControl.setValue(0, { emitEvent: false });
+      intervalControl.disable({ emitEvent: false });
+    } else if (typeName.includes('permonth') || typeName.includes('perday')) {
+      intervalControl.setValue(1, { emitEvent: false });
+      intervalControl.disable({ emitEvent: false });
+    } else {
+      intervalControl.enable({ emitEvent: false });
+    }
   }
 
   private pick(row: Record<string, unknown>, keys: string[]): unknown {
@@ -169,7 +191,8 @@ export class LateFineConfigurationComponent implements OnInit {
       LFFeeInterval: text(['LFFeeInterval', 'lfFeeInterval']),
       LFFeeAmount: text(['LFFeeAmount', 'lfFeeAmount']),
       IsActive: isActive === null ? true : !!isActive
-    });
+    }, { emitEvent: false });
+    this.applyFeeIntervalForType(this.form.controls['LFFeeTypeId'].value);
   }
 
   private buildPayload(isActiveOverride?: boolean): Record<string, unknown> {

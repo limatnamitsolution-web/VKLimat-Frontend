@@ -29,17 +29,12 @@ export const routes: Routes = [
         path: 'MasterSettings',
         children: [
           {
-            path: 'FinancialSetting',
-            loadComponent: () => import('./features/master-settings/financial-setting/financial-setting.component')
-              .then(m => m.FinancialSettingComponent)
-                        },
-                        {
-                          path: 'LateFineConfiguration',
-                          loadComponent: () => import('./features/master-settings/late-fine-configuration/late-fine-configuration.component')
-                            .then(m => m.LateFineConfigurationComponent)
-                        }
+            path: 'LateFineConfiguration',
+            loadComponent: () => import('./features/master-settings/late-fine-configuration/late-fine-configuration.component')
+              .then(m => m.LateFineConfigurationComponent)
+          }
         ]
-      },
+      }
     ]
   }
 ];

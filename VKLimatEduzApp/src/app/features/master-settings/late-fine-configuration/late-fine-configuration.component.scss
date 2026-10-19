@@ -142,6 +142,18 @@
   }
 }
 
+.form-field.checkbox-field {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+
+  input[type='checkbox'] {
+    width: auto;
+    min-width: 16px;
+    margin: 0;
+  }
+}
+
 .modal-footer {
   padding: 12px 16px;
   background: var(--surface);

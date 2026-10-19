@@ -10,6 +10,7 @@
       <th><button type="button" class="table-sort-button" (click)="sortBy('group', ['LFFeeGroup', 'lfFeeGroup'])">Fee Group <span aria-hidden="true">{{ sortIndicator('group') }}</span></button></th>
       <th><button type="button" class="table-sort-button" (click)="sortBy('type', ['LFFeeTypeId', 'lfFeeTypeId'])">Late Fee Type <span aria-hidden="true">{{ sortIndicator('type') }}</span></button></th>
       <th><button type="button" class="table-sort-button" (click)="sortBy('interval', ['LFFeeInterval', 'lfFeeInterval'])">Interval <span aria-hidden="true">{{ sortIndicator('interval') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('feeFrom', ['LFFeeFrom', 'lfFeeFrom'])">Fee From <span aria-hidden="true">{{ sortIndicator('feeFrom') }}</span></button></th>
       <th><button type="button" class="table-sort-button" (click)="sortBy('amount', ['LFFeeAmount', 'lfFeeAmount'])">Amount <span aria-hidden="true">{{ sortIndicator('amount') }}</span></button></th>
       <th><button type="button" class="table-sort-button" (click)="sortBy('status', ['IsActive', 'isActive'])">Status <span aria-hidden="true">{{ sortIndicator('status') }}</span></button></th>
       <th>Actions</th>
@@ -22,6 +23,7 @@
         <td>{{ resolveValue(row, ['LFFeeGroup', 'lfFeeGroup']) }}</td>
         <td>{{ typeName(row) }}</td>
         <td>{{ resolveValue(row, ['LFFeeInterval', 'lfFeeInterval']) }}</td>
+        <td>{{ resolveValue(row, ['LFFeeFrom', 'lfFeeFrom']) }}</td>
         <td>{{ resolveValue(row, ['LFFeeAmount', 'lfFeeAmount']) }}</td>
         <td>{{ resolveValue(row, ['IsActive', 'isActive']) }}</td>
         <td>
@@ -36,7 +38,7 @@
         </td>
       </tr>
     } @empty {
-      <tr><td colspan="7">No Late Fine Configuration found.</td></tr>
+      <tr><td colspan="8">No Late Fine Configuration found.</td></tr>
     }
   </tbody>
 </table>
@@ -88,8 +90,9 @@
               <app-searchable-dropdown id="lfType" formControlName="LFFeeTypeId" [options]="lateFeeTypes()" (openChange)="dropdownOpen.set($event)" placeholder="Select Late Fee Type"></app-searchable-dropdown>
             </div>
             <div class="form-field"><label for="lfInterval">Fee Interval</label><input id="lfInterval" type="number" min="0" formControlName="LFFeeInterval"></div>
+            <div class="form-field"><label for="lfFrom">Fee From</label><input id="lfFrom" type="number" step="1" formControlName="LFFeeFrom"></div>
             <div class="form-field"><label for="lfAmount">Fee Amount</label><input id="lfAmount" type="number" min="0" formControlName="LFFeeAmount"></div>
-            <div class="form-field"><label for="lfActive">Is Active</label><select id="lfActive" formControlName="IsActive"><option [ngValue]="true">Yes</option><option [ngValue]="false">No</option></select></div>
+            <div class="form-field checkbox-field"><label for="lfActive">Is Active</label><input id="lfActive" type="checkbox" formControlName="IsActive"></div>
           </div>
         </div>
 

@@ -56,6 +56,7 @@ export class LateFineConfigurationComponent implements OnInit {
     LFFeeGroup: [''],
     LFFeeTypeId: [''],
     LFFeeInterval: [''],
+    LFFeeFrom: [''],
     LFFeeAmount: [''],
     IsActive: [true]
   });
@@ -131,6 +132,7 @@ export class LateFineConfigurationComponent implements OnInit {
     const selectedType = this.lateFeeTypes().find(option => String(option.id) === String(value));
     const typeName = String(selectedType?.name ?? '').toLowerCase().replace(/[\s_-]/g, '');
     const intervalControl = this.form.controls['LFFeeInterval'];
+    const feeFromControl = this.form.controls['LFFeeFrom'];
 
     if (typeName.includes('fixed')) {
       intervalControl.setValue(0, { emitEvent: false });
@@ -140,6 +142,13 @@ export class LateFineConfigurationComponent implements OnInit {
       intervalControl.disable({ emitEvent: false });
     } else {
       intervalControl.enable({ emitEvent: false });
+    }
+
+    if (typeName.includes('perday')) {
+      feeFromControl.setValue(0, { emitEvent: false });
+      feeFromControl.disable({ emitEvent: false });
+    } else {
+      feeFromControl.enable({ emitEvent: false });
     }
   }
 
@@ -189,6 +198,7 @@ export class LateFineConfigurationComponent implements OnInit {
       LFFeeGroup: text(['LFFeeGroup', 'lfFeeGroup']),
       LFFeeTypeId: number(['LFFeeTypeId', 'lfFeeTypeId']),
       LFFeeInterval: text(['LFFeeInterval', 'lfFeeInterval']),
+      LFFeeFrom: number(['LFFeeFrom', 'lfFeeFrom']),
       LFFeeAmount: text(['LFFeeAmount', 'lfFeeAmount']),
       IsActive: isActive === null ? true : !!isActive
     }, { emitEvent: false });
@@ -206,6 +216,7 @@ export class LateFineConfigurationComponent implements OnInit {
       LFFeeGroup: v.LFFeeGroup || null,
       LFFeeTypeId: this.toNumber(v.LFFeeTypeId),
       LFFeeInterval: this.toNumber(v.LFFeeInterval),
+      LFFeeFrom: this.toNumber(v.LFFeeFrom),
       LFFeeAmount: this.toNumber(v.LFFeeAmount),
       IsActive: isActiveOverride ?? !!v.IsActive
     };
@@ -234,6 +245,7 @@ export class LateFineConfigurationComponent implements OnInit {
       LFFeeGroup: '',
       LFFeeTypeId: '',
       LFFeeInterval: '',
+      LFFeeFrom: '',
       LFFeeAmount: '',
       IsActive: true
     });

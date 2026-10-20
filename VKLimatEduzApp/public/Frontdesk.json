@@ -354,6 +354,13 @@
         "isBranch": false
       },
       {
+        "key": "feesTransportMaster",
+        "label": "Transport Fees Configuration",
+        "icon": "fas fa-bus",
+        "route": "/fees/transport-fees-master",
+        "isBranch": false
+      },
+      {
         "key": "feesLateFine",
         "label": "Late Fine",
         "icon": "fas fa-clock",

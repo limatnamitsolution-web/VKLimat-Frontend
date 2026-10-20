@@ -16,6 +16,10 @@ export const FeeRoutes: Routes = [
       {
         path: 'fees-master',
         loadComponent: () => import('./fees-master/fees-master-component').then(c => c.FeesMasterComponent)
+      },
+      {
+        path: 'transport-fees-master',
+        loadComponent: () => import('./trans-fees-master/trans-fees-master-component').then(c => c.TransFeesMasterComponent)
       }
       // Add other fee routes
     ]

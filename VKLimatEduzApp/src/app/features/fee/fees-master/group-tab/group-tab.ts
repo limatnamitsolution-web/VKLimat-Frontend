@@ -9,6 +9,7 @@ import { MasterConfig } from '../../../../features/mastersConfig/models/MasterCo
 import { EncryptionService } from '../../../../shared/services/encryption.service';
 import { MessageService } from '../../../../shared/services/message.service';
 import { MenuLabelService } from '../../../../shared/services/menu-label.service';
+import { AppStateService } from '../../../../core/services/app-state.service';
 
 @Component({
   selector: 'app-group-tab',
@@ -18,12 +19,13 @@ import { MenuLabelService } from '../../../../shared/services/menu-label.service
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GroupTab {
-  private readonly configurationKey = 'feeGroup';
+  private readonly configurationKey = 'FeeGroup';
   public readonly state = createFeeGridTabState<MasterConfig>();
   private readonly mastersConfig = inject(MastersConfig);
   private readonly encryptionService = inject(EncryptionService);
   private readonly messageService = inject(MessageService);
   private readonly menuLabelService = inject(MenuLabelService);
+  private readonly appState = inject(AppStateService);
   readonly editModel = signal<Record<string, any>>(this.createBlankModel());
   readonly searchTerm = this.state.searchTerm;
   readonly showView = this.state.showView;
@@ -68,9 +70,15 @@ export class GroupTab {
 
   onSaved(model: Record<string, any>) {
     if (!model) return;
+    const branchId = this.appState.userState().branchid;
+    if (branchId === null) {
+      this.messageService.show('Branch is not set. Please sign in and select a branch.', 'error');
+      return;
+    }
+
     const payload: Record<string, any> = {
       id: model['id'] ?? 0,
-      branchId: model['branchId'] ?? 0,
+      branchId,
       configValue: model['name'] ?? model['configValue'] ?? '',
       configKey: model['code'] ?? model['configKey'] ?? '',
       description: String(model['description'] ?? ''),

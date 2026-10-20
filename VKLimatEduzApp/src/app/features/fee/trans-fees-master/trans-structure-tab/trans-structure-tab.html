@@ -1,0 +1,152 @@
+<div class="toolbar-container">
+  <input type="text" [value]="searchTerm()" (input)="updateSearch($event)" placeholder="Search all fields..." class="input-control input-search">
+  <div class="btn-group"><button type="button" (click)="openAdd()" class="btn-primary btn-sm">Add</button><button type="button" (click)="resetSearch()" class="btn-reset btn-sm">Reset</button></div>
+</div>
+<div class="table-responsive">
+<table class="data-table">
+  <thead>
+    <tr>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('transFeePlan', ['id', 'Id', 'transFeePlanId', 'TransFeePlanId'])" [attr.aria-label]="'Sort fee plan ' + sortIndicator('transFeePlan')">Fee plan <span aria-hidden="true">{{ sortIndicator('transFeePlan') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('year', ['fy', 'TransFY'])" [attr.aria-label]="'Sort year ' + sortIndicator('year')">Year <span aria-hidden="true">{{ sortIndicator('year') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('feeGroup', ['feeGroup', 'TransFeeGroup'])" [attr.aria-label]="'Sort fee group ' + sortIndicator('feeGroup')">Fee Group <span aria-hidden="true">{{ sortIndicator('feeGroup') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('transFeeComponent', ['transFeeComp', 'TransFeeComp'])" [attr.aria-label]="'Sort fee component ' + sortIndicator('transFeeComponent')">Fee component <span aria-hidden="true">{{ sortIndicator('transFeeComponent') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('fees', ['fees', 'TransFees'])" [attr.aria-label]="'Sort fee ' + sortIndicator('fees')">Fee <span aria-hidden="true">{{ sortIndicator('fees') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('feeMonths', ['TransFeeMonthIds', 'feeMonthIds'])" [attr.aria-label]="'Sort fee months ' + sortIndicator('feeMonths')">Fee Months <span aria-hidden="true">{{ sortIndicator('feeMonths') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('status', ['status', 'Status', 'isActive', 'IsActive'])" [attr.aria-label]="'Sort status ' + sortIndicator('status')">Status <span aria-hidden="true">{{ sortIndicator('status') }}</span></button></th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (row of paginatedRows(); track row) {
+      <tr>
+        <td>{{ resolveStringValue(row, ['id']) }}</td>
+        <td>{{ resolveStringValue(row, ['fy', 'TransFY']) }}</td>
+        <td>{{ resolveStringValue(row, ['feeGroup', 'TransFeeGroup']) }}</td>
+        <td>{{ resolveStringValue(row, ['transFeeComp', 'TransFeeComp']) }}</td>
+        <td>{{ resolveStringValue(row, ['fees', 'TransFees']) }}</td>
+        <td>{{ resolveStringValue(row, ['TransFeeMonthIds', 'feeMonthIds']) }}</td>
+        
+        <td>{{ resolveStatusText(row) }}</td>
+        <td>
+          <div class="action-buttons">
+            <button type="button" class="btn-action btn-modify" (click)="onEdit(row)" title="Modify" aria-label="Edit fee plan">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button type="button" class="btn-action btn-delete" (click)="onDelete(row)" title="Delete" aria-label="Delete fee plan">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    } @empty {
+      <tr><td colspan="7">No feeplans found.</td></tr>
+    }
+  </tbody>
+</table>
+</div>
+@if (filteredRows().length > 0) {
+  <div class="grid-footer">
+    <div class="pagination-info">
+      Showing {{ startEntry() }} to {{ endEntry() }} of {{ filteredRows().length }} entries
+    </div>
+    <div class="pagination-controls">
+      <button type="button" class="btn-pagination" (click)="previousPage()" [disabled]="currentPage() === 1" aria-label="Previous page">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+      <button type="button" class="btn-pagination" (click)="nextPage()" [disabled]="currentPage() === totalPages()" aria-label="Next page">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+    <div class="page-size-selector">
+      <label for="fee-plan-page-size">Show:</label>
+      <select id="fee-plan-page-size" [value]="pageSize()" (change)="changePageSize($event)">
+        @for (option of pageSizeOptions(); track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </div>
+  </div>
+}
+@if (showView()) {
+  <div class="modal-overlay" (click)="cancelModel()">
+    <div class="modal-content modern-modal small-modal" role="dialog" aria-modal="true" aria-label="Feeplan View" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="header-content">
+          <h2>Feeplan View</h2>
+          <p>Enter fee plan details.</p>
+        </div>
+        <button type="button" class="close-btn" aria-label="Close" (click)="cancelModel()">&times;</button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="saveModel()" class="form-layout">
+        <div class="modal-body">
+          <div class="grid-2">
+            <div class="form-field">
+              <label for="fpBranch">Branch</label>
+              <app-searchable-dropdown
+                id="fpBranch"
+                formControlName="TransBranchId"
+                [options]="branches()"
+                placeholder="Select Branch">
+              </app-searchable-dropdown>
+            </div>
+
+            <div class="form-field">
+              <label for="fpGroup">Fee Group</label>
+              <app-searchable-dropdown
+                id="fpGroup"
+                formControlName="TransFeeGroupId"
+                [options]="transFeeGroups()"
+                placeholder="Select Fee Group">
+              </app-searchable-dropdown>
+            </div>
+            <div class="form-field">
+              <label for="fpComp">Fee Component</label>
+              <app-searchable-dropdown
+                id="fpComp"
+                formControlName="TransFeeCompId"
+                [options]="transFeeComponents()"
+                placeholder="Select Fee Component">
+              </app-searchable-dropdown>
+            </div>
+
+            <div class="form-field"><label for="fpTransFees">TransFees</label><input id="fpTransFees" type="number" formControlName="TransFees"></div>
+
+            <div class="form-field"><label for="fpTaken">Fee Taken</label><select id="fpTaken" formControlName="TransFeeCompTaken"><option value="New">New Admission </option><option value="Both">Both Admission</option><option value="Old">Old Admission</option></select></div>
+            <div class="form-field"><label for="fpOpt">Fee Optional</label><select id="fpOpt" formControlName="TransFeeCompOpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+
+            <div class="form-field"><label for="fpRefund">Fee Refundable</label><select id="fpRefund" formControlName="TransFeeCompRefundable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fpDisp">Display Fee Receipt</label><select id="fpDisp" formControlName="TransDispFeeRecpt"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+
+            <div class="form-field"><label for="fpEditable">Fee Editable</label><select id="fpEditable" formControlName="TransFeeCompEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="form-field"><label for="fpConcEditable">Fee Concession Editable</label><select id="fpConcEditable" formControlName="TransFeeConcEditable"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+
+            <div class="form-field"><label for="fpOrder">Order</label><input id="fpOrder" type="number" formControlName="OrderId"></div>
+            <div class="form-field">
+              <label for="fpActive">Is Active</label>
+              <input id="fpActive" type="checkbox" formControlName="IsActive">
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="section-title">Month</h3>
+            <div class="monthIds-grid" formArrayName="months">
+              @for (month of monthsList; track $index) {
+                <div class="month-item">
+                  <label [for]="'fp-month-'+$index">{{ month.label }}</label>
+                  <input type="checkbox" [formControlName]="$index" [id]="'fp-month-'+$index">
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-text" (click)="cancelModel()">Cancel</button>
+          <button type="submit" class="btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

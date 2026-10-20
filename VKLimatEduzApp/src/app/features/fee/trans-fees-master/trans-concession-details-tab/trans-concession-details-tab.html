@@ -1,0 +1,165 @@
+<div class="toolbar-container">
+  <input type="text" [value]="searchTerm()" (input)="updateSearch($event)" placeholder="Search all fields..." class="input-control input-search">
+  <div class="btn-group">
+    <button type="button" (click)="openAdd()" class="btn-primary btn-sm">Add</button>
+    <button type="button" (click)="resetSearch()" class="btn-reset btn-sm">Reset</button>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('branch', ['branchName', 'BranchName', 'branch', 'Branch'])" [attr.aria-label]="'Sort branch ' + sortIndicator('branch')">Branch <span aria-hidden="true">{{ sortIndicator('branch') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('fy', ['TransFY', 'fy'])" [attr.aria-label]="'Sort financial year ' + sortIndicator('fy')">TransFY <span aria-hidden="true">{{ sortIndicator('fy') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('feeGroup', ['feeConcGroup', 'TransFeeConcGroup', 'feeGroup', 'TransFeeGroup'])" [attr.aria-label]="'Sort fee group ' + sortIndicator('feeGroup')">Fee Group <span aria-hidden="true">{{ sortIndicator('feeGroup') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('transFeeComponent', ['transFeeComp', 'TransFeeComp'])" [attr.aria-label]="'Sort fee component ' + sortIndicator('transFeeComponent')">Fee Component <span aria-hidden="true">{{ sortIndicator('transFeeComponent') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('fixedAmount', ['feeConcFxdAmt', 'TransFeeConcFxdAmt', 'fixedAmount'])" [attr.aria-label]="'Sort fixed amount ' + sortIndicator('fixedAmount')">Fixed Amount <span aria-hidden="true">{{ sortIndicator('fixedAmount') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('percentage', ['feeConcPer', 'TransFeeConcPer', 'percentage'])" [attr.aria-label]="'Sort percentage ' + sortIndicator('percentage')">Percentage <span aria-hidden="true">{{ sortIndicator('percentage') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('editable', ['feeConcEditable', 'TransFeeConcEditable'])" [attr.aria-label]="'Sort editable ' + sortIndicator('editable')">Editable <span aria-hidden="true">{{ sortIndicator('editable') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('order', ['orderId', 'OrderId'])" [attr.aria-label]="'Sort order ' + sortIndicator('order')">Order <span aria-hidden="true">{{ sortIndicator('order') }}</span></button></th>
+        <th><button type="button" class="table-sort-button" (click)="sortBy('status', ['status', 'Status', 'isActive', 'IsActive'])" [attr.aria-label]="'Sort status ' + sortIndicator('status')">Status <span aria-hidden="true">{{ sortIndicator('status') }}</span></button></th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of paginatedRows(); track row) {
+        <tr>
+          <td>{{ resolveValue(row, ['branchName', 'BranchName', 'branch', 'Branch']) }}</td>
+          <td>{{ resolveValue(row, ['TransFY', 'fy']) }}</td>
+          <td>{{ resolveValue(row, ['feeConcGroup', 'TransFeeConcGroup', 'feeGroup', 'TransFeeGroup']) }}</td>
+          <td>{{ resolveValue(row, ['transFeeComp', 'TransFeeComp']) }}</td>
+          <td>{{ resolveValue(row, ['feeConcFxdAmt', 'TransFeeConcFxdAmt', 'fixedAmount']) }}</td>
+          <td>{{ resolveValue(row, ['feeConcPer', 'TransFeeConcPer', 'percentage']) }}</td>
+          <td>{{ resolveValue(row, ['feeConcEditable', 'TransFeeConcEditable']) }}</td>
+          <td>{{ resolveValue(row, ['orderId', 'OrderId']) }}</td>
+          <td>{{ resolveStatusText(row) }}</td>
+          <td>
+            <div class="action-buttons">
+              <button type="button" class="btn-action btn-modify" (click)="onEdit(row)" title="Modify" aria-label="Edit concession details">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button type="button" class="btn-action btn-delete" (click)="onDelete(row)" title="Delete" aria-label="Delete concession details">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="10">No concession details found.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>
+  @if (filteredRows().length > 0) {
+    <div class="grid-footer">
+      <div class="pagination-info">
+        Showing {{ startEntry() }} to {{ endEntry() }} of {{ filteredRows().length }} entries
+      </div>
+      <div class="pagination-controls">
+        <button type="button" class="btn-pagination" (click)="previousPage()" [disabled]="currentPage() === 1" aria-label="Previous page">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+        <button type="button" class="btn-pagination" (click)="nextPage()" [disabled]="currentPage() === totalPages()" aria-label="Next page">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="page-size-selector">
+        <label for="concession-details-page-size">Show:</label>
+        <select id="concession-details-page-size" [value]="pageSize()" (change)="changePageSize($event)">
+          @for (option of pageSizeOptions(); track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  }
+
+  @if (showView()) {
+  <div class="modal-overlay" (click)="cancelModel()">
+    <div class="modal-content modern-modal small-modal" role="dialog" aria-modal="true" aria-label="Concession Details View" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="header-content">
+          <h2>Concession Details View</h2>
+          <p>Enter concession detail settings.</p>
+        </div>
+        <button type="button" class="close-btn" aria-label="Close" (click)="cancelModel()">&times;</button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="saveModel()" class="form-layout">
+        <div class="modal-body">
+          <div class="grid-2">
+            <div class="form-field">
+              <label for="cdBranch">Branch</label>
+              <select id="cdBranch" formControlName="TransBranchId">
+                <option value="">Select Branch</option>
+                @for (option of branches(); track option['id']) {
+                  <option [value]="option['id']">{{ option['name'] }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="cdTransFY">TransFY</label>
+              <input id="cdTransFY" type="text" formControlName="TransFY">
+            </div>
+
+            <div class="form-field">
+              <label for="cdGroup">Fee Group</label>
+              <select id="cdGroup" formControlName="TransFeeConcGroupId">
+                <option value="">Select Fee Group</option>
+                @for (option of transFeeGroups(); track option['id']) {
+                  <option [value]="option['id']">{{ option['name'] }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="cdComp">Fee Component</label>
+              <select id="cdComp" formControlName="TransFeeCompId">
+                <option value="">Select Fee Component</option>
+                @for (option of transFeeComponents(); track option['id']) {
+                  <option [value]="option['id']">{{ option['name'] }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="cdFixed">Fixed Amount</label>
+              <input id="cdFixed" type="number" formControlName="TransFeeConcFxdAmt">
+            </div>
+
+            <div class="form-field">
+              <label for="cdPer">Percentage</label>
+              <input id="cdPer" type="number" formControlName="TransFeeConcPer">
+            </div>
+
+            <div class="form-field">
+              <label for="cdEditable">Editable</label>
+              <select id="cdEditable" formControlName="TransFeeConcEditable">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="cdOrder">Order</label>
+              <input id="cdOrder" type="number" formControlName="OrderId">
+            </div>
+
+            <div class="form-field">
+              <label for="cdActive">Is Active</label>
+              <input id="cdActive" type="checkbox" formControlName="IsActive">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-text" (click)="cancelModel()">Cancel</button>
+          <button type="submit" class="btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

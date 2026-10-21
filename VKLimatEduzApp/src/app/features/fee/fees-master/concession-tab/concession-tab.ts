@@ -51,7 +51,7 @@ export class ConcessionTab {
           code: selected.configKey ?? selected['code'] ?? '',
           description: selected['description'] ?? '',
           name: selected.configValue ?? selected['name'] ?? '',
-          displayOrder: selected.sortOrder ?? selected.displayOrder ?? 0,
+          sortOrder: selected.sortOrder?? 0,
           status: selected.isActive ? 'Active' : 'Inactive'
         };
         this.editModel.set(mapped);
@@ -127,7 +127,7 @@ export class ConcessionTab {
       code: '',
       name: '',
       description: '',
-      displayOrder: 0,
+      sortOrder: 0,
       status: 'Active'
     };
   }

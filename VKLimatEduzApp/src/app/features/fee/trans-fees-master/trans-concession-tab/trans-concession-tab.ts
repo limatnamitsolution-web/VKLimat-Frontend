@@ -18,7 +18,7 @@ import { FormBuilder } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TransConcessionTab {
-  private readonly configurationKey = 'transConcCategory';
+  private readonly configurationKey = 'TransConcCategory';
   public readonly state = createTransFeeGridTabState<MasterConfig>();
   private readonly menuLabelService = inject(MenuLabelService);
   private readonly mastersConfig = inject(MastersConfig);
@@ -47,11 +47,11 @@ export class TransConcessionTab {
       if (selected) {    
         const mapped: Record<string, any> = {
           id: selected.id ?? 0,
-          branchId: selected.branchId ?? selected.branchId,
+          branchId: 0,
           code: selected.configKey ?? selected['code'] ?? '',
           description: selected['description'] ?? '',
           name: selected.configValue ?? selected['name'] ?? '',
-          displayOrder: selected.sortOrder ?? selected.displayOrder ?? 0,
+          sortOrder: selected.sortOrder ?? 0,
           status: selected.isActive ? 'Active' : 'Inactive'
         };
         this.editModel.set(mapped);
@@ -80,10 +80,11 @@ export class TransConcessionTab {
   }
 
   onSaved(model: Record<string, any>) {
+    console.log('onSaved called with model:', model);
     if (!model) return;
     const payload: any = {
       id: model['id'] ?? 0,
-      branchId: model['branchId'] ?? 0,
+      branchId: 0,
       configValue: model['name'] ?? model['configValue'],
       configKey: model['code'] ?? model['configKey'],
       description: String(model['description'] ?? ''),
@@ -123,11 +124,11 @@ export class TransConcessionTab {
   private createBlankModel(): Record<string, any> {
     return {
       id: 0,
-      branchId: '',
+      branchId: 0,
       code: '',
       name: '',
       description: '',
-      displayOrder: 0,
+      sortOrder: 0,
       status: 'Active'
     };
   }

@@ -4,7 +4,7 @@
     <div class="form-field"><label for="concessionCode">Code</label><input id="concessionCode" name="code" [(ngModel)]="model['code']"></div>
     <div class="form-field"><label for="concessionName">Concession Name</label><input id="concessionName" name="name" [(ngModel)]="model['name']"></div>
     <div class="form-field"><label for="concessionTransFeeComps">Concession description</label><input id="concessionTransFeeComps" name="transFeeComps" [(ngModel)]="model['description']"></div>
-    <div class="form-field"><label for="concessionOrder">Display Order</label><input id="concessionOrder" name="displayOrder" type="number" [(ngModel)]="model['displayOrder']"></div>
+    <div class="form-field"><label for="concessionOrder">Sort Order</label><input id="concessionOrder" name="sortOrder" type="number" [(ngModel)]="model['sortOrder']"></div>
     <div class="form-field"><label for="concessionStatus">Status</label><select id="concessionStatus" name="status" [(ngModel)]="model['status']"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
   </div></div><footer class="modal-footer"><button type="button" class="btn-text" (click)="close.emit()">Cancel</button><button type="submit" class="btn-primary">Save</button></footer></form>
 </section></div>

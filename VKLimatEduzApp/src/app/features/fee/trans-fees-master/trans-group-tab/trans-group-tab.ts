@@ -19,7 +19,7 @@ import { AppStateService } from '../../../../core/services/app-state.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TransGroupTab {
-  private readonly configurationKey = 'transFeeGroup';
+  private readonly configurationKey = 'TransFeeGroup';
   public readonly state = createTransFeeGridTabState<MasterConfig>();
   private readonly mastersConfig = inject(MastersConfig);
   private readonly encryptionService = inject(EncryptionService);

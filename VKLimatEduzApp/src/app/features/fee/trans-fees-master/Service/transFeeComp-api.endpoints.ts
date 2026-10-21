@@ -1,6 +1,6 @@
 import { environment } from '../../../../../environments/environment';
 
-const transFeeCompBase = `${environment.apiUrl}FeeMaster/TransFeeComp`;
+const transFeeCompBase = `${environment.apiUrl}FeeMaster/TransFeeComponent`;
 
 export const TransFeeCompApiEndpoints = {
   getAll: `${transFeeCompBase}/GetAll`,

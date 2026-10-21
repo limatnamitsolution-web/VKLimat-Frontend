@@ -59,7 +59,7 @@ export class TransFeeplanTab implements OnInit {
   ];
 
   readonly form: FormGroup = this.fb.group({
-    TransBranchId: [''],
+    BranchId: [''],
     TransFeeGroupId: [''],
     TransFeeCompId: [''],
     TransFees: [0],
@@ -83,6 +83,7 @@ export class TransFeeplanTab implements OnInit {
 
     effect(() => {
       const dwnList = this.masterConfigsDWN.masterConfigDwnList();
+      console.log("masterConfigDwnList",dwnList)
       if (!Array.isArray(dwnList)) {
         return;
       }
@@ -91,7 +92,7 @@ export class TransFeeplanTab implements OnInit {
     });
 
     effect(() => {
-      const list = this.transFeePlanService.transFeePlanList();      
+      const list = this.transFeePlanService.transFeePlanList();   
       this.rows.set(Array.isArray(list) ? [...list] : []);
       this.state.resetPagination();
       console.log('Updated rows:', this.rows());
@@ -106,10 +107,10 @@ export class TransFeeplanTab implements OnInit {
       this.activeRow = selected;
       this.editingId = this.resolveId(selected);
       this.form.patchValue({
-        TransBranchId: this.resolveNumberValue(selected, ['TransBranchId', 'branchId', 'branch_id']),
-        TransFeeGroupId: this.resolveNumberValue(selected, ['TransFeeGroupId', 'feeGroupId', 'fee_group_id']),
+        BranchId: this.resolveNumberValue(selected, ['BranchId', 'branchId', 'branch_id']),
+        TransFeeGroupId: this.resolveNumberValue(selected, ['transFeeGroupId', 'feeGroupId', 'fee_group_id']),
         TransFeeCompId: this.resolveNumberValue(selected, ['TransFeeCompId', 'transFeeCompId', 'fee_comp_id']),
-        TransFees: this.resolveNumberValue(selected, ['TransFees', 'fees']),
+        TransFees: this.resolveNumberValue(selected, ['transFees', 'fees']),
         TransFeeCompTaken: this.resolveStringValue(selected, ['TransFeeCompTaken', 'transFeeCompTaken']) ?? 'No',
         TransFeeCompOpt: this.resolveStringValue(selected, ['TransFeeCompOpt', 'transFeeCompOpt']) ?? 'No',
         TransFeeCompRefundable: this.resolveStringValue(selected, ['TransFeeCompRefundable', 'transFeeCompRefundable']) ?? 'No',
@@ -119,7 +120,7 @@ export class TransFeeplanTab implements OnInit {
         OrderId: this.resolveNumberValue(selected, ['OrderId', 'orderId']),
         IsActive: this.resolveIsActive(selected)
       });
-      this.patchMonthsFromValue(selected['feeMonthIds'] ?? selected['TransFeeMonthId'] ?? selected['feeMonthId']);
+      this.patchMonthsFromValue(selected['transFeeMonthIds'] ?? selected['TransFeeMonthId'] ?? selected['feeMonthId']);
       this.state.openAddView();
       this.transFeePlanService.transFeePlan.set(null);
     });
@@ -131,6 +132,7 @@ export class TransFeeplanTab implements OnInit {
   }
 
   private bindMasterDropdowns(rawMasterItems: Record<string, unknown>[]): void {
+    console.log('Raw master items:', rawMasterItems);
     const nextBranches: SearchableDropdownOption[] = [];
     const nextTransFeeGroups: SearchableDropdownOption[] = [];
     const nextTransFeeComponents: SearchableDropdownOption[] = [];
@@ -160,7 +162,7 @@ export class TransFeeplanTab implements OnInit {
   }
 
   private resolveId(row: Record<string, unknown>): number | null {
-    const candidate = row['id'] ?? row['Id'] ?? row['transFeePlanId'] ?? row['TransFeePlanId'];
+    const candidate = row['id'] ?? row['Id'];
     const numeric = typeof candidate === 'string' ? Number(candidate) : candidate;
     return typeof numeric === 'number' && Number.isFinite(numeric) && numeric > 0 ? numeric : null;
   }
@@ -230,7 +232,7 @@ export class TransFeeplanTab implements OnInit {
     this.editingId = null;
     this.activeRow = null;
     this.form.reset({
-      TransBranchId: '',
+      BranchId: '',
       TransFeeGroupId: '',
       TransFeeCompId: '',
       TransFees: 0,
@@ -259,16 +261,16 @@ export class TransFeeplanTab implements OnInit {
       .map((selected, index) => (selected ? this.monthsList[index].monthId : null))
       .filter((id): id is number => id !== null);
     const feeMonthIdsValue = feeMonthIds.join(',');
-    const branchId = this.parseNumberOrNull(rest['TransBranchId']);
+    const branchId = this.parseNumberOrNull(rest['BranchId']);
     const feeGroupId = this.parseNumberOrNull(rest['TransFeeGroupId']);
     const transFeeCompId = this.parseNumberOrNull(rest['TransFeeCompId']);
     const fees = this.parseNumberOrNull(rest['TransFees']);
     const orderId = this.parseNumberOrNull(rest['OrderId']);
     const isActive = Boolean(rest['IsActive']);
     const request: Record<string, unknown> = {
-      TransFeePlanId: this.editingId ?? this.resolveId(this.activeRow ?? {}) ?? undefined,
+      Id: this.editingId ?? this.resolveId(this.activeRow ?? {}) ?? undefined,
       TransFY: '',
-      TransBranchId: branchId,
+      BranchId: branchId,
       TransFeeGroupId: feeGroupId,
       TransFeeCompId: transFeeCompId,
       TransFees: fees,
@@ -307,25 +309,25 @@ export class TransFeeplanTab implements OnInit {
     return;
     }
 
-    const branchId = this.parseNumberOrNull(row['branchId'] ?? row['TransBranchId']);
-    const feeGroupId = this.parseNumberOrNull(row['feeGroupId'] ?? row['TransFeeGroupId']);
+    const branchId = this.parseNumberOrNull(row['branchId'] ?? row['BranchId']);
+    const feeGroupId = this.parseNumberOrNull(row['transFeeGroupId'] ?? row['TransFeeGroupId']);
     const transFeeCompId = this.parseNumberOrNull(row['transFeeCompId'] ?? row['TransFeeCompId']);
-    const fees = this.parseNumberOrNull(row['fees'] ?? row['TransFees']);
+    const fees = this.parseNumberOrNull(row['transFees'] ?? row['TransFees']);
     const orderId = this.parseNumberOrNull(row['orderId'] ?? row['OrderId']);
-    const feeMonthIdsValue = String(row['feeMonthIds'] ?? row['TransFeeMonthIds'] ?? '');
+    const feeMonthIdsValue = String(row['transFeeMonthIds'] ?? row['TransFeeMonthIds'] ?? '');
     const payload: Record<string, unknown> = {
-    TransFeePlanId: id,
+    Id: id,
     TransFY: String(row['fy'] ?? row['TransFY'] ?? ''),
-    TransBranchId: branchId,
+    BranchId: branchId,
     TransFeeGroupId: feeGroupId,
     TransFeeCompId: transFeeCompId,
     TransFees: fees,
     TransFeeCompTaken: String(row['transFeeCompTaken'] ?? row['TransFeeCompTaken'] ?? 'No'),
     TransFeeCompOpt: String(row['transFeeCompOpt'] ?? row['TransFeeCompOpt'] ?? 'No'),
     TransFeeCompRefundable: String(row['transFeeCompRefundable'] ?? row['TransFeeCompRefundable'] ?? 'No'),
-    TransDispFeeRecpt: String(row['dispFeeRecpt'] ?? row['TransDispFeeRecpt'] ?? 'No'),
+    TransDispFeeRecpt: String(row['transDispFeeRecpt'] ?? row['TransDispFeeRecpt'] ?? 'No'),
     TransFeeCompEditable: String(row['transFeeCompEditable'] ?? row['TransFeeCompEditable'] ?? 'No'),
-    TransFeeConcEditable: String(row['feeConcEditable'] ?? row['TransFeeConcEditable'] ?? 'No'),
+    TransFeeConcEditable: String(row['transFeeConcEditable'] ?? row['TransFeeConcEditable'] ?? 'No'),
     OrderId: orderId,
     IsActive: false,
     TransFeeMonthId: this.parseNumberOrNull(row['feeMonthId'] ?? row['TransFeeMonthId']),

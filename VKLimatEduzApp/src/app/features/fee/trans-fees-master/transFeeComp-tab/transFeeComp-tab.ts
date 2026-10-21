@@ -49,7 +49,7 @@ export class TransFeeCompTab implements OnInit {
   readonly closeView = this.state.closeView;
 
   readonly form: FormGroup = this.fb.group({
-    TransBranchId: [''],
+    BranchId: [''],
     TransFeeCompCode: [''],
     TransFeeComp: [''],
     TransFeeCompTaken: ['No'],
@@ -165,8 +165,8 @@ export class TransFeeCompTab implements OnInit {
 
   private patchFormFromRow(row: Record<string, unknown>): void {
     this.form.patchValue({
-      TransBranchId: this.resolveDropdownId(
-        row['TransBranchId'] ?? row['branchId'] ?? row['branch_id'] ?? row['branchId_en']
+      BranchId: this.resolveDropdownId(
+        row['BranchId'] ?? row['branchId'] ?? row['branch_id'] ?? row['branchId_en']
       ) ?? '',
       TransFeeCompCode: String(row['TransFeeCompCode'] ?? row['transFeeCompCode'] ?? row['code'] ?? ''),
       TransFeeComp: String(row['TransFeeComp'] ?? row['transFeeComp'] ?? row['name'] ?? ''),
@@ -187,7 +187,7 @@ export class TransFeeCompTab implements OnInit {
 
     return {
       ...formValue,
-      TransFeeCompId: currentId ?? undefined,
+      id: currentId ?? undefined,
       IsActive: currentStatus === 'Active'
     };
   }
@@ -211,7 +211,7 @@ export class TransFeeCompTab implements OnInit {
     this.editingId = null;
     this.activeRow = null;
     this.form.reset({
-      TransBranchId: '',
+      BranchId: '',
       TransFeeCompCode: '',
       TransFeeComp: '',
       TransFeeCompTaken: 'New',
@@ -227,6 +227,7 @@ export class TransFeeCompTab implements OnInit {
 
   onEdit(row: Record<string, unknown>): void {
     const id = this.resolveId(row);
+    
     if (!id) {
       this.messageService.show('Fee component id is missing', 'error');
       return;
@@ -238,6 +239,7 @@ export class TransFeeCompTab implements OnInit {
         this.editingId = id;
         this.activeRow = item;
         this.patchFormFromRow(item);
+        console.log('Editing row id:', this.editingId);
         this.state.openAddView();
       },
       error: (error) => {
@@ -279,6 +281,7 @@ export class TransFeeCompTab implements OnInit {
 
     const isEdit = this.editingId !== null;
     const payload = this.buildPayload();
+    console.log('payload', payload);
     const request = isEdit
       ? this.transFeeCompService.updateTransFeeComponent(payload)
       : this.transFeeCompService.createTransFeeComponent(payload);

@@ -6,7 +6,7 @@
 <table class="data-table">
   <thead>
     <tr>
-      <th><button type="button" class="table-sort-button" (click)="sortBy('transFeePlan', ['id', 'Id', 'transFeePlanId', 'TransFeePlanId'])" [attr.aria-label]="'Sort fee plan ' + sortIndicator('transFeePlan')">Fee plan <span aria-hidden="true">{{ sortIndicator('transFeePlan') }}</span></button></th>
+      <th><button type="button" class="table-sort-button" (click)="sortBy('transFeePlan', ['id', 'Id'])" [attr.aria-label]="'Sort fee plan ' + sortIndicator('transFeePlan')">Fee plan <span aria-hidden="true">{{ sortIndicator('transFeePlan') }}</span></button></th>
       <th><button type="button" class="table-sort-button" (click)="sortBy('year', ['fy', 'TransFY'])" [attr.aria-label]="'Sort year ' + sortIndicator('year')">Year <span aria-hidden="true">{{ sortIndicator('year') }}</span></button></th>
       <th><button type="button" class="table-sort-button" (click)="sortBy('feeGroup', ['feeGroup', 'TransFeeGroup'])" [attr.aria-label]="'Sort fee group ' + sortIndicator('feeGroup')">Fee Group <span aria-hidden="true">{{ sortIndicator('feeGroup') }}</span></button></th>
       <th><button type="button" class="table-sort-button" (click)="sortBy('transFeeComponent', ['transFeeComp', 'TransFeeComp'])" [attr.aria-label]="'Sort fee component ' + sortIndicator('transFeeComponent')">Fee component <span aria-hidden="true">{{ sortIndicator('transFeeComponent') }}</span></button></th>
@@ -21,10 +21,10 @@
       <tr>
         <td>{{ resolveStringValue(row, ['id']) }}</td>
         <td>{{ resolveStringValue(row, ['fy', 'TransFY']) }}</td>
-        <td>{{ resolveStringValue(row, ['feeGroup', 'TransFeeGroup']) }}</td>
+        <td>{{ resolveStringValue(row, ['transFeeGroup', 'TransFeeGroup']) }}</td>
         <td>{{ resolveStringValue(row, ['transFeeComp', 'TransFeeComp']) }}</td>
-        <td>{{ resolveStringValue(row, ['fees', 'TransFees']) }}</td>
-        <td>{{ resolveStringValue(row, ['TransFeeMonthIds', 'feeMonthIds']) }}</td>
+        <td>{{ resolveStringValue(row, ['transFees', 'TransFees']) }}</td>
+        <td>{{ resolveStringValue(row, ['transFeeMonthIds', 'TransFeeMonthIds']) }}</td>
         
         <td>{{ resolveStatusText(row) }}</td>
         <td>
@@ -86,7 +86,7 @@
               <label for="fpBranch">Branch</label>
               <app-searchable-dropdown
                 id="fpBranch"
-                formControlName="TransBranchId"
+                formControlName="BranchId"
                 [options]="branches()"
                 placeholder="Select Branch">
               </app-searchable-dropdown>

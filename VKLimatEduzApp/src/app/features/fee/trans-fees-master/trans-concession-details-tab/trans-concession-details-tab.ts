@@ -55,7 +55,7 @@ export class TransConcessionDetailsTab implements OnInit {
   readonly transFeeComponents = signal<DropdownOption[]>([]);
 
   readonly form: FormGroup = this.fb.group({
-    TransBranchId: [''],
+    BranchId: [''],
     TransFY: [''],
     TransFeeConcGroupId: [''],
     TransFeeCompId: [''],
@@ -87,6 +87,7 @@ export class TransConcessionDetailsTab implements OnInit {
 
     effect(() => {
       const selected = this.transFeeConcessionService.transFeeConcession();
+      console.log('Selected Row:', selected);
       if (!selected) {
         return;
       }
@@ -131,7 +132,7 @@ export class TransConcessionDetailsTab implements OnInit {
   }
 
   private resolveId(row: Row): number | null {
-    const candidate = row['id'] ?? row['Id'] ?? row['transFeeConcessionId'] ?? row['TransFeeConcessionId'];
+    const candidate = row['id'] ?? row['Id'];
     const numeric = typeof candidate === 'string' ? Number(candidate) : candidate;
     return typeof numeric === 'number' && Number.isFinite(numeric) && numeric > 0 ? numeric : null;
   }
@@ -245,13 +246,13 @@ export class TransConcessionDetailsTab implements OnInit {
 
   private patchFormFromRow(row: Row): void {
     this.form.patchValue({
-      TransBranchId: this.resolveDropdownId(row['TransBranchId'] ?? row['branchId'] ?? row['branch_id']) ?? '',
+      BranchId: this.resolveDropdownId(row['BranchId'] ?? row['branchId'] ?? row['branch_id']) ?? '',
       TransFY: this.resolveStringValue(row, ['TransFY', 'fy']) ?? '',
-      TransFeeConcGroupId: this.resolveDropdownId(row['TransFeeConcGroupId'] ?? row['feeConcGroupId'] ?? row['feeGroupId']) ?? '',
-      TransFeeCompId: this.resolveDropdownId(row['TransFeeCompId'] ?? row['transFeeCompId']) ?? '',
-      TransFeeConcFxdAmt: this.resolveNumberValue(row, ['TransFeeConcFxdAmt', 'feeConcFxdAmt', 'feeConcFixedAmt']),
-      TransFeeConcPer: this.resolveNumberValue(row, ['TransFeeConcPer', 'feeConcPer']),
-      TransFeeConcEditable: this.resolveStringValue(row, ['TransFeeConcEditable', 'feeConcEditable']) ?? 'No',
+      TransFeeConcGroupId: this.resolveDropdownId(row['TransFeeConcGroupId'] ?? row['transFeeConcGroupId'] ?? row['feeConcGroupId'] ?? row['feeGroupId']) ?? '',
+      TransFeeCompId: this.resolveDropdownId(row['transFeeCompId'] ?? row['TransFeeCompId']) ?? '',
+      TransFeeConcFxdAmt: this.resolveNumberValue(row, ['TransFeeConcFxdAmt', 'transFeeConcFxdAmt', 'feeConcFxdAmt', 'feeConcFixedAmt']),
+      TransFeeConcPer: this.resolveNumberValue(row, ['TransFeeConcPer', 'transFeeConcPer', 'feeConcPer']),
+      TransFeeConcEditable: this.resolveStringValue(row, ['TransFeeConcEditable', 'transFeeConcEditable', 'feeConcEditable']) ?? 'No',
       OrderId: this.resolveNumberValue(row, ['OrderId', 'orderId']),
       IsActive: this.resolveIsActive(row)
     });
@@ -263,8 +264,8 @@ export class TransConcessionDetailsTab implements OnInit {
 
     return {
       ...formValue,
-      TransFeeConcessionId: currentId ?? undefined,
-      TransBranchId: this.parseNumberOrNull(formValue['TransBranchId']),
+      id: currentId ?? undefined,
+      BranchId: this.parseNumberOrNull(formValue['BranchId']),
       TransFY: String(formValue['TransFY'] ?? ''),
       TransFeeConcGroupId: this.parseNumberOrNull(formValue['TransFeeConcGroupId']),
       TransFeeCompId: this.parseNumberOrNull(formValue['TransFeeCompId']),
@@ -284,7 +285,7 @@ export class TransConcessionDetailsTab implements OnInit {
     this.editingId = null;
     this.activeRow = null;
     this.form.reset({
-      TransBranchId: '',
+      BranchId: '',
       TransFY: '',
       TransFeeConcGroupId: '',
       TransFeeCompId: '',
@@ -316,7 +317,7 @@ export class TransConcessionDetailsTab implements OnInit {
 
     const payload = {
       ...row,
-      TransFeeConcessionId: id,
+      id: id,
       IsActive: false
     };
 
@@ -339,6 +340,7 @@ export class TransConcessionDetailsTab implements OnInit {
 
     const isEdit = this.editingId !== null;
     const payload = this.buildPayload();
+    console.log('Payload:', payload);
     const request = isEdit
       ? this.transFeeConcessionService.updateTransFeeConcession(payload)
       : this.transFeeConcessionService.createTransFeeConcession(payload);
@@ -349,7 +351,7 @@ export class TransConcessionDetailsTab implements OnInit {
         this.editingId = null;
         this.activeRow = null;
         this.form.reset({
-          TransBranchId: '',
+          BranchId: '',
           TransFY: '',
           TransFeeConcGroupId: '',
           TransFeeCompId: '',
@@ -373,7 +375,7 @@ export class TransConcessionDetailsTab implements OnInit {
     this.editingId = null;
     this.activeRow = null;
     this.form.reset({
-      TransBranchId: '',
+      BranchId: '',
       TransFY: '',
       TransFeeConcGroupId: '',
       TransFeeCompId: '',

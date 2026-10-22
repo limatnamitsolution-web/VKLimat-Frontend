@@ -131,7 +131,7 @@ export class ConcessionDetailsTab implements OnInit {
   }
 
   private resolveId(row: Row): number | null {
-    const candidate = row['id'] ?? row['Id'] ?? row['feeConcessionId'] ?? row['FeeConcessionId'];
+    const candidate = row['id'] ?? row['Id'];
     const numeric = typeof candidate === 'string' ? Number(candidate) : candidate;
     return typeof numeric === 'number' && Number.isFinite(numeric) && numeric > 0 ? numeric : null;
   }

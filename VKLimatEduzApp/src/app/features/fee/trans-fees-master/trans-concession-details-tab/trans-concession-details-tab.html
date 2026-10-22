@@ -27,11 +27,11 @@
         <tr>
           <td>{{ resolveValue(row, ['branchName', 'BranchName', 'branch', 'Branch']) }}</td>
           <td>{{ resolveValue(row, ['TransFY', 'fy']) }}</td>
-          <td>{{ resolveValue(row, ['feeConcGroup', 'TransFeeConcGroup', 'feeGroup', 'TransFeeGroup']) }}</td>
+          <td>{{ resolveValue(row, ['transFeeGroup', 'TransFeeConcGroup', 'feeGroup', 'TransFeeGroup']) }}</td>
           <td>{{ resolveValue(row, ['transFeeComp', 'TransFeeComp']) }}</td>
-          <td>{{ resolveValue(row, ['feeConcFxdAmt', 'TransFeeConcFxdAmt', 'fixedAmount']) }}</td>
-          <td>{{ resolveValue(row, ['feeConcPer', 'TransFeeConcPer', 'percentage']) }}</td>
-          <td>{{ resolveValue(row, ['feeConcEditable', 'TransFeeConcEditable']) }}</td>
+          <td>{{ resolveValue(row, ['transFeeConcFxdAmt', 'TransFeeConcFxdAmt', 'fixedAmount']) }}</td>
+          <td>{{ resolveValue(row, ['transFeeConcPer', 'TransFeeConcPer', 'percentage']) }}</td>
+          <td>{{ resolveValue(row, ['transFeeConcEditable', 'TransFeeConcEditable']) }}</td>
           <td>{{ resolveValue(row, ['orderId', 'OrderId']) }}</td>
           <td>{{ resolveStatusText(row) }}</td>
           <td>
@@ -92,7 +92,7 @@
           <div class="grid-2">
             <div class="form-field">
               <label for="cdBranch">Branch</label>
-              <select id="cdBranch" formControlName="TransBranchId">
+              <select id="cdBranch" formControlName="BranchId">
                 <option value="">Select Branch</option>
                 @for (option of branches(); track option['id']) {
                   <option [value]="option['id']">{{ option['name'] }}</option>
